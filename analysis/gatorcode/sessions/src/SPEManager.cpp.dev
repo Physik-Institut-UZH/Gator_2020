@@ -1,0 +1,394 @@
+#include "SPEManager.hh"
+
+
+using namespace std;
+
+
+
+SPEManager::SPEManager(string trigratename, string workdir, string spelistname):cm_trigratename(trigratename),cm_spelistname(spelistname),cm_workdir(workdir){
+	
+	pm_trigrateobj = new trigrate();
+	pm_trigrateobj->SetSPEManager(this);
+	
+	//The histograms can be created only by the proper functions
+	m_pADCspectrum = 0;
+	m_pEnergySpectrum = 0;
+	num_of_spectra=0;
+	aqtime=0;
+	
+	
+	if((cm_workdir!=string(""))&&(cm_workdir.substr(cm_workdir.size()-1,1)!=string("/"))) cm_workdir = cm_workdir + string("/");
+
+	if(cm_workdir==string("")){
+		cm_spelistname = string("./") + cm_spelistname;
+	}else{
+		cm_spelistname = cm_workdir + cm_spelistname;
+	}
+
+	newsamp_flg = false;
+	SPEdir_flg= false;
+	Sourcedir_flg= false;
+	
+}
+
+
+
+SPEManager::~SPEManager(){
+	
+	if(pm_trigrateobj) delete pm_trigrateobj;
+	if(m_pADCspectrum) delete m_pADCspectrum;
+	if(m_pEnergySpectrum) delete m_pEnergySpectrum;
+}
+
+
+
+TH1F* SPEManager::GetADCSpectrum(){
+	
+	if(m_pADCspectrum==0) ADCspectrumBuild();
+	
+	return m_pADCspectrum;
+}
+
+
+TH1F* SPEManager::GetEnergySpectrum(){
+
+	if(m_pEnergySpectrum==0) EnergySpectrumBuild();
+	
+	return m_pEnergySpectrum;
+}
+
+
+
+void SPEManager::SetSPEdir(string dir){
+	cm_SPEdir = dir;
+	if(cm_SPEdir.substr(cm_SPEdir.size()-1,1)!=string("/")) cm_SPEdir = cm_SPEdir + string("/");
+	SPEdir_flg = true;
+	return;
+}
+
+void SPEManager::SetSourcedir(string dir){
+	cm_Sourcedir = dir;
+	if(cm_Sourcedir.substr(cm_Sourcedir.size()-1,1)!=string("/")) cm_Sourcedir = cm_Sourcedir + string("/");
+	Sourcedir_flg = true;
+	return;
+}
+
+
+
+void SPEManager::runSPEManager(){
+	
+	cout << "SPEManager::runSPEManager(): Start of routine." << endl;
+	
+	if(!((SPEdir_flg)&&(Sourcedir_flg))){
+		cout << "SPEManager::runSPEManager(): Error! The SPE dir and the Spe dir must be registered to the SPEManager. Exiting the program." << endl;
+		exit(1);
+	}
+	
+	
+	string command;
+	
+	if(FindNewSample()){
+		pm_trigrateobj->UpdateTrigRate();
+		command = string("cp ") + cm_workdir + string("*.SPE ") + cm_SPEdir; //Modified only for debugging purposes, the normal command should be a "mv"
+		system(command.c_str());
+	}
+	/*
+	if(FindNewSource()){
+		pm_trigrateobj->UpdateTrigRate(true);
+		command = string("mv ") + cm_workdir + string("*.Spe ") + cm_SPEdir;
+		system(command.c_str());
+	}
+	*/
+	
+	//Here I only look for a new source file that are sent directly in the Sourcedir without going to the workdir before
+	pm_trigrateobj->FindSPE(cm_Sourcedir.c_str(), true, true);
+	
+	
+	ADCspectrumBuild();
+	EnergySpectrumBuild();
+	
+	cout << "SPEManager::runSPEManager(): End of routine." << endl;
+	
+	return;
+	
+}
+
+
+
+Bool_t SPEManager::FindNewSample(){
+	
+	cout << "SPEManager::FindNewSample(): Start of routine." << endl;
+	
+	string bufferobj;
+	
+	//Check if in the directory there is a new SPE file
+	string command = string("ls ") + cm_workdir + string("*.SPE > tmpSPElist");
+	
+	system(command.c_str());
+	
+	
+	ifstream tmpspelist("tmpSPElist");
+	while(tmpspelist.good()){
+		getline(tmpspelist,bufferobj);
+		if(!tmpspelist.good()) break;
+		newspefiles.push_back(bufferobj);
+	}
+	tmpspelist.close();
+	
+	
+	//Here I check, through the description in the SPE file if the sample in measure is changed
+	if(newspefiles.size()>0){
+		newsamp_flg = CheckDescription(newspefiles);
+	}else{
+		newsamp_flg = false;
+	}
+	
+	
+	ofstream spelist;
+	string nopathfilename; //The name of the SPE file without path
+	size_t foundpos; //The position of the last "/" in the path of the SPE file
+	if(newsamp_flg){
+		//If the sample has changed I start to overwrite the file list.
+		spelist.open(cm_spelistname.c_str());
+		if(spelist.fail()){
+			cout << "\n\nSPEManager::FindNewSample(): Cannot open the dynamic archive <" << cm_spelistname << ">.\n\n Exit from the program!!!\n" << endl;
+			exit(1);
+		}
+		for(int i=0; i<newspefiles.size(); i++){
+			foundpos = (newspefiles.at(i)).find_last_of("/");
+			if(foundpos!=std::string::npos){
+				nopathfilename=(newspefiles.at(i)).substr(foundpos+1);
+			}else{
+				nopathfilename=newspefiles.at(i);
+			}
+			spelist << nopathfilename << endl;
+		}
+		spelist.close();
+		
+	}else{
+		if(newspefiles.size()>0){
+		//If the sample is still the same I just append the SPE file at the end of the listfile.
+			spelist.open(cm_spelistname.c_str(),ios_base::app);
+			if(spelist.fail()){
+				cout << "\n\nSPEManager::FindNewSample(): Cannot open the dynamic archive <" << cm_spelistname << ">.\n\n Exit from the program!!!\n" << endl;
+				exit(1);
+			}
+			for(int i=0; i<newspefiles.size(); i++){
+				foundpos = (newspefiles.at(i)).find_last_of("/");
+				if(foundpos!=std::string::npos){
+					nopathfilename=(newspefiles.at(i)).substr(foundpos+1);
+				}else{
+					nopathfilename=newspefiles.at(i);
+				}
+				spelist << nopathfilename << endl;
+			}
+			spelist.close();
+		
+		}
+	}
+		
+	system("rm -f tmpSPElist");
+	
+	cout << "SPEManager::FindNewSample(): End of routine." << endl;
+	
+	return newspefiles.size()>0;
+}
+
+
+
+Bool_t SPEManager::CheckDescription(vector<string>& newspefiles){
+	//This method returns true when the new sample has a different description. It means that the sample in measure is changed.
+	
+	cout << "SPEManager::CheckDescription(...): Start of routine." << endl;
+	
+	if(newspefiles.size()==0) return false;
+	
+	string lastdescr, descr;
+	
+	Double_t aqtime;
+	ULong_t lastunixtime,unixtime;
+	
+	vector<string> newdescriptions;
+	for(int i=0; i<newspefiles.size(); i++){
+		pm_trigrateobj->LoadSPE(newspefiles.at(i).c_str(),aqtime,unixtime,&descr);
+		newdescriptions.push_back(descr);
+		if(i==0){
+			lastunixtime = unixtime;
+			lastdescr = descr;
+		}else{
+			if(unixtime>lastunixtime){
+				lastunixtime = unixtime;
+				lastdescr = descr;
+			}
+		}
+		
+	}
+	//Here I have in the string "lastdescr" the description of the most recent sample of the ones just found.
+	
+	
+	//Now I take the description relative to the last spe file already present in the dynamic list.
+	string old_spenames,old_lastdescr, old_descr;
+	ULong_t old_lastunixtime;
+	ifstream spelist(cm_spelistname.c_str());
+	
+	if(spelist.fail()){
+		cout << "SPEManager::CheckDescription(...) --> Failed to open the file <" << cm_spelistname << ">.\nGoing on without updating the description!!!" << endl;
+		return false;
+	}
+	
+	Int_t counter = 0;
+	while(spelist.good()){
+		getline(spelist,old_spenames);
+		if(spelist.eof()) break;
+		
+		pm_trigrateobj->LoadSPE(old_spenames.c_str(),aqtime,unixtime,&old_descr);
+		if(counter == 0){
+			old_lastunixtime = unixtime;
+			old_lastdescr = old_descr;
+		}else{
+			if(unixtime > old_lastunixtime){
+				old_lastunixtime = unixtime;
+				old_lastdescr = old_descr;
+			}
+		}
+		
+	}
+	//Here I have in the string "old_lastdescr" the description of most currently sample already present in the dynamic list.
+	
+	if(old_lastdescr == lastdescr){
+		cout << "SPEManager::CheckDescription(...): Start of routine." << endl;
+		return false;
+	}else{
+		vector<string> tmp_newspefiles;
+		for(Int_t i=0; i<newspefiles.size(); i++){
+			if(newdescriptions.at(i) == lastdescr) tmp_newspefiles.push_back(newspefiles.at(i));
+		}
+		newspefiles = tmp_newspefiles; //Update this vector before going out of scope and coming back to the "FindNewSample()" method scope.
+		cout << "SPEManager::CheckDescription(...): Start of routine." << endl;
+		return true;
+	}
+	
+	
+	
+}
+
+
+
+void SPEManager::FindNewSource(){
+	
+	string bufferobj;
+	
+	//Check if in the directory there is a new Spe file
+	string command = string("ls ") + cm_workdir + string("*.Spe > tmpSpeList");
+	
+	system(command.c_str());
+	
+	ifstream tmpSpeList("tmpSpeList");
+	
+	while(tmpSpeList.good()){
+		getline(tmpSpeList,bufferobj);
+		if(!tmpSpeList.good()) break;
+		newsourcefiles.push_back(bufferobj);
+	}
+	tmpSpeList.close();
+	
+	system("rm -f tmpSpeList");
+	
+	return;
+	
+}
+
+
+
+void SPEManager::ADCspectrumBuild(){
+	
+	cout << "SPEManager::ADCspectrumBuild(...): Start of routine." << endl;
+	
+	if(m_pADCspectrum!=0) delete m_pADCspectrum;
+	
+	cout << "SPEManager::ADCspectrumBuild(...): Opening the dynamic archive <" << cm_spelistname << ">" << endl;
+	ifstream spelist(cm_spelistname.c_str());
+	
+	if(spelist.fail()){
+		cout << "\n\nSPEManager::ADCspectrumBuild(...): Failed to open <" << cm_spelistname << ">.\n The routine will exit and not build the histogram.\n" << endl;
+		return;
+	}
+
+	aqtime=0;
+	
+	ULong_t unixtime; //Not used but needed for the LoadSPE(...) routine
+	
+	vector<string>* v_spenames = new vector<string>();
+	
+	while(spelist.good()){
+		string spename;
+		spelist >> spename;
+		if(!spelist.good()) break;
+		v_spenames->push_back(cm_SPEdir+spename);
+	}
+	spelist.close();
+	
+	num_of_spectra = v_spenames->size();
+	
+	if(num_of_spectra==0) return;
+
+	Double_t tmp_aqtime; //Not used here, but necessary for the LoadSPE(...) interface.
+	
+	for(int i=0; i<num_of_spectra; i++){	
+		if(i==0){
+			m_pADCspectrum=pm_trigrateobj->LoadSPE((v_spenames->at(i)).c_str(),tmp_aqtime,unixtime);
+			m_pADCspectrum->SetName("ADCspectrum");
+			aqtime = tmp_aqtime;
+			last_timestamp = unixtime;
+		}else{
+			m_pADCspectrum->Add((TH1*)pm_trigrateobj->LoadSPE((v_spenames->at(i)).c_str(),tmp_aqtime,unixtime));
+			aqtime += tmp_aqtime;
+			if(unixtime>last_timestamp) last_timestamp = unixtime;
+		}
+	}
+	
+	m_pADCspectrum->GetXaxis()->SetTitle("ADC channel");
+	m_pADCspectrum->GetYaxis()->SetTitle("Counts");
+	m_pADCspectrum->SetStats(0);
+	
+	cout << "SPEManager::ADCspectrumBuild(...): End of routine." << endl;
+	
+	return;
+}
+
+
+
+void SPEManager::EnergySpectrumBuild(){
+	
+	cout << "SPEManager::EnergySpectrumBuild(...): Start of routine." << endl;
+	
+	if(m_pEnergySpectrum!=0) delete m_pEnergySpectrum;
+	
+	if(m_pADCspectrum==0) ADCspectrumBuild();
+	
+	if(num_of_spectra==0) return;
+
+	int nbins = m_pADCspectrum->GetNbinsX();
+	
+	m_pEnergySpectrum = new TH1F("EnergySpectrum","",nbins,0.0,2750.0);
+	
+	for(int i=1; i<=nbins; i++){
+		m_pEnergySpectrum->Fill(i*0.16902,m_pADCspectrum->GetBinContent(i)); //Hard coded.... in future will be used a calibration file.
+	}
+	
+	Double_t tday = aqtime/(24*3600);
+	
+	m_pEnergySpectrum->Scale(1./tday); //It comes out rescaled for daily rate
+	
+	m_pEnergySpectrum->SetStats(0);
+	m_pEnergySpectrum->GetXaxis()->SetTitle("Energy [keV]");
+	m_pEnergySpectrum->GetYaxis()->SetTitle("day^{-1} keV^{-1}");
+	
+	cout << "SPEManager::EnergySpectrumBuild(...): End of routine." << endl;
+	
+	return;
+
+}
+
+
+

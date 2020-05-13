@@ -1,0 +1,255 @@
+//========This script should be used as the first part of a wider script for each data taking========//
+// For this script is required the header: header_Th_lines.h
+//
+// To run this script are required the functions contained in the following libraries:
+// - myFuncs.cpp
+// - myFitFunctions.c
+
+{
+TCanvas* c1 = new TCanvas("Canv1","228Th source Calibration",1);
+
+
+//Creation of an histogram with the ASCII data of the Th228 source. Draw it in the second pad.
+
+	Double_t time = 0; //Acquisition time in seconds of the source
+	string filename("228Th_supported_20110818Data.txt");
+	TH1F* h = histogen(filename,time);
+
+
+//Rebinned clones of the original histo are created here. They can be rebinned without lose the original ones
+
+//TH1F* h2reb = h2->Rebin(5,"Rebinned Th calibration");
+
+//TCanvas* fitCanv = new TCanvas("fitCanvas","Fit result for lines",1);
+//fitCanv->cd(0);
+
+
+
+TF1* ff = new TF1("ff",fitFuncLine,1,h2->GetNbinsX(),5);
+ff->SetParNames("Central Value","Sigma","Ampl","Intercept","Slope");
+ff->SetLineColor(2);
+
+
+//=======From here I fit the central values of the lines and fill the arrays linesADC[] and linesADCerr[]. The main lines to search are in the Th_lines_header.c but the range values where to make the fit for each line should be changed for each calibration=======//
+
+
+//cout << "Starting the search of the centers of the lines in ADC channels. Press enter";
+
+
+
+
+//===Th84===//
+
+h2->SetAxisRange(368,384);	
+ff->SetParameters(379,5,700,800,0);
+ff->SetRange(368,384);
+h2->Fit(ff,"R+");
+linesADC[Th84]=ff->GetParameter(0);
+linesADCerr[Th84]=ff->GetParError(0);
+
+
+
+//===Pb239===//
+
+h2->SetAxisRange(1020,1120);
+ff->SetParameters(1064,5,40000,1000,-0.5);
+ff->SetRange(1020,1120);
+h2->Fit(ff,"R+");
+linesADC[Pb239]=ff->GetParameter(0);
+linesADCerr[Pb239]=ff->GetParError(0);
+
+
+
+//===Tl277===//
+
+h2->SetAxisRange(1210,1265);
+ff->SetParameters(1236,5,2400,500,-0.5);
+ff->SetRange(1210,1265);
+h2->Fit(ff,"R+");
+linesADC[Tl277]=ff->GetParameter(0);
+linesADCerr[Tl277]=ff->GetParError(0);
+
+
+
+//===Pb300===//
+
+h2->SetAxisRange(1310,1365);
+ff->SetParameters(1338,5,3000,400,-0.01);
+ff->SetRange(1310,1365);
+h2->Fit(ff,"R+");
+linesADC[Pb300]=ff->GetParameter(0);
+linesADCerr[Pb300]=ff->GetParError(0);
+
+
+
+//===ee511===//
+
+h2->SetAxisRange(2220,2320);
+ff->SetParameters(2274,5,4500,150,-0.01);
+ff->SetRange(2220,2320);
+h2->Fit(ff,"R+");
+linesADC[ee511]=ff->GetParameter(0);
+linesADCerr[ee511]=ff->GetParError(0);
+
+
+
+//===Tl583===//
+
+h2->SetAxisRange(2500,2700);
+ff->SetParameters(2596,10,14000,50,-0.01);
+ff->SetRange(2500,2700);
+h2->Fit(ff,"R+");
+linesADC[Tl583]=ff->GetParameter(0);
+linesADCerr[Tl583]=ff->GetParError(0);
+
+
+
+//===Bi727===//
+
+h2->SetAxisRange(3200,3270);
+ff->SetParameters(3237,5,2500,10,-0.01);
+ff->SetRange(3200,3270);
+h2->Fit(ff,"R+");
+linesADC[Bi727]=ff->GetParameter(0);
+linesADCerr[Bi727]=ff->GetParError(0);
+
+
+
+//===Tl763===//
+
+h2->SetAxisRange(3360,3440);
+ff->SetParameters(3395,5,300,30,-0.01);
+ff->SetRange(3360,3440);
+h2->Fit(ff,"R+");
+linesADC[Tl763]=ff->GetParameter(0);
+linesADCerr[Tl763]=ff->GetParError(0);
+
+
+
+//===Bi785===//
+
+h2->SetAxisRange(3460,3530);
+ff->SetParameters(3495,10,400,50,-0.1);
+ff->SetRange(3460,3530);
+h2->Fit(ff,"R+");
+linesADC[Bi785]=ff->GetParameter(0);
+linesADCerr[Bi785]=ff->GetParError(0);
+
+
+
+//===Tl861===//
+
+h2->SetAxisRange(3750,3900);
+ff->SetParameters(3825,20,1400,25,-0.1);
+ff->SetRange(3750,3900);
+h2->Fit(ff,"R+");
+linesADC[Tl861]=ff->GetParameter(0);
+linesADCerr[Tl861]=ff->GetParError(0);
+
+
+
+//===Bi1621===//
+
+h2->SetAxisRange(7170,7250);
+ff->SetParameters(7210,20,300,20,0.01);
+ff->SetRange(7170,7250);
+h2->Fit(ff,"R+");
+linesADC[Bi1621]=ff->GetParameter(0);
+linesADCerr[Bi1621]=ff->GetParError(0);
+
+
+
+//===Tl2615===//
+
+h2->SetAxisRange(11500,11750);
+ff->SetParameters(11530,25,2500,10,0.5);
+ff->SetRange(11500,11750);
+h2->Fit(ff,"R+");
+linesADC[Tl2615]=ff->GetParameter(0);
+linesADCerr[Tl2615]=ff->GetParError(0);
+
+
+h2 -> SetAxisRange(1,h2->GetNbinsX());
+h2 -> GetXaxis()->SetTitle("ADC channels");
+h2 -> GetYaxis()->SetTitle("Counts");
+	
+//Starting to generate the grapic Energy - ADC which will fitted with a linear function.
+
+TCanvas* canv2 = new TCanvas("Canv2","Enery ADC conversion",1);
+	
+canv2 -> cd();
+
+TGraphErrors* gr1err = new TGraphErrors(NLINES,linesADC,linesThEn,linesADCerr,linesThEnErr);
+
+gr1err -> Draw("AP");
+
+TF1* ff2 = new TF1("LinFit",linearFit,0,h2->GetNbinsX(),2);
+ff2 -> SetParameters(10,10);
+ff2 -> SetLineColor(2);
+	
+gr1err -> Fit("LinFit","R");
+	
+gr1err -> GetXaxis()->SetTitle("ADC channel");
+gr1err -> GetYaxis()->SetTitle("Energy (KeV)");
+	
+	
+//====== Here a new Canvas with the scatter plot of the residuals is generated ======//
+//====== Here the errors for the poins are not taken in account and a manual ========//
+//====== manual procedure is required ===============================================//
+
+	/*
+	TCanvas* canv3 = new TCanvas("Canv3","Calibration residuals",1);
+	canv3 -> cd();
+	Double_t residuals[NLINES];
+	//Double_t* xbins = new Double_t[1+h2 -> GetNbinsX()];
+	
+	
+	for (i=0; i<NLINES; i++){
+		residuals[i] = linesThEn[i] - (ff2->Eval(linesADC[i]));		
+	}
+	
+
+	for(i = 0; i < h2 -> GetNbinsX(); i++){
+		xbins[i] = 0;		
+	}
+	
+	
+	for(i = 0; i < h2 -> GetNbinsX(); i++){
+		xbins[i] = (Double_t)((ff2 -> GetParameter(0)) + i*(ff2 -> GetParameter(1)))-(ff2 -> GetParameter(1))/2;
+		
+	}
+	*/
+	
+	/*	
+	TGraph* gr2 = new TGraph(NLINES,linesADC,residuals);
+	gr2 -> Draw("AP");
+	TF1* zeroln = new TF1("ZeroLine",linearFit,0,h2->GetNbinsX(),2);
+	zeroln -> SetParameters(0,0);
+	zeroln -> SetLineColor(2);
+	zeroln -> Draw("SAME");
+
+	*/
+	TH1F* hcal = new TH1F(h2->GetNbinsX());
+	hcal -> SetName("hcal");
+	hcal -> SetNameTitle("Calibrated Histogram");
+	
+	//hcal -> SetBins(h2 -> GetNbinsX(),xbins);
+	
+		
+	cout << "ch" << "\t" << "xbins[i]" << "\t" << "BinCenter" << "\t" << "BinContent\t" << "BinContent (cal)" << endl; 
+	for(i = 0; i < h2 -> GetNbinsX(); i++){
+		hcal -> SetBinContent(i,h2->GetBinContent(i));
+		if (i < 16 || i >  h2 -> GetNbinsX()-16) {
+		cout << i << "\t" << xbins[i] << "\t" << hcal->GetBinCenter(i) << "\t" << h2->GetBinContent(i) << "\t" << hcal->GetBinContent(i) << endl;
+		}
+	}
+	cin.get();
+
+	TCanvas* canv4 = new TCanvas("Canv4","Calibrated histogram");
+	canv4 -> cd();
+	
+//There is a problem in drawing the histogram
+	//hcal -> Draw();
+
+	
+}  //end of the script

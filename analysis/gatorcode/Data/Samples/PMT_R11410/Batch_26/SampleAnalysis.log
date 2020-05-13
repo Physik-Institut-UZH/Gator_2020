@@ -1,0 +1,720 @@
+Number of lines to be analyzed: 24
+
+234Th line at 92.6 keV:
+Background:
+ MCA center = 559.614
+ MCA sigma = 2.55456
+ Left compton region = (544.287,551.951) --> 7.66368 chs
+ Left compton counts = 17.3522
+ Signal region = (551.951,567.278) --> 15.3274 chs
+ Signal region counts = 44.9226
+ Right compton region = (567.278,574.942) --> 7.66368 chs
+ Right compton counts = 24.0547
+ Estimated Compton counts in signal region = 41.4069 +- 6.43482
+ Estimated line net counts = 3.51565 +- 9.29137
+ Background detection limit = 34.7081
+------------
+Sample:
+ MCA center = 559.614
+ MCA sigma = 2.55456
+ Left compton region = (544.287,551.951) --> 7.66368 chs
+ Left compton counts = 74.4081
+ Signal region = (551.951,567.278) --> 15.3274 chs
+ Signal region counts = 171.298
+ Right compton region = (567.278,574.942) --> 7.66368 chs
+ Right compton counts = 51.649
+ Estimated Compton counts in signal region = 126.057 +- 11.2275
+ Estimated net line counts = 45.2409 +- 17.244
+ Sample detection limit = 57.8322
+------------
+
+
+235U line at 185.72 keV:
+Background:
+ MCA center = 1124.87
+ MCA sigma = 2.77888
+ Left compton region = (1108.2,1116.54) --> 8.33664 chs
+ Left compton counts = 30.2089
+ Signal region = (1116.54,1133.21) --> 16.6733 chs
+ Signal region counts = 78.0229
+ Right compton region = (1133.21,1141.55) --> 8.33664 chs
+ Right compton counts = 22.3953
+ Estimated Compton counts in signal region = 52.6043 +- 7.25288
+ Estimated line net counts = 25.4186 +- 11.4292
+ Background detection limit = 38.6352
+------------
+Sample:
+ MCA center = 1124.87
+ MCA sigma = 2.77888
+ Left compton region = (1108.2,1116.54) --> 8.33664 chs
+ Left compton counts = 91.4761
+ Signal region = (1116.54,1133.21) --> 16.6733 chs
+ Signal region counts = 273.766
+ Right compton region = (1133.21,1141.55) --> 8.33664 chs
+ Right compton counts = 92.2089
+ Estimated Compton counts in signal region = 183.685 +- 13.553
+ Estimated net line counts = 90.0808 +- 21.3881
+ Sample detection limit = 69.1072
+ Line detected! 
+------------
+
+
+212Pb line at 238.632 keV:
+Background:
+ MCA center = 1446.06
+ MCA sigma = 2.89929
+ Left compton region = (1428.66,1437.36) --> 8.69788 chs
+ Left compton counts = 22.6984
+ Signal region = (1437.36,1454.75) --> 17.3958 chs
+ Signal region counts = 72.928
+ Right compton region = (1454.75,1463.45) --> 8.69788 chs
+ Right compton counts = 21.1672
+ Estimated Compton counts in signal region = 43.8656 +- 6.62311
+ Estimated line net counts = 29.0623 +- 10.8071
+ Background detection limit = 35.6108
+------------
+Sample:
+ MCA center = 1446.06
+ MCA sigma = 2.89929
+ Left compton region = (1428.66,1437.36) --> 8.69788 chs
+ Left compton counts = 57.8888
+ Signal region = (1437.36,1454.75) --> 17.3958 chs
+ Signal region counts = 256.465
+ Right compton region = (1454.75,1463.45) --> 8.69788 chs
+ Right compton counts = 70.9121
+ Estimated Compton counts in signal region = 128.801 +- 11.349
+ Estimated net line counts = 127.664 +- 19.6282
+ Sample detection limit = 58.4209
+ Line detected! 
+------------
+
+
+214Pb line at 295.224 keV:
+Background:
+ MCA center = 1789.58
+ MCA sigma = 3.02325
+ Left compton region = (1771.44,1780.51) --> 9.06976 chs
+ Left compton counts = 12.8455
+ Signal region = (1780.51,1798.65) --> 18.1395 chs
+ Signal region counts = 44.9103
+ Right compton region = (1798.65,1807.72) --> 9.06976 chs
+ Right compton counts = 16.2442
+ Estimated Compton counts in signal region = 29.0897 +- 5.39349
+ Estimated line net counts = 15.8206 +- 8.60233
+ Background detection limit = 29.7333
+------------
+Sample:
+ MCA center = 1789.58
+ MCA sigma = 3.02325
+ Left compton region = (1771.44,1780.51) --> 9.06976 chs
+ Left compton counts = 52.0564
+ Signal region = (1780.51,1798.65) --> 18.1395 chs
+ Signal region counts = 122.821
+ Right compton region = (1798.65,1807.72) --> 9.06976 chs
+ Right compton counts = 37.1406
+ Estimated Compton counts in signal region = 89.197 +- 9.44442
+ Estimated net line counts = 33.6236 +- 14.5608
+ Sample detection limit = 49.2036
+------------
+
+
+228Ac line at 338.32 keV:
+Background:
+ MCA center = 2051.17
+ MCA sigma = 3.11447
+ Left compton region = (2032.48,2041.83) --> 9.34342 chs
+ Left compton counts = 14.9526
+ Signal region = (2041.83,2060.51) --> 18.6868 chs
+ Signal region counts = 25.9691
+ Right compton region = (2060.51,2069.86) --> 9.34342 chs
+ Right compton counts = 15.032
+ Estimated Compton counts in signal region = 29.9845 +- 5.47581
+ Estimated line net counts = -4.01547 +- 7.48021
+ Background detection limit = 30.1253
+------------
+Sample:
+ MCA center = 2051.17
+ MCA sigma = 3.11447
+ Left compton region = (2032.48,2041.83) --> 9.34342 chs
+ Left compton counts = 34.8896
+ Signal region = (2041.83,2060.51) --> 18.6868 chs
+ Signal region counts = 88.4874
+ Right compton region = (2060.51,2069.86) --> 9.34342 chs
+ Right compton counts = 29.7664
+ Estimated Compton counts in signal region = 64.656 +- 8.0409
+ Estimated net line counts = 23.8314 +- 12.3751
+ Sample detection limit = 42.4289
+------------
+
+
+214Pb line at 351.932 keV:
+Background:
+ MCA center = 2133.8
+ MCA sigma = 3.1428
+ Left compton region = (2114.94,2124.37) --> 9.4284 chs
+ Left compton counts = 20.3558
+ Signal region = (2124.37,2143.23) --> 18.8568 chs
+ Signal region counts = 46.8622
+ Right compton region = (2143.23,2152.65) --> 9.4284 chs
+ Right compton counts = 10.6442
+ Estimated Compton counts in signal region = 31 +- 5.56776
+ Estimated line net counts = 15.8622 +- 8.82396
+ Background detection limit = 30.5634
+------------
+Sample:
+ MCA center = 2133.8
+ MCA sigma = 3.1428
+ Left compton region = (2114.94,2124.37) --> 9.4284 chs
+ Left compton counts = 34.9183
+ Signal region = (2124.37,2143.23) --> 18.8568 chs
+ Signal region counts = 163.724
+ Right compton region = (2143.23,2152.65) --> 9.4284 chs
+ Right compton counts = 41.2122
+ Estimated Compton counts in signal region = 76.1305 +- 8.72528
+ Estimated net line counts = 87.594 +- 15.4873
+ Sample detection limit = 45.73
+ Line detected! 
+------------
+
+
+208Tl line at 583.187 keV:
+Background:
+ MCA center = 3537.49
+ MCA sigma = 3.59378
+ Left compton region = (3515.93,3526.71) --> 10.7814 chs
+ Left compton counts = 3
+ Signal region = (3526.71,3548.28) --> 21.5627 chs
+ Signal region counts = 11.4929
+ Right compton region = (3548.28,3559.06) --> 10.7814 chs
+ Right compton counts = 2.05689
+ Estimated Compton counts in signal region = 5.05689 +- 2.24875
+ Estimated line net counts = 6.43597 +- 4.06814
+ Background detection limit = 15.1965
+------------
+Sample:
+ MCA center = 3537.49
+ MCA sigma = 3.59378
+ Left compton region = (3515.93,3526.71) --> 10.7814 chs
+ Left compton counts = 14.2704
+ Signal region = (3526.71,3548.28) --> 21.5627 chs
+ Signal region counts = 78.6352
+ Right compton region = (3548.28,3559.06) --> 10.7814 chs
+ Right compton counts = 15.782
+ Estimated Compton counts in signal region = 30.0524 +- 5.48201
+ Estimated net line counts = 48.5828 +- 10.4253
+ Sample detection limit = 30.1548
+ Line detected! 
+------------
+
+
+214Bi line at 609.312 keV:
+Background:
+ MCA center = 3696.07
+ MCA sigma = 3.64161
+ Left compton region = (3674.22,3685.14) --> 10.9248 chs
+ Left compton counts = 2.55704
+ Signal region = (3685.14,3706.99) --> 21.8497 chs
+ Signal region counts = 33
+ Right compton region = (3706.99,3717.92) --> 10.9248 chs
+ Right compton counts = 2
+ Estimated Compton counts in signal region = 4.55704 +- 2.13472
+ Estimated line net counts = 28.443 +- 6.12838
+ Background detection limit = 14.7063
+ Background detected! 
+------------
+Sample:
+ MCA center = 3696.07
+ MCA sigma = 3.64161
+ Left compton region = (3674.22,3685.14) --> 10.9248 chs
+ Left compton counts = 24.7369
+ Signal region = (3685.14,3706.99) --> 21.8497 chs
+ Signal region counts = 124.921
+ Right compton region = (3706.99,3717.92) --> 10.9248 chs
+ Right compton counts = 11.4866
+ Estimated Compton counts in signal region = 36.2235 +- 6.0186
+ Estimated net line counts = 49.753 +- 15.217
+ Sample detection limit = 45.463
+ Line detected! 
+------------
+
+
+137Cs line at 661.657 keV:
+Background:
+ MCA center = 4013.79
+ MCA sigma = 3.73593
+ Left compton region = (3991.37,4002.58) --> 11.2078 chs
+ Left compton counts = 1
+ Signal region = (4002.58,4025) --> 22.4156 chs
+ Signal region counts = 15
+ Right compton region = (4025,4036.21) --> 11.2078 chs
+ Right compton counts = 2
+ Estimated Compton counts in signal region = 3 +- 1.73205
+ Estimated line net counts = 12 +- 4.24264
+ Background detection limit = 13.0289
+------------
+Sample:
+ MCA center = 4013.79
+ MCA sigma = 3.73593
+ Left compton region = (3991.37,4002.58) --> 11.2078 chs
+ Left compton counts = 13.9725
+ Signal region = (4002.58,4025) --> 22.4156 chs
+ Signal region counts = 49.417
+ Right compton region = (4025,4036.21) --> 11.2078 chs
+ Right compton counts = 14.7566
+ Estimated Compton counts in signal region = 28.7291 +- 5.35996
+ Estimated net line counts = 20.6878 +- 8.84003
+ Sample detection limit = 29.5737
+------------
+
+
+54Mn line at 834.838 keV:
+Background:
+ MCA center = 5064.94
+ MCA sigma = 4.03412
+ Left compton region = (5040.73,5052.84) --> 12.1024 chs
+ Left compton counts = 2
+ Signal region = (5052.84,5077.04) --> 24.2047 chs
+ Signal region counts = 6.35121
+ Right compton region = (5077.04,5089.14) --> 12.1024 chs
+ Right compton counts = 5.1031
+ Estimated Compton counts in signal region = 7.1031 +- 2.66516
+ Estimated line net counts = -0.751897 +- 3.66801
+ Background detection limit = 17.0275
+------------
+Sample:
+ MCA center = 5064.94
+ MCA sigma = 4.03412
+ Left compton region = (5040.73,5052.84) --> 12.1024 chs
+ Left compton counts = 16
+ Signal region = (5052.84,5077.04) --> 24.2047 chs
+ Signal region counts = 140.351
+ Right compton region = (5077.04,5089.14) --> 12.1024 chs
+ Right compton counts = 18.0117
+ Estimated Compton counts in signal region = 34.0117 +- 5.83196
+ Estimated net line counts = 106.339 +- 13.2047
+ Sample detection limit = 31.8239
+ Line detected! 
+------------
+
+
+46Sc line at 889.271 keV:
+Background:
+ MCA center = 5395.32
+ MCA sigma = 4.12412
+ Left compton region = (5370.58,5382.95) --> 12.3724 chs
+ Left compton counts = 1.37312
+ Signal region = (5382.95,5407.7) --> 24.7447 chs
+ Signal region counts = 1.72104
+ Right compton region = (5407.7,5420.07) --> 12.3724 chs
+ Right compton counts = 0
+ Estimated Compton counts in signal region = 1.37312 +- 1.1718
+ Estimated line net counts = 0.347915 +- 1.75902
+ Background detection limit = 10.9112
+------------
+Sample:
+ MCA center = 5395.32
+ MCA sigma = 4.12412
+ Left compton region = (5370.58,5382.95) --> 12.3724 chs
+ Left compton counts = 7.37312
+ Signal region = (5382.95,5407.7) --> 24.7447 chs
+ Signal region counts = 25.7462
+ Right compton region = (5407.7,5420.07) --> 12.3724 chs
+ Right compton counts = 8.37312
+ Estimated Compton counts in signal region = 15.7462 +- 3.96815
+ Estimated net line counts = 10 +- 6.44147
+ Sample detection limit = 23.0022
+------------
+
+
+228Ac line at 911.196 keV:
+Background:
+ MCA center = 5528.4
+ MCA sigma = 4.15983
+ Left compton region = (5503.44,5515.92) --> 12.4795 chs
+ Left compton counts = 0
+ Signal region = (5515.92,5540.88) --> 24.959 chs
+ Signal region counts = 8
+ Right compton region = (5540.88,5553.36) --> 12.4795 chs
+ Right compton counts = 2
+ Estimated Compton counts in signal region = 2 +- 1.41421
+ Estimated line net counts = 6 +- 3.16228
+ Background detection limit = 11.7869
+------------
+Sample:
+ MCA center = 5528.4
+ MCA sigma = 4.15983
+ Left compton region = (5503.44,5515.92) --> 12.4795 chs
+ Left compton counts = 12.9605
+ Signal region = (5515.92,5540.88) --> 24.959 chs
+ Signal region counts = 67.7064
+ Right compton region = (5540.88,5553.36) --> 12.4795 chs
+ Right compton counts = 12.7854
+ Estimated Compton counts in signal region = 25.7459 +- 5.07404
+ Estimated net line counts = 41.9605 +- 9.66708
+ Sample detection limit = 28.2149
+ Line detected! 
+------------
+
+
+228Ac line at 968.96 keV:
+Background:
+ MCA center = 5878.99
+ MCA sigma = 4.25285
+ Left compton region = (5853.48,5866.24) --> 12.7586 chs
+ Left compton counts = 0
+ Signal region = (5866.24,5891.75) --> 25.5171 chs
+ Signal region counts = 1
+ Right compton region = (5891.75,5904.51) --> 12.7586 chs
+ Right compton counts = 2
+ Estimated Compton counts in signal region = 2 +- 1.41421
+ Estimated line net counts = -1 +- 1.73205
+ Background detection limit = 11.7869
+------------
+Sample:
+ MCA center = 5878.99
+ MCA sigma = 4.25285
+ Left compton region = (5853.48,5866.24) --> 12.7586 chs
+ Left compton counts = 18.6843
+ Signal region = (5866.24,5891.75) --> 25.5171 chs
+ Signal region counts = 50.925
+ Right compton region = (5891.75,5904.51) --> 12.7586 chs
+ Right compton counts = 12.5027
+ Estimated Compton counts in signal region = 31.187 +- 5.58454
+ Estimated net line counts = 19.7379 +- 9.06157
+ Sample detection limit = 30.6434
+------------
+
+
+234mPa line at 1001.03 keV:
+Background:
+ MCA center = 6073.62
+ MCA sigma = 4.30377
+ Left compton region = (6047.79,6060.71) --> 12.9113 chs
+ Left compton counts = 0
+ Signal region = (6060.71,6086.53) --> 25.8226 chs
+ Signal region counts = 1.89955
+ Right compton region = (6086.53,6099.44) --> 12.9113 chs
+ Right compton counts = 1.10045
+ Estimated Compton counts in signal region = 1.10045 +- 1.04903
+ Estimated line net counts = 0.799091 +- 1.73205
+ Background detection limit = 10.499
+------------
+Sample:
+ MCA center = 6073.62
+ MCA sigma = 4.30377
+ Left compton region = (6047.79,6060.71) --> 12.9113 chs
+ Left compton counts = 5
+ Signal region = (6060.71,6086.53) --> 25.8226 chs
+ Signal region counts = 43
+ Right compton region = (6086.53,6099.44) --> 12.9113 chs
+ Right compton counts = 10.435
+ Estimated Compton counts in signal region = 15.435 +- 3.92873
+ Estimated net line counts = 27.565 +- 7.64428
+ Sample detection limit = 22.8181
+ Line detected! 
+------------
+
+
+214Bi line at 1120.29 keV:
+Background:
+ MCA center = 6797.46
+ MCA sigma = 4.48901
+ Left compton region = (6770.52,6783.99) --> 13.467 chs
+ Left compton counts = 2
+ Signal region = (6783.99,6810.92) --> 26.9341 chs
+ Signal region counts = 6
+ Right compton region = (6810.92,6824.39) --> 13.467 chs
+ Right compton counts = 0.805968
+ Estimated Compton counts in signal region = 2.80597 +- 1.6751
+ Estimated line net counts = 3.19403 +- 2.96749
+ Background detection limit = 12.8
+------------
+Sample:
+ MCA center = 6797.46
+ MCA sigma = 4.48901
+ Left compton region = (6770.52,6783.99) --> 13.467 chs
+ Left compton counts = 9.87027
+ Signal region = (6783.99,6810.92) --> 26.9341 chs
+ Signal region counts = 45.1952
+ Right compton region = (6810.92,6824.39) --> 13.467 chs
+ Right compton counts = 7
+ Estimated Compton counts in signal region = 16.8703 +- 4.10734
+ Estimated net line counts = 28.3249 +- 7.87816
+ Sample detection limit = 23.6534
+ Line detected! 
+------------
+
+
+46Sc line at 1120.54 keV:
+Background:
+ MCA center = 6798.97
+ MCA sigma = 4.48939
+ Left compton region = (6772.04,6785.5) --> 13.4682 chs
+ Left compton counts = 2
+ Signal region = (6785.5,6812.44) --> 26.9364 chs
+ Signal region counts = 6
+ Right compton region = (6812.44,6825.91) --> 13.4682 chs
+ Right compton counts = 1
+ Estimated Compton counts in signal region = 3 +- 1.73205
+ Estimated line net counts = 3 +- 3
+ Background detection limit = 13.0289
+------------
+Sample:
+ MCA center = 6798.97
+ MCA sigma = 4.48939
+ Left compton region = (6772.04,6785.5) --> 13.4682 chs
+ Left compton counts = 9.5503
+ Signal region = (6785.5,6812.44) --> 26.9364 chs
+ Signal region counts = 44
+ Right compton region = (6812.44,6825.91) --> 13.4682 chs
+ Right compton counts = 8.32569
+ Estimated Compton counts in signal region = 17.876 +- 4.228
+ Estimated net line counts = 26.124 +- 7.86613
+ Sample detection limit = 24.2193
+ Line detected! 
+------------
+
+
+60Co line at 1173.23 keV:
+Background:
+ MCA center = 7118.77
+ MCA sigma = 4.56919
+ Left compton region = (7091.35,7105.06) --> 13.7076 chs
+ Left compton counts = 0
+ Signal region = (7105.06,7132.48) --> 27.4151 chs
+ Signal region counts = 3
+ Right compton region = (7132.48,7146.18) --> 13.7076 chs
+ Right compton counts = 1
+ Estimated Compton counts in signal region = 1 +- 1
+ Estimated line net counts = 2 +- 2
+ Background detection limit = 10.3414
+------------
+Sample:
+ MCA center = 7118.77
+ MCA sigma = 4.56919
+ Left compton region = (7091.35,7105.06) --> 13.7076 chs
+ Left compton counts = 24.9124
+ Signal region = (7105.06,7132.48) --> 27.4151 chs
+ Signal region counts = 315.426
+ Right compton region = (7132.48,7146.18) --> 13.7076 chs
+ Right compton counts = 7.70841
+ Estimated Compton counts in signal region = 32.6208 +- 5.71146
+ Estimated net line counts = 282.805 +- 18.656
+ Sample detection limit = 31.2487
+ Line detected! 
+------------
+
+
+60Co line at 1332.49 keV:
+Background:
+ MCA center = 8085.37
+ MCA sigma = 4.80402
+ Left compton region = (8056.55,8070.96) --> 14.4121 chs
+ Left compton counts = 2
+ Signal region = (8070.96,8099.78) --> 28.8241 chs
+ Signal region counts = 5
+ Right compton region = (8099.78,8114.2) --> 14.4121 chs
+ Right compton counts = 0
+ Estimated Compton counts in signal region = 2 +- 1.41421
+ Estimated line net counts = 3 +- 2.64575
+ Background detection limit = 11.7869
+------------
+Sample:
+ MCA center = 8085.37
+ MCA sigma = 4.80402
+ Left compton region = (8056.55,8070.96) --> 14.4121 chs
+ Left compton counts = 14
+ Signal region = (8070.96,8099.78) --> 28.8241 chs
+ Signal region counts = 318.558
+ Right compton region = (8099.78,8114.2) --> 14.4121 chs
+ Right compton counts = 7.13392
+ Estimated Compton counts in signal region = 21.1339 +- 4.59716
+ Estimated net line counts = 297.424 +- 18.4307
+ Sample detection limit = 25.9573
+ Line detected! 
+------------
+
+
+58Co line at 810.775 keV:
+Background:
+ MCA center = 4918.89
+ MCA sigma = 3.99381
+ Left compton region = (4894.92,4906.91) --> 11.9814 chs
+ Left compton counts = 4
+ Signal region = (4906.91,4930.87) --> 23.9629 chs
+ Signal region counts = 2
+ Right compton region = (4930.87,4942.85) --> 11.9814 chs
+ Right compton counts = 4
+ Estimated Compton counts in signal region = 8 +- 2.82843
+ Estimated line net counts = -6 +- 3.16228
+ Background detection limit = 17.7593
+------------
+Sample:
+ MCA center = 4918.89
+ MCA sigma = 3.99381
+ Left compton region = (4894.92,4906.91) --> 11.9814 chs
+ Left compton counts = 10.7776
+ Signal region = (4906.91,4930.87) --> 23.9629 chs
+ Signal region counts = 135
+ Right compton region = (4930.87,4942.85) --> 11.9814 chs
+ Right compton counts = 7.15105
+ Estimated Compton counts in signal region = 17.9286 +- 4.23422
+ Estimated net line counts = 117.071 +- 12.3664
+ Sample detection limit = 24.2485
+ Line detected! 
+------------
+
+
+56Co line at 846.771 keV:
+Background:
+ MCA center = 5137.37
+ MCA sigma = 4.05398
+ Left compton region = (5113.04,5125.21) --> 12.1619 chs
+ Left compton counts = 2
+ Signal region = (5125.21,5149.53) --> 24.3239 chs
+ Signal region counts = 2
+ Right compton region = (5149.53,5161.69) --> 12.1619 chs
+ Right compton counts = 2
+ Estimated Compton counts in signal region = 4 +- 2
+ Estimated line net counts = -2 +- 2.44949
+ Background detection limit = 14.1349
+------------
+Sample:
+ MCA center = 5137.37
+ MCA sigma = 4.05398
+ Left compton region = (5113.04,5125.21) --> 12.1619 chs
+ Left compton counts = 13.518
+ Signal region = (5125.21,5149.53) --> 24.3239 chs
+ Signal region counts = 70.3254
+ Right compton region = (5149.53,5161.69) --> 12.1619 chs
+ Right compton counts = 7.16269
+ Estimated Compton counts in signal region = 20.6807 +- 4.5476
+ Estimated net line counts = 49.6447 +- 9.53971
+ Sample detection limit = 25.7234
+ Line detected! 
+------------
+
+
+56Co line at 1238.28 keV:
+Background:
+ MCA center = 7513.6
+ MCA sigma = 4.66625
+ Left compton region = (7485.6,7499.6) --> 13.9988 chs
+ Left compton counts = 0
+ Signal region = (7499.6,7527.6) --> 27.9975 chs
+ Signal region counts = 1
+ Right compton region = (7527.6,7541.59) --> 13.9988 chs
+ Right compton counts = 0
+ Estimated Compton counts in signal region = 0 +- 0
+ Estimated line net counts = 1 +- 1
+ Background detection limit = 8.53935
+------------
+Sample:
+ MCA center = 7513.6
+ MCA sigma = 4.66625
+ Left compton region = (7485.6,7499.6) --> 13.9988 chs
+ Left compton counts = 10.9434
+ Signal region = (7499.6,7527.6) --> 27.9975 chs
+ Signal region counts = 49.1109
+ Right compton region = (7527.6,7541.59) --> 13.9988 chs
+ Right compton counts = 6.94416
+ Estimated Compton counts in signal region = 17.8875 +- 4.22937
+ Estimated net line counts = 31.2234 +- 8.18526
+ Sample detection limit = 24.2257
+ Line detected! 
+------------
+
+
+40K line at 1460.88 keV:
+Background:
+ MCA center = 8864.58
+ MCA sigma = 4.98689
+ Left compton region = (8834.66,8849.62) --> 14.9607 chs
+ Left compton counts = 0
+ Signal region = (8849.62,8879.54) --> 29.9214 chs
+ Signal region counts = 13
+ Right compton region = (8879.54,8894.5) --> 14.9607 chs
+ Right compton counts = 0
+ Estimated Compton counts in signal region = 0 +- 0
+ Estimated line net counts = 13 +- 3.60555
+ Background detection limit = 8.53935
+ Background detected! 
+------------
+Sample:
+ MCA center = 8864.58
+ MCA sigma = 4.98689
+ Left compton region = (8834.66,8849.62) --> 14.9607 chs
+ Left compton counts = 18.1196
+ Signal region = (8849.62,8879.54) --> 29.9214 chs
+ Signal region counts = 543.684
+ Right compton region = (8879.54,8894.5) --> 14.9607 chs
+ Right compton counts = 2.04274
+ Estimated Compton counts in signal region = 20.1623 +- 4.49024
+ Estimated net line counts = 505.722 +- 24.2532
+ Sample detection limit = 33.3985
+ Line detected! 
+------------
+
+
+214Bi line at 1764.49 keV:
+Background:
+ MCA center = 10707.2
+ MCA sigma = 5.40002
+ Left compton region = (10674.8,10691) --> 16.2 chs
+ Left compton counts = 1
+ Signal region = (10691,10723.4) --> 32.4001 chs
+ Signal region counts = 6
+ Right compton region = (10723.4,10739.6) --> 16.2 chs
+ Right compton counts = 0
+ Estimated Compton counts in signal region = 1 +- 1
+ Estimated line net counts = 5 +- 2.64575
+ Background detection limit = 10.3414
+------------
+Sample:
+ MCA center = 10707.2
+ MCA sigma = 5.40002
+ Left compton region = (10674.8,10691) --> 16.2 chs
+ Left compton counts = 1
+ Signal region = (10691,10723.4) --> 32.4001 chs
+ Signal region counts = 25.01
+ Right compton region = (10723.4,10739.6) --> 16.2 chs
+ Right compton counts = 2.98996
+ Estimated Compton counts in signal region = 3.98996 +- 1.99749
+ Estimated net line counts = 21.0201 +- 5.38516
+ Sample detection limit = 14.1243
+ Line detected! 
+------------
+
+
+208Tl line at 2614.51 keV:
+Background:
+ MCA center = 15865.3
+ MCA sigma = 6.44985
+ Left compton region = (15826.6,15846) --> 19.3495 chs
+ Left compton counts = 0.402724
+ Signal region = (15846,15884.7) --> 38.6991 chs
+ Signal region counts = 3
+ Right compton region = (15884.7,15904) --> 19.3495 chs
+ Right compton counts = 0
+ Estimated Compton counts in signal region = 0.402724 +- 0.634605
+ Estimated line net counts = 2.59728 +- 1.84465
+ Background detection limit = 9.32578
+------------
+Sample:
+ MCA center = 15865.3
+ MCA sigma = 6.44985
+ Left compton region = (15826.6,15846) --> 19.3495 chs
+ Left compton counts = 1.35072
+ Signal region = (15846,15884.7) --> 38.6991 chs
+ Signal region counts = 30.052
+ Right compton region = (15884.7,15904) --> 19.3495 chs
+ Right compton counts = 0
+ Estimated Compton counts in signal region = 1.35072 +- 1.16221
+ Estimated net line counts = 28.7013 +- 5.60381
+ Sample detection limit = 10.8781
+ Line detected! 
+------------
+
+
+Measure life time: 3.8448e+06 s = 44.5 d
+Background life time: 2.808e+06 s = 32.5 d

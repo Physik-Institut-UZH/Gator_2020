@@ -1,0 +1,181 @@
+#include "SPEdata.hh"
+
+
+SPEdata::SPEdata(){
+	
+	m_startunixtime = 0;
+	m_acqtime = 0;
+	mv_pDataBins = 0;
+	ms_descr = string("");
+	m_nbins = 0;
+	flag_dataloaded = false;
+	
+	flag_datafromfile = false;
+	
+}
+
+SPEdata::SPEdata(string file){
+	
+	m_startunixtime = 0;
+	m_acqtime = 0;
+	mv_pDataBins = 0;
+	ms_descr = string("");
+	m_nbins = 0;
+	flag_dataloaded = false;
+	
+	LoadSPE(file);
+	
+	if(flag_dataloaded) flag_datafromfile = true;	
+
+}
+
+SPEdata::~SPEdata(string file){;}
+//-----------------------------------//
+
+
+
+void SPEdata::LoadSPE(string filename){//This pointer can be set to 0 if description is not wanted
+	
+
+	//------------------------------------------------------//	
+	// Load of the sample histogram from the SPE files      //
+	// This version gives the Unix timestamp and the sample //
+	// description if requested                             //
+	//------------------------------------------------------//
+
+	string bufferobj, data_str("");
+	stringstream sstreamcan("");
+	
+	TDatime td("1970-01-01 00:00:00"); //Used to put in the acquisition data and to generate the correspondent unix timestamp
+
+	//Int_t timeoffset = -3600; //To be used to return the correct Unix timestamp
+	
+	ifstream spe(filename);
+	
+	
+	Int_t channels=0;
+	
+	if (spe.fail()){
+		cout << "\n\nError: failure in opening the file <" << filename << ">" << endl;
+		cout << "Skipping this entry!!!" << endl;
+		return;
+	}
+	
+	cout << "\n\nReading file <" << filename << ">" << endl;
+	for (Int_t i = 0; i<12; i++) {//There are 12 header lines
+		//Here I go ahead in the file discarding the header lines
+		getline(spe,bufferobj);
+	
+		if (i==1){//In the 2nd line there is the description of the sample
+			cout << "Sample description is: " << bufferobj << endl;
+			SetDescription(bufferobj.substr(0,bufferobj.find("\n")));
+		}
+		
+		if (i==7){//Line with the starting acquisition time to be converted in unix timestamp
+
+			bufferobj = bufferobj.substr(0,bufferobj.find("\n"));
+			
+			data_str+=bufferobj.substr(6,4); //The year
+			data_str+="-";
+			data_str+=bufferobj.substr(0,2); //The month
+			data_str+="-";
+			data_str+=bufferobj.substr(3,2); //The day
+			data_str+=" ";
+			data_str+=bufferobj.substr(11); //The time (hh:mm:ss)
+
+//			cout << "Acquisition start string: " << data_str << endl;
+			td.Set(data_str.c_str());
+			cout << "Acquisition start is on: " << td.GetDay() << "/" << td.GetMonth() << "/" << td.GetYear() << "   " << td.GetHour() << ":" << td.GetMinute() << endl;
+			td.GetDate();
+			SetStartUT(td.Convert()); //Here the unix timestamp is set to the acquisition starting time in LTC
+			//cout << unixtime << endl;
+			
+		}
+		
+		if (i==9){//Acquisition live time (the first of the two numbers)
+			bufferobj = bufferobj.substr(0,bufferobj.find(" "));
+			//cout << "Acquisition livetime line: " << buffer << endl;
+			//cout << "Acquisition livetime line: " << bufferobj << endl;
+			//spe >> buffer;
+			//cout << "Acquisition livetime string: " << buffer << endl;
+			SetAcqTime(strtod(bufferobj.c_str(),NULL));
+			//time = (Double_t)atof(bufferstr.c_str());
+			cout << "Acquisition livetime: " << strtod(bufferobj.c_str(),NULL) << " secs" << endl;
+		}
+		
+		if (i==11){//Info on how many channels are acquired (the second of the two numbers)
+			//cout << "Channels line: " << bufferobj.substr(bufferobj.find(" ")+1,bufferobj.find("\n")) << endl;
+			bufferobj = bufferobj.substr(bufferobj.find(" ")+1,bufferobj.find("\n"));
+			//spe >> channelstr;//The first value is the number of first channel
+			//spe >> channelstr;//The second value is the number of last channel
+			SetSize(atoi(bufferobj.c_str())+1);//The number of channels is 1 more of the last channel number
+			cout << "Number of channels: " << channels << endl;
+			
+			break;
+		}
+		
+		
+		//spe.getline(buffer,sizeof(buffer));
+	}
+	
+	
+	Double_t entry;
+	if(mv_pDataBins) delete mv_pDataBins;
+	mv_pDataBins = new std::vector<double>();
+	//Loading the ADC counts from the file and put them in the vector entry_tmp
+	while(getline(spe,bufferobj)) {
+		//The only content of each line is the number of counts in the channel
+		entry = strtod(bufferobj.c_str(),NULL);
+		mv_pDataBins->push_back(entry);
+		if(mv_pDataBins->size() >= m_nbins) break;
+	}
+	
+	spe.close();
+	
+	flag_dataloaded = true;
+	
+}
+//-----------------------------------//
+
+
+
+TH1D* SPEdata::GetHisto(const string name, const string title){
+	
+	if(!flag_dataloaded){
+		cout << endl << "ERROR:: Data is not not loaded ==> Cannot return an histogram. Returning a null pointer!!!" << endl << endl;
+		return 0;
+	}
+	
+	TH1D* histoADC = new TH1D(name.c_str(),title.c_str(),m_nbins,1,m_nbins);
+	for(int i=0; i<m_nbins; i++){
+		histoADC->Fill(i+1,mv_pDataBins->at(i));
+	}
+	
+
+//	cout << "trigrate::LoadSPE(...) --> End of routine" << endl;	
+	return histoADC;
+
+}
+//-----------------------------------//
+
+
+
+void SPEdata::SetData(vector<double>* databins){
+	
+	
+	if(flag_datafromfile){
+		cout << endl << "ERROR:: Data has already been loaded from an SPE file. You are not allowed to set data directly from a vector of values. Try to create another bare 'SPEdata' object to do this!!!" << endl;
+		return;
+	}
+	
+	if(flag_dataloaded) cout << endl << "WARNING:: Data in this 'SPEdata' object is already loaded!!! You are overwriting it!!!" << endl << endl;
+	
+	if(mv_pDataBins) delete mv_pDataBins;
+	mv_pDataBins = new vector<double>;
+	m_nbins = databins->size();
+	for(int i=0; i<databins; i++){
+		mv_pDataBins->push_back(databins->at(i));
+	}
+	
+	flag_dataloaded = true;
+}
