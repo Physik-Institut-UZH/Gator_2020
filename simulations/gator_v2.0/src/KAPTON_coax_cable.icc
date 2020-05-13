@@ -1,0 +1,44 @@
+//The sample has been weighted and its measured mass is 558g. Here is the mass model of the AWG30 HV single wire. It is coiled in a cylindrical shape ==> I consider a mesh in the cylinder respecting the mass model.
+G4double mfrac_Cu = 0.0532;
+G4double mfrac_Kap = 0.0989+0.1825;
+G4double mfrac_Ag = 1 - (mfrac_Cu + mfrac_Kap);
+
+G4Material* KapCoaxCable_mat = new G4Material(name="KapCoaxCable_mat",density=1.7*g/cm3,ncomponents=3);
+KapCoaxCable_mat -> AddMaterial(Cu,mfrac_Cu);
+KapCoaxCable_mat -> AddMaterial(kapton_F,mfrac_Kap);
+KapCoaxCable_mat -> AddMaterial(Silver,mfrac_Ag);
+
+
+G4double KapCoaxCable_MR = 6.25*cm; //Mean radius of the modeled torus
+G4double KapCoaxCable_SIR = 0.0*cm; //Small inner radius of the modeld torus
+G4double KapCoaxCable_SOR = 1.65*cm; //Small outer radius of the modeld torus
+
+
+
+// Geometry
+G4Torus* KapCoaxCable = new G4Torus("KapCoaxCable",KapCoaxCable_SIR,KapCoaxCable_SOR,KapCoaxCable_MR,-180.0*deg,360.0*deg);
+
+
+// Logical volume
+G4LogicalVolume* KapCoaxCable_log = new G4LogicalVolume(KapCoaxCable,KapCoaxCable_mat,"KapCoaxCable_log");
+
+
+// Set visibility properties
+G4VisAttributes* KapCoaxCable_vis = new G4VisAttributes(red);
+KapCoaxCable_vis -> SetVisibility(true);
+KapCoaxCable_vis -> SetForceSolid(false);
+KapCoaxCable_log -> SetVisAttributes(KapCoaxCable_vis);
+
+
+// Shift coordinates
+G4double KapCoaxCableShift_x = 0;
+G4double KapCoaxCableShift_y = 0; 
+G4double KapCoaxCableShift_z = endcapPos_z + 0.5*endcapHeight1 + KapCoaxCable_SOR;
+
+G4ThreeVector KapCoaxCable_Shift(KapCoaxCableShift_x,KapCoaxCableShift_y,KapCoaxCableShift_z);
+
+
+// Placement
+G4VPhysicalVolume* KapCoaxCable_phys = new G4PVPlacement(0,KapCoaxCable_Shift,KapCoaxCable_log,"KapCoaxCable_phys",cavity1_log,false,0);
+
+G4cout << "\nThe total mass of the coax cable is: " << (KapCoaxCable_log->GetMass())/kg << " kg\n" << G4endl;

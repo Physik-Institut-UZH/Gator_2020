@@ -1,0 +1,43 @@
+	G4double Cu_tube_ID = 0.75*cm;
+	G4double Cu_tube_OD = 1.0*cm;
+	G4double Cu_tube_Height = 20.0*cm;
+	
+	G4double Source_tube_ID = 0.0*cm;
+	G4double Source_tube_OD = .74*cm;
+	G4double Source_tube_Height = 20.0*cm;
+	
+	G4Tubs *Cu_tube = new G4Tubs("Cu_tube", 0.5* Cu_tube_ID, 0.5* Cu_tube_OD, 0.5* Cu_tube_Height, 0.0*deg, 360.0*deg);
+	G4Tubs *Source_tube = new G4Tubs("Source_tube", 0.5* Source_tube_ID, 0.5* Source_tube_OD, 0.5* Source_tube_Height, 0.0*deg, 360.0*deg);
+	
+	G4LogicalVolume* Cu_tube_log = new G4LogicalVolume(Cu_tube, Cu, "Cu_tube_log");
+	G4LogicalVolume* Source_tube_log = new G4LogicalVolume(Source_tube, Air, "Source_tube_log");
+
+	G4RotationMatrix rotCuTube;
+		rotCuTube.rotateX(90*deg);
+	
+	G4VisAttributes* Cu_tube_vis = new G4VisAttributes(brown);
+	Cu_tube_vis->SetVisibility(true);
+	Cu_tube_vis->SetForceSolid(false);
+	Cu_tube_log->SetVisAttributes(Cu_tube_vis);
+	
+	G4VisAttributes* Source_tube_vis = new G4VisAttributes(white);
+	Source_tube_vis->SetVisibility(true);
+	Source_tube_vis->SetForceSolid(false);
+	Source_tube_log->SetVisAttributes(Source_tube_vis);
+	
+	G4double Cu_tube_Pos_x = 0.0*cm; //
+	G4double Cu_tube_Pos_y = 0.0*cm;
+	G4double Cu_tube_Pos_z = (12.865/2-1.4325+0.55)*cm; //base is 1.0cm from bottom, decrease z to lower base
+	
+	G4double Source_tube_Pos_x = 0.0*cm; //
+	G4double Source_tube_Pos_y = 0.0*cm;
+	G4double Source_tube_Pos_z = (12.865/2-1.4325+0.55)*cm; //base is 1.0cm from bottom, decrease z to lower base
+	
+	Cu_tube_phys = 
+		new G4PVPlacement(G4Transform3D(rotCuTube,G4ThreeVector(Cu_tube_Pos_x,Cu_tube_Pos_y,Cu_tube_Pos_z)),
+			Cu_tube_log,"Cu_tube_phys",cavity1_log,false,0);
+
+	Source_tube_phys = 
+		new G4PVPlacement(G4Transform3D(rotCuTube,G4ThreeVector(Source_tube_Pos_x,Source_tube_Pos_y,Source_tube_Pos_z)),
+			Source_tube_log,"Source_tube_phys",cavity1_log,false,0);
+

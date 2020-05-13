@@ -1,0 +1,15 @@
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//_______________   logical Volumes definitions
+
+	G4LogicalVolume* Cu_tube_log;
+	G4LogicalVolume* Source_tube_log;
+ 	
+
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//_______________   Physical Volumes definitions
+
+	G4VPhysicalVolume* Cu_tube_phys;
+	G4VPhysicalVolume* Source_tube_phys;
+	

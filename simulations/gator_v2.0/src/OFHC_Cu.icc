@@ -1,0 +1,145 @@
+// Are 5 Cu bricks:
+// - 2 of them are 19x52x320 mm3 placed vertical on cavity floor next to the end-cap;
+// - 2 of them are 12x52x275 mm3 placed vertical on cavity floor next to the end-cap;
+// - the last one is 2, 76x52x43 mm3 placed horizontal on the end-cap top surface.
+
+//Material definition to use the SetRNDMPos___() function
+
+G4Material* OFCH_Cu_mat = new G4Material(name="OFHC_Cu_mat",density=8.920*g/cm3,ncomponents=1);
+OFCH_Cu_mat -> AddMaterial(Cu,1.0); //It is common Cu material... just a trick
+
+
+//First 2 brick: dimensions, geometry and logical volume
+G4double brick_A_x = 5.2*cm;
+G4double brick_A_y = 1.9*cm;
+G4double brick_A_z = 32.0*cm;
+
+G4Box* OFCH_Cu1 = new G4Box("OFCH_Cu1",0.5*brick_A_x,0.5*brick_A_y,0.5*brick_A_z);
+
+G4LogicalVolume* OFCH_Cu1_log = new G4LogicalVolume(OFCH_Cu1,OFCH_Cu_mat,"OFCH_Cu1_log");
+
+G4VisAttributes* OFCH_Cu1_vis = new G4VisAttributes(red);
+OFCH_Cu1_vis -> SetVisibility(true);
+OFCH_Cu1_vis -> SetForceSolid(false);
+OFCH_Cu1_log -> SetVisAttributes(OFCH_Cu1_vis);
+
+
+G4Box* OFCH_Cu2 = new G4Box("OFCH_Cu2",0.5*brick_A_x,0.5*brick_A_y,0.5*brick_A_z);
+
+G4LogicalVolume* OFCH_Cu2_log = new G4LogicalVolume(OFCH_Cu2,OFCH_Cu_mat,"OFCH_Cu2_log");
+
+G4VisAttributes* OFCH_Cu2_vis = new G4VisAttributes(red);
+OFCH_Cu2_vis -> SetVisibility(true);
+OFCH_Cu2_vis -> SetForceSolid(false);
+OFCH_Cu2_log -> SetVisAttributes(OFCH_Cu2_vis);
+
+
+//Brick 3 and 4: dimensions, geometry and logical volume
+G4double brick_B_x = 5.2*cm;
+G4double brick_B_y = 1.2*cm;
+G4double brick_B_z = 27.5*cm;
+
+G4Box* OFCH_Cu3 = new G4Box("OFCH_Cu3",0.5*brick_B_x,0.5*brick_B_y,0.5*brick_B_z);
+
+G4LogicalVolume* OFCH_Cu3_log = new G4LogicalVolume(OFCH_Cu3,OFCH_Cu_mat,"OFCH_Cu3_log");
+
+G4VisAttributes* OFCH_Cu3_vis = new G4VisAttributes(red);
+OFCH_Cu3_vis -> SetVisibility(true);
+OFCH_Cu3_vis -> SetForceSolid(false);
+OFCH_Cu3_log -> SetVisAttributes(OFCH_Cu3_vis);
+
+
+G4Box* OFCH_Cu4 = new G4Box("OFCH_Cu4",0.5*brick_B_x,0.5*brick_B_y,0.5*brick_B_z);
+
+G4LogicalVolume* OFCH_Cu4_log = new G4LogicalVolume(OFCH_Cu4,OFCH_Cu_mat,"OFCH_Cu4_log");
+
+G4VisAttributes* OFCH_Cu4_vis = new G4VisAttributes(red);
+OFCH_Cu4_vis -> SetVisibility(true);
+OFCH_Cu4_vis -> SetForceSolid(false);
+OFCH_Cu4_log -> SetVisAttributes(OFCH_Cu4_vis);
+
+
+//Brick 5: dimensions, geometry and logical volume
+G4double brick_C_x = 7.6*cm;
+G4double brick_C_y = 5.2*cm;
+G4double brick_C_z = 4.3*cm;
+
+G4Box* OFCH_Cu5 = new G4Box("OFCH_Cu5",0.5*brick_C_x,0.5*brick_C_y,0.5*brick_C_z);
+
+G4LogicalVolume* OFCH_Cu5_log = new G4LogicalVolume(OFCH_Cu5,OFCH_Cu_mat,"OFCH_Cu5_log");
+
+G4VisAttributes* OFCH_Cu5_vis = new G4VisAttributes(red);
+OFCH_Cu5_vis -> SetVisibility(true);
+OFCH_Cu5_vis -> SetForceSolid(false);
+OFCH_Cu5_log -> SetVisAttributes(OFCH_Cu5_vis);
+
+
+
+//Try to place the volumes.
+G4double OFCH_A_pos_rad = baseOD1/2 + brick_A_y/2 + 0.005*cm;
+G4double OFCH_B_pos_rad = baseOD1/2 + brick_B_y/2 + 0.005*cm;
+
+// - Brick1:
+G4double OFCH_Cu1_pos_x = OFCH_A_pos_rad/sqrt(2);
+G4double OFCH_Cu1_pos_y = OFCH_A_pos_rad/sqrt(2);
+G4double OFCH_Cu1_pos_z =  -(cavity1_z/2) + (brick_A_z/2) - 2*mm;
+
+G4ThreeVector shiftOFCH_Cu1(OFCH_Cu1_pos_x,OFCH_Cu1_pos_y,OFCH_Cu1_pos_z);
+
+G4RotationMatrix rotOFCH_Cu1;
+rotOFCH_Cu1.rotateZ(-45*deg);
+
+G4Transform3D tranfOFCH_Cu1(rotOFCH_Cu1,shiftOFCH_Cu1);
+
+G4VPhysicalVolume* OFCH_Cu1_phys = new G4PVPlacement(tranfOFCH_Cu1,OFCH_Cu1_log,"OFCH_Cu1_phys",cavity1_log,false,0);
+
+// - Brick2:
+G4double OFCH_Cu2_pos_x = -OFCH_A_pos_rad/sqrt(2);
+G4double OFCH_Cu2_pos_y = -OFCH_A_pos_rad/sqrt(2);
+G4double OFCH_Cu2_pos_z =  -(cavity1_z/2) + (brick_A_z/2) - 2*mm;
+
+G4ThreeVector shiftOFCH_Cu2(OFCH_Cu2_pos_x,OFCH_Cu2_pos_y,OFCH_Cu2_pos_z);
+
+G4RotationMatrix rotOFCH_Cu2;
+rotOFCH_Cu2.rotateZ(-45*deg);
+
+G4Transform3D tranfOFCH_Cu2(rotOFCH_Cu2,shiftOFCH_Cu2);
+
+G4VPhysicalVolume* OFCH_Cu2_phys = new G4PVPlacement(tranfOFCH_Cu2,OFCH_Cu2_log,"OFCH_Cu2_phys",cavity1_log,false,0);
+
+// - Brick3:
+G4double OFCH_Cu3_pos_x = OFCH_B_pos_rad/sqrt(2);
+G4double OFCH_Cu3_pos_y = -OFCH_B_pos_rad/sqrt(2);
+G4double OFCH_Cu3_pos_z =  -(cavity1_z/2) + (brick_B_z/2) - 2*mm;
+
+G4ThreeVector shiftOFCH_Cu3(OFCH_Cu3_pos_x,OFCH_Cu3_pos_y,OFCH_Cu3_pos_z);
+
+G4RotationMatrix rotOFCH_Cu3;
+rotOFCH_Cu3.rotateZ(45*deg);
+
+G4Transform3D tranfOFCH_Cu3(rotOFCH_Cu3,shiftOFCH_Cu3);
+
+G4VPhysicalVolume* OFCH_Cu3_phys = new G4PVPlacement(tranfOFCH_Cu3,OFCH_Cu3_log,"OFCH_Cu3_phys",cavity1_log,false,0);
+
+// - Brick4:
+G4double OFCH_Cu4_pos_x = -OFCH_B_pos_rad/sqrt(2);
+G4double OFCH_Cu4_pos_y = OFCH_B_pos_rad/sqrt(2);
+G4double OFCH_Cu4_pos_z =  -(cavity1_z/2) + (brick_B_z/2) - 2*mm;
+
+G4ThreeVector shiftOFCH_Cu4(OFCH_Cu4_pos_x,OFCH_Cu4_pos_y,OFCH_Cu4_pos_z);
+
+G4RotationMatrix rotOFCH_Cu4;
+rotOFCH_Cu4.rotateZ(45*deg);
+
+G4Transform3D tranfOFCH_Cu4(rotOFCH_Cu4,shiftOFCH_Cu4);
+
+G4VPhysicalVolume* OFCH_Cu4_phys = new G4PVPlacement(tranfOFCH_Cu4,OFCH_Cu4_log,"OFCH_Cu4_phys",cavity1_log,false,0);
+
+// - Brick5:
+G4double OFCH_Cu5_pos_x = 0;
+G4double OFCH_Cu5_pos_y = 0;
+G4double OFCH_Cu5_pos_z = endcapPos_z + 0.5*(endcapHeight1+brick_C_z) - 2*mm;
+
+G4ThreeVector shiftOFCH_Cu5(OFCH_Cu5_pos_x,OFCH_Cu5_pos_y,OFCH_Cu5_pos_z);
+
+G4VPhysicalVolume* OFCH_Cu5_phys = new G4PVPlacement(0,shiftOFCH_Cu5,OFCH_Cu5_log,"OFCH_Cu5_phys",cavity1_log,false,0);

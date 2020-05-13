@@ -1,0 +1,37 @@
+//50 PEN capacitors have been weighted and the total mass is 2.13g.
+//The dimensions of each capacitor are (4.7x3.3x1.4)mm^3
+
+
+G4Material* PEN_mat = new G4Material(name="PEN_mat",density=1.96*g/cm3,ncomponents=3);
+PEN_mat -> AddElement(C,7);
+PEN_mat -> AddElement(H,5);
+PEN_mat -> AddElement(O,2);
+
+G4double PEN_x = 50.0*mm;
+G4double PEN_y = 50.0*mm;
+G4double PEN_z = 2.6*mm;
+
+
+// Geometry
+G4Box* PEN_geom = new G4Box("PEN_geom",0.5*PEN_x,0.5*PEN_y,0.5*PEN_z);
+
+
+// Logical volume
+G4LogicalVolume* PEN_log = new G4LogicalVolume(PEN_geom,PEN_mat,"PEN_log");
+
+
+// Set visibility properties
+G4VisAttributes* PEN_vis = new G4VisAttributes(red);
+PEN_vis -> SetVisibility(true);
+PEN_vis -> SetForceSolid(false);
+PEN_log -> SetVisAttributes(PEN_vis);
+
+
+// Offset coordinates
+G4ThreeVector PEN_offset(0.,0.,endcapPos_z+0.5*(endcapHeight1+PEN_z)+0.01*mm);
+
+
+// Placement
+G4VPhysicalVolume* PEN_phys = new G4PVPlacement(0,PEN_offset,PEN_log,"PEN_phys",cavity1_log,false,0);
+
+G4cout << "\nThe total mass of the PEN capacitors is: " << (PEN_log->GetMass())/g << " g\n" << G4endl;

@@ -1,0 +1,40 @@
+//-------------------------------------- Wall Concrete -----------------------------------
+///////////////////////////////////////////////////////////////////////////////////////
+
+//------ Concrete material---------------------------------------
+G4Material* Concrete = new G4Material(name="Concrete" , density=2.40*g/cm3, ncomponents=13);
+       Concrete->AddElement(H, fractionmass=0.0089);
+       Concrete->AddElement(C, fractionmass=0.0799);
+       Concrete->AddElement(O, fractionmass=0.4864);
+       Concrete->AddElement(Na, fractionmass=0.0060);
+       Concrete->AddElement(Mg, fractionmass=0.0085);
+       Concrete->AddElement(Al, fractionmass=0.009);
+       Concrete->AddElement(Si, fractionmass=0.0386);
+       Concrete->AddElement(P, fractionmass=0.0004);
+       Concrete->AddElement(S, fractionmass=0.0016);
+       Concrete->AddElement(K, fractionmass=0.0054);
+       Concrete->AddElement(Ca, fractionmass=0.3506);
+       Concrete->AddElement(Ti, fractionmass=0.0004);
+       Concrete->AddElement(Fe, fractionmass=0.0043);
+
+G4double box_x   = 60. *mm;
+G4double box_y   = 20.3 *mm;
+G4double box_height  = 12. *mm;
+
+G4Box *Concrete_box = new G4Box("Concrete_box", 0.5* box_x, 0.5* box_y, 0.5* box_height);
+
+G4LogicalVolume* Concrete_box_log = new G4LogicalVolume(Concrete_box, Concrete, "Concrete_box_log");
+
+G4VisAttributes* Concrete_box_vis = new G4VisAttributes(brown);
+Concrete_box_vis->SetVisibility(true);
+Concrete_box_vis->SetForceSolid(false);
+Concrete_box_log->SetVisAttributes(Concrete_box_vis);
+
+G4double Concrete_box_Pos_x = 0.0*cm;
+G4double Concrete_box_Pos_y = 0.0*cm;
+G4double Concrete_box_Pos_z = (12.865/2-1.4325+1.41)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+Concrete_box_phys = 
+	new G4PVPlacement(0,G4ThreeVector(Concrete_box_Pos_x,Concrete_box_Pos_y,Concrete_box_Pos_z),
+		Concrete_box_log,"Concrete_box_phys",cavity1_log,false,0);
+

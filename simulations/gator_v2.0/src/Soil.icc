@@ -1,0 +1,87 @@
+//-------------------------------------- Plastic disk for CANMET source (Polystyrol) -----------------------------------
+///////////////////////////////////////////////////////////////////////////////////////
+  G4Material* Polystyrol = new G4Material(name="Polystyrol", density = 2.5*g/cm3, ncomponents = 2);
+        Polystyrol->AddElement(C,8);
+        Polystyrol->AddElement(H,8);
+  G4double plastic_bot_ID = 0.0*cm;
+  G4double plastic_bot_OD = 4.8*cm;
+  G4double plastic_bot_Height = 0.2*cm;
+
+  G4Tubs* plastic_disk = new G4Tubs("plastic_disk", 0.5*plastic_bot_ID, 0.5*plastic_bot_OD,
+                                   0.5*plastic_bot_Height, 0.0*deg, 360.0*deg);
+
+  G4LogicalVolume* plastic_bot_log = new G4LogicalVolume(plastic_disk,Polystyrol,"plastic_bot_log");
+
+  G4VisAttributes* plastic_bot_vis = new G4VisAttributes(white);
+  plastic_bot_vis->SetVisibility(true);
+  plastic_bot_vis->SetForceSolid(false);
+  plastic_bot_log->SetVisAttributes(plastic_bot_vis);
+
+  G4double plastic_bot_Pos_x = 0.0*cm; //
+  G4double plastic_bot_Pos_y = 0.0*cm;
+  G4double plastic_bot_Pos_z = (12.865/2-1.4325+0.21)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  plastic_bot_phys =
+       new G4PVPlacement(0,G4ThreeVector(plastic_bot_Pos_x,plastic_bot_Pos_y,plastic_bot_Pos_z),
+                         plastic_bot_log,"plastic_bot_phys",cavity1_log,false,0);
+
+  G4double plastic_container_ID = 4.9*cm;
+  G4double plastic_container_OD = 5.1*cm;
+  G4double plastic_container_Height = 2.9*cm;
+
+  G4Tubs* plastic_container = new G4Tubs("plastic_container", 0.5*plastic_container_ID, 0.5*plastic_container_OD,
+                                   0.5*plastic_container_Height, 0.0*deg, 360.0*deg);
+
+  G4LogicalVolume* plastic_container_log = new G4LogicalVolume(plastic_container,Polystyrol,"plastic_container_log");
+
+  G4VisAttributes* plastic_container_vis = new G4VisAttributes(white);
+  plastic_container_vis->SetVisibility(true);
+  plastic_container_vis->SetForceSolid(false);
+  plastic_container_log->SetVisAttributes(plastic_container_vis);
+
+  G4double plastic_container_Pos_x = 0.0*cm; //
+  G4double plastic_container_Pos_y = 0.0*cm;
+  G4double plastic_container_Pos_z = (12.865/2-1.4325+0.21+2.9/2.)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  plastic_container_phys =
+       new G4PVPlacement(0,G4ThreeVector(plastic_container_Pos_x,plastic_container_Pos_y,plastic_container_Pos_z),
+                         plastic_container_log,"plastic_container_phys",cavity1_log,false,0);
+
+//-------------------------------------- STSD2 CANMET source (soil) -----------------------------------
+///////////////////////////////////////////////////////////////////////////////////////
+
+//------ I use Soil since I already have the chemical composition and change the density --------
+G4Material* Soil = new G4Material(name="Soil" , density=1.130855*g/cm3, ncomponents=11);
+       Soil->AddElement(H, fractionmass=0.0248);
+       Soil->AddElement(O, fractionmass=0.62585);
+       Soil->AddElement(Na, fractionmass=0.0088);
+       Soil->AddElement(Mg, fractionmass=0.01235);
+       Soil->AddElement(Al, fractionmass=0.06252);
+       Soil->AddElement(Si, fractionmass=0.1960);
+       Soil->AddElement(P, fractionmass=0.0007);
+       Soil->AddElement(K, fractionmass=0.0218);
+       Soil->AddElement(Ca, fractionmass=0.0163);
+       Soil->AddElement(Ti, fractionmass=0.0022);
+       Soil->AddElement(Fe, fractionmass=0.02868);
+
+G4double disk_ID   = 0. *mm;
+G4double disk_OD   = 48. *mm;
+G4double disk_height  = 26. *mm;
+
+G4Tubs *Soil_disk = new G4Tubs("Soil_disk", 0.5* disk_ID, 0.5* disk_OD, 0.5* disk_height, 0.0*deg, 360.0*deg);
+
+G4LogicalVolume* Soil_disk_log = new G4LogicalVolume(Soil_disk, Soil, "Soil_disk_log");
+
+G4VisAttributes* Soil_disk_vis = new G4VisAttributes(brown);
+Soil_disk_vis->SetVisibility(true);
+Soil_disk_vis->SetForceSolid(false);
+Soil_disk_log->SetVisAttributes(Soil_disk_vis);
+
+G4double Soil_disk_Pos_x = 0.0*cm;
+G4double Soil_disk_Pos_y = 0.0*cm;
+G4double Soil_disk_Pos_z = (12.865/2-1.4325+0.21+0.2+0.1+2.6/2.)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+Soil_disk_phys = 
+	new G4PVPlacement(0,G4ThreeVector(Soil_disk_Pos_x,Soil_disk_Pos_y,Soil_disk_Pos_z),
+		Soil_disk_log,"Soil_disk_phys",cavity1_log,false,0);
+

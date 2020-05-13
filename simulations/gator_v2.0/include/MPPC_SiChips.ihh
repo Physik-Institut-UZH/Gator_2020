@@ -1,0 +1,12 @@
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   logical Volumes definitions
+
+	G4LogicalVolume* SiChips_log;
+
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   Physical Volumes definitions
+
+	G4VPhysicalVolume* SiChips_phys;
+

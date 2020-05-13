@@ -1,0 +1,89 @@
+//Material definition
+G4Material* PMTceram_mat = new G4Material("PMTceram_mat",density=2.811*g/cm3,2);
+PMTceram_mat -> AddElement(Al,2);
+PMTceram_mat -> AddElement(O,3);
+
+
+//Dimension of each cilinder
+G4double PMTceram_ID = 0.*mm;
+G4double PMTceram_OD = 30.*mm;
+G4double PMTceram_H = 30.*mm;
+
+
+//Definition of the geometry
+G4Tubs* PMTceram = new G4Tubs("PMTceram",0.5*PMTceram_ID,0.5*PMTceram_OD,0.5*PMTceram_H,0.*deg,360.*deg);
+
+
+//Contruction of logical volume
+G4LogicalVolume* PMTceram_log = new G4LogicalVolume(PMTceram,PMTceram_mat,"PMTceram_log");
+
+
+// Set visibility properties
+G4VisAttributes* PMTceram_vis = new G4VisAttributes(red);
+PMTceram_vis -> SetVisibility(true);
+PMTceram_vis -> SetForceSolid(false);
+PMTceram_log -> SetVisAttributes(PMTceram_vis);
+
+
+// Shift coordinates for each cilinder and placement with the same logical volume
+G4double PMTceramShift_z = endcapPos_z + 0.5*(endcapHeight1+PMTceram_H) + 0.01*mm; //This is the same for each cilinder
+
+//The central cilinder is the same for both the old (sold out by Kyocera) and new ceramic samples
+G4double PMTceramShift_x1 = 0;
+G4double PMTceramShift_y1 = 0;
+G4ThreeVector ShiftPMTceram1(PMTceramShift_x1,PMTceramShift_y1,PMTceramShift_z);
+G4VPhysicalVolume* PMTceram1_phys = new G4PVPlacement(0,ShiftPMTceram1,PMTceram_log,"PMTceram1_phys",cavity1_log,false,0);
+
+//The following code is for the placement of the old ceramic samples (5 cilinders config) => uncomment to run this
+/*
+G4double PMTceramShift_x2 = PMTceram_OD + 0.01*mm;
+G4double PMTceramShift_y2 = 0;
+
+G4double PMTceramShift_x3 = -PMTceram_OD - 0.01*mm;
+G4double PMTceramShift_y3 = 0;
+
+G4double PMTceramShift_x4 = 0;
+G4double PMTceramShift_y4 = PMTceram_OD + 0.01*mm;
+
+G4double PMTceramShift_x5 = 0;
+G4double PMTceramShift_y5 = -PMTceram_OD - 0.01*mm;
+*/
+
+//The following code is for the placement of the new ceramic samples (6 cilinders config) => can be commented
+G4double cos72 = sqrt(6.-2.*sqrt(5.))/4.;
+G4double sin72 = sqrt(10.+2.*sqrt(5.))/4.;
+G4double cos36 = (1.+sqrt(5.))/4.;
+G4double sin36 = sqrt(10.-2.*sqrt(5.))/4.;
+
+
+G4double PMTceramShift_x2 = PMTceram_OD + 0.01*mm;
+G4double PMTceramShift_y2 = 0;
+
+G4double PMTceramShift_x3 = (PMTceram_OD + 0.01*mm)*cos72;
+G4double PMTceramShift_y3 = (PMTceram_OD + 0.01*mm)*sin72;
+
+G4double PMTceramShift_x4 = -(PMTceram_OD + 0.01*mm)*cos36;
+G4double PMTceramShift_y4 = (PMTceram_OD + 0.01*mm)*sin36;
+
+G4double PMTceramShift_x5 = -(PMTceram_OD + 0.01*mm)*cos36;
+G4double PMTceramShift_y5 = -(PMTceram_OD + 0.01*mm)*sin36;
+
+G4double PMTceramShift_x6 = (PMTceram_OD + 0.01*mm)*cos72;
+G4double PMTceramShift_y6 = -(PMTceram_OD + 0.01*mm)*sin72;
+
+
+G4ThreeVector ShiftPMTceram2(PMTceramShift_x2,PMTceramShift_y2,PMTceramShift_z);
+G4ThreeVector ShiftPMTceram3(PMTceramShift_x3,PMTceramShift_y3,PMTceramShift_z);
+G4ThreeVector ShiftPMTceram4(PMTceramShift_x4,PMTceramShift_y4,PMTceramShift_z);
+G4ThreeVector ShiftPMTceram5(PMTceramShift_x5,PMTceramShift_y5,PMTceramShift_z);
+
+
+
+G4VPhysicalVolume* PMTceram2_phys = new G4PVPlacement(0,ShiftPMTceram2,PMTceram_log,"PMTceram2_phys",cavity1_log,false,0);
+G4VPhysicalVolume* PMTceram3_phys = new G4PVPlacement(0,ShiftPMTceram3,PMTceram_log,"PMTceram3_phys",cavity1_log,false,0);
+G4VPhysicalVolume* PMTceram4_phys = new G4PVPlacement(0,ShiftPMTceram4,PMTceram_log,"PMTceram4_phys",cavity1_log,false,0);
+G4VPhysicalVolume* PMTceram5_phys = new G4PVPlacement(0,ShiftPMTceram5,PMTceram_log,"PMTceram5_phys",cavity1_log,false,0);
+
+//The following placement is only for 6 cilinders configuration
+G4ThreeVector ShiftPMTceram6(PMTceramShift_x6,PMTceramShift_y6,PMTceramShift_z);
+G4VPhysicalVolume* PMTceram6_phys = new G4PVPlacement(0,ShiftPMTceram6,PMTceram_log,"PMTceram6_phys",cavity1_log,false,0);

@@ -1,0 +1,27 @@
+void
+GeParticleSource::SetRandomPosInMaterial_Bases()
+{
+	G4String VolName;
+	G4double posX = 0., posY = 0., posZ = 0.;
+
+	G4VPhysicalVolume *theVolume;
+
+	do{
+		G4double theRandR = CLHEP::RandFlat::shoot(0.,6.);
+		G4double theRandT = CLHEP::RandFlat::shoot(0.,2*3.14159265358979);
+		G4double theRandZ = CLHEP::RandFlat::shoot(16.,25.);
+		posX = theRandR*cos(theRandT)*cm;
+		posY = theRandR*sin(theRandT)*cm;
+		posZ = theRandZ*cm;
+		theVolume =
+			gNavigator->LocateGlobalPointAndSetup(G4ThreeVector(posX,posY,posZ));
+//		G4cout<<"posX = "<<posX<<"  posY = "<<posY<<"  posZ = "<<posZ<<G4endl;
+
+	}while(theVolume->GetLogicalVolume()->GetMaterial()->GetName()!="Cirlex_sim");
+
+        particle_position.setX(posX);
+        particle_position.setY(posY);
+        particle_position.setZ(posZ);
+
+}
+

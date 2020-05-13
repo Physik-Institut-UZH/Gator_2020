@@ -1,0 +1,203 @@
+//--------------------------------------Polypropylene disk
+  G4Material* Polypropylene = new G4Material(name="Polypropylene", density = 0.87*g/cm3, ncomponents = 2);
+        Polypropylene->AddElement(C,3);
+        Polypropylene->AddElement(H,6);
+  G4double plastic_container_ID = 0.0*cm;
+  G4double plastic_container_OD = 20.*cm;
+  G4double plastic_container_Height = 0.2*cm;
+
+  G4Tubs* plastic_disk = new G4Tubs("plastic_disk", 0.5*plastic_container_ID, 0.5*plastic_container_OD,
+                                   0.5*plastic_container_Height, 0.0*deg, 360.0*deg);
+
+  G4LogicalVolume* plastic_container_log = new G4LogicalVolume(plastic_disk,Polypropylene,"plastic_container_log");
+
+  G4VisAttributes* plastic_container_vis = new G4VisAttributes(white);
+  plastic_container_vis->SetVisibility(true);
+  plastic_container_vis->SetForceSolid(false);
+  plastic_container_log->SetVisAttributes(plastic_container_vis);
+
+  G4double plastic_container_Pos_x = 0.0*cm; //
+  G4double plastic_container_Pos_y = 0.0*cm;
+  G4double plastic_container_Pos_z = (12.865/2-1.4325+0.21)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  plastic_container_phys =
+       new G4PVPlacement(0,G4ThreeVector(plastic_container_Pos_x,plastic_container_Pos_y,plastic_container_Pos_z),
+                         plastic_container_log,"plastic_container_phys",cavity1_log,false,0);
+
+
+//-------------------------------------- 2 QUPIDs -----------------------------------
+///////////////////////////////////////////////////////////////////////////////////////
+
+// NO Cathode Material!
+
+// Quarz for QUPID window
+G4Material *quartz = new G4Material(name = "quartz", density = 2.22 * g / cm3, ncomponents = 2);
+quartz->AddElement(Si, 1);
+quartz->AddElement(O,  2);
+
+G4double QUPID_ID   = 70 *mm;
+G4double QUPID_OD   = 75 *mm;
+G4double QUPID_height  = 65 *mm;
+
+G4double QUPID_TopWin_ID = 0.0*mm;
+G4double QUPID_TopWin_OD = 75*mm;
+G4double QUPID_TopWin_height = 3*mm;
+
+G4double QUPID_BotWin_ID = 0.0*mm;
+G4double QUPID_BotWin_OD = 69*mm;
+G4double QUPID_BotWin_height = 3*mm;
+
+
+G4Tubs *QUPID_TopWin = new G4Tubs("QUPID_TopWin", 0.5* QUPID_TopWin_ID, 0.5* QUPID_TopWin_OD, 0.5* QUPID_TopWin_height, 0.0*deg, 360.0*deg);
+G4Tubs *QUPID_BotWin = new G4Tubs("QUPID_BotWin", 0.5* QUPID_BotWin_ID, 0.5* QUPID_BotWin_OD, 0.5* QUPID_BotWin_height, 0.0*deg, 360.0*deg);
+G4Tubs *QUPID = new G4Tubs("QUPID", 0.5* QUPID_ID, 0.5* QUPID_OD, 0.5* QUPID_height, 0.0*deg, 360.0*deg);
+
+G4double QUPID_Pos_z = plastic_container_Pos_z + 0.5*QUPID_height + 0.5*plastic_container_Height + 0.5*mm; 
+G4double QUPID1_Pos_x  = -0.51*QUPID_OD;
+G4double QUPID1_Pos_y  = -0.51*QUPID_OD;
+G4double QUPID2_Pos_x  = 0.51*QUPID_OD;
+G4double QUPID2_Pos_y  = 0.51*QUPID_OD;
+G4double QUPID3_Pos_x  = 0.51*QUPID_OD;
+G4double QUPID3_Pos_y  = -0.51*QUPID_OD;
+G4double QUPID4_Pos_x  = -0.51*QUPID_OD;
+G4double QUPID4_Pos_y  = 0.51*QUPID_OD;
+G4double QUPID1_TopWin_Pos_x  = -0.51*QUPID_OD;
+G4double QUPID1_TopWin_Pos_y  = -0.51*QUPID_OD;
+G4double QUPID2_TopWin_Pos_x  = 0.51*QUPID_OD;
+G4double QUPID2_TopWin_Pos_y  = 0.51*QUPID_OD;
+G4double QUPID3_TopWin_Pos_x  = 0.51*QUPID_OD;
+G4double QUPID3_TopWin_Pos_y  = -0.51*QUPID_OD;
+G4double QUPID4_TopWin_Pos_x  = -0.51*QUPID_OD;
+G4double QUPID4_TopWin_Pos_y  = 0.51*QUPID_OD;
+G4double QUPID1_BotWin_Pos_x  = -0.51*QUPID_OD;
+G4double QUPID1_BotWin_Pos_y  = -0.51*QUPID_OD;
+G4double QUPID2_BotWin_Pos_x  = 0.51*QUPID_OD;
+G4double QUPID2_BotWin_Pos_y  = 0.51*QUPID_OD;
+G4double QUPID3_BotWin_Pos_x  = 0.51*QUPID_OD;
+G4double QUPID3_BotWin_Pos_y  = -0.51*QUPID_OD;
+G4double QUPID4_BotWin_Pos_x  = -0.51*QUPID_OD;
+G4double QUPID4_BotWin_Pos_y  = 0.51*QUPID_OD;
+G4double QUPID_TopWin_Pos_z = QUPID_Pos_z + 0.5*QUPID_height + 3*mm; 
+G4double QUPID_BotWin_Pos_z = plastic_container_Pos_z + 0.5*QUPID_BotWin_height + 3*mm;
+
+G4LogicalVolume *QUPID1_log = new G4LogicalVolume(QUPID, quartz, "QUPID1_log");
+G4LogicalVolume *QUPID2_log = new G4LogicalVolume(QUPID, quartz, "QUPID2_log");
+G4LogicalVolume *QUPID3_log = new G4LogicalVolume(QUPID, quartz, "QUPID3_log");
+G4LogicalVolume *QUPID4_log = new G4LogicalVolume(QUPID, quartz, "QUPID4_log");
+G4LogicalVolume *QUPID1_TopWin_log = new G4LogicalVolume(QUPID_TopWin, quartz, "QUPID1_TopWin_log");
+G4LogicalVolume *QUPID2_TopWin_log = new G4LogicalVolume(QUPID_TopWin, quartz, "QUPID2_TopWin_log");
+G4LogicalVolume *QUPID3_TopWin_log = new G4LogicalVolume(QUPID_TopWin, quartz, "QUPID3_TopWin_log");
+G4LogicalVolume *QUPID4_TopWin_log = new G4LogicalVolume(QUPID_TopWin, quartz, "QUPID4_TopWin_log");
+G4LogicalVolume *QUPID1_BotWin_log = new G4LogicalVolume(QUPID_BotWin, quartz, "QUPID1_BotWin_log");
+G4LogicalVolume *QUPID2_BotWin_log = new G4LogicalVolume(QUPID_BotWin, quartz, "QUPID2_BotWin_log");
+G4LogicalVolume *QUPID3_BotWin_log = new G4LogicalVolume(QUPID_BotWin, quartz, "QUPID3_BotWin_log");
+G4LogicalVolume *QUPID4_BotWin_log = new G4LogicalVolume(QUPID_BotWin, quartz, "QUPID4_BotWin_log");
+
+G4VisAttributes* QUPID1_vis = new G4VisAttributes(brown);
+QUPID1_vis->SetVisibility(true);
+QUPID1_vis->SetForceSolid(false);
+QUPID1_log->SetVisAttributes(QUPID1_vis);
+
+G4VisAttributes* QUPID2_vis = new G4VisAttributes(brown);
+QUPID2_vis->SetVisibility(true);
+QUPID2_vis->SetForceSolid(false);
+QUPID2_log->SetVisAttributes(QUPID2_vis);
+
+G4VisAttributes* QUPID3_vis = new G4VisAttributes(brown);
+QUPID3_vis->SetVisibility(true);
+QUPID3_vis->SetForceSolid(false);
+QUPID3_log->SetVisAttributes(QUPID3_vis);
+
+G4VisAttributes* QUPID4_vis = new G4VisAttributes(brown);
+QUPID4_vis->SetVisibility(true);
+QUPID4_vis->SetForceSolid(false);
+QUPID4_log->SetVisAttributes(QUPID4_vis);
+
+G4VisAttributes* QUPID1_TopWin_vis = new G4VisAttributes(brown);
+QUPID1_TopWin_vis->SetVisibility(true);
+QUPID1_TopWin_vis->SetForceSolid(false);
+QUPID1_TopWin_log->SetVisAttributes(QUPID1_TopWin_vis);
+
+G4VisAttributes* QUPID2_TopWin_vis = new G4VisAttributes(brown);
+QUPID2_TopWin_vis->SetVisibility(true);
+QUPID2_TopWin_vis->SetForceSolid(false);
+QUPID2_TopWin_log->SetVisAttributes(QUPID2_TopWin_vis);
+
+G4VisAttributes* QUPID3_TopWin_vis = new G4VisAttributes(brown);
+QUPID3_TopWin_vis->SetVisibility(true);
+QUPID3_TopWin_vis->SetForceSolid(false);
+QUPID3_TopWin_log->SetVisAttributes(QUPID3_TopWin_vis);
+
+G4VisAttributes* QUPID4_TopWin_vis = new G4VisAttributes(brown);
+QUPID4_TopWin_vis->SetVisibility(true);
+QUPID4_TopWin_vis->SetForceSolid(false);
+QUPID4_TopWin_log->SetVisAttributes(QUPID4_TopWin_vis);
+
+G4VisAttributes* QUPID1_BotWin_vis = new G4VisAttributes(brown);
+QUPID1_BotWin_vis->SetVisibility(true);
+QUPID1_BotWin_vis->SetForceSolid(false);
+QUPID1_BotWin_log->SetVisAttributes(QUPID1_BotWin_vis);
+
+G4VisAttributes* QUPID2_BotWin_vis = new G4VisAttributes(brown);
+QUPID2_BotWin_vis->SetVisibility(true);
+QUPID2_BotWin_vis->SetForceSolid(false);
+QUPID2_BotWin_log->SetVisAttributes(QUPID2_BotWin_vis);
+
+G4VisAttributes* QUPID3_BotWin_vis = new G4VisAttributes(brown);
+QUPID3_BotWin_vis->SetVisibility(true);
+QUPID3_BotWin_vis->SetForceSolid(false);
+QUPID3_BotWin_log->SetVisAttributes(QUPID3_BotWin_vis);
+
+G4VisAttributes* QUPID4_BotWin_vis = new G4VisAttributes(brown);
+QUPID4_BotWin_vis->SetVisibility(true);
+QUPID4_BotWin_vis->SetForceSolid(false);
+QUPID4_BotWin_log->SetVisAttributes(QUPID4_BotWin_vis);
+
+QUPID1_phys = 
+		new G4PVPlacement(0, G4ThreeVector(QUPID1_Pos_x,  QUPID1_Pos_y, QUPID_Pos_z), 
+							QUPID1_log, "QUPID1_phys", cavity1_log, false, 0);
+
+QUPID2_phys = 
+		new G4PVPlacement(0, G4ThreeVector(QUPID2_Pos_x,  QUPID2_Pos_y, QUPID_Pos_z), 
+							QUPID2_log, "QUPID2_phys", cavity1_log, false, 0);
+
+QUPID3_phys = 
+		new G4PVPlacement(0, G4ThreeVector(QUPID3_Pos_x,  QUPID3_Pos_y, QUPID_Pos_z), 
+							QUPID3_log, "QUPID3_phys", cavity1_log, false, 0);
+
+QUPID4_phys = 
+		new G4PVPlacement(0, G4ThreeVector(QUPID4_Pos_x,  QUPID4_Pos_y, QUPID_Pos_z), 
+							QUPID4_log, "QUPID4_phys", cavity1_log, false, 0);
+
+QUPID1_TopWin_phys = 
+		new G4PVPlacement(0, G4ThreeVector(QUPID1_TopWin_Pos_x,  QUPID1_TopWin_Pos_y, QUPID_TopWin_Pos_z), 
+							QUPID1_TopWin_log, "QUPID1_TopWin_phys", cavity1_log, false, 0);
+
+QUPID2_TopWin_phys = 
+		new G4PVPlacement(0, G4ThreeVector(QUPID2_TopWin_Pos_x,  QUPID2_TopWin_Pos_y, QUPID_TopWin_Pos_z), 
+							QUPID2_TopWin_log, "QUPID2_TopWin_phys", cavity1_log, false, 0);
+
+QUPID3_TopWin_phys = 
+		new G4PVPlacement(0, G4ThreeVector(QUPID3_TopWin_Pos_x,  QUPID3_TopWin_Pos_y, QUPID_TopWin_Pos_z), 
+							QUPID3_TopWin_log, "QUPID3_TopWin_phys", cavity1_log, false, 0);
+
+QUPID4_TopWin_phys = 
+		new G4PVPlacement(0, G4ThreeVector(QUPID4_TopWin_Pos_x,  QUPID4_TopWin_Pos_y, QUPID_TopWin_Pos_z), 
+							QUPID4_TopWin_log, "QUPID4_TopWin_phys", cavity1_log, false, 0);
+
+QUPID1_BotWin_phys = 
+		new G4PVPlacement(0, G4ThreeVector(QUPID1_BotWin_Pos_x,  QUPID1_BotWin_Pos_y, QUPID_BotWin_Pos_z), 
+							QUPID1_BotWin_log, "QUPID1_BotWin_phys", cavity1_log, false, 0);
+
+QUPID2_BotWin_phys = 
+		new G4PVPlacement(0, G4ThreeVector(QUPID2_BotWin_Pos_x,  QUPID2_BotWin_Pos_y, QUPID_BotWin_Pos_z), 
+							QUPID2_BotWin_log, "QUPID2_BotWin_phys", cavity1_log, false, 0);
+
+QUPID3_BotWin_phys = 
+		new G4PVPlacement(0, G4ThreeVector(QUPID3_BotWin_Pos_x,  QUPID3_BotWin_Pos_y, QUPID_BotWin_Pos_z), 
+							QUPID3_BotWin_log, "QUPID3_BotWin_phys", cavity1_log, false, 0);
+
+QUPID4_BotWin_phys = 
+		new G4PVPlacement(0, G4ThreeVector(QUPID4_BotWin_Pos_x,  QUPID4_BotWin_Pos_y, QUPID_BotWin_Pos_z), 
+							QUPID4_BotWin_log, "QUPID4_BotWin_phys", cavity1_log, false, 0);
+

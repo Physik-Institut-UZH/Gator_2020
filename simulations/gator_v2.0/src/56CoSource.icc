@@ -1,0 +1,48 @@
+//56Co source
+
+//Materials
+G4Material* CapsIron = new G4Material("CapsIron",density=7.874*g/cm3,1);
+CapsIron->AddElement(Fe,1.0);
+
+//Bottom capsule dimensions
+G4double BottCaps_OD = 12.7*mm;
+G4double BottCaps_H = 10.*mm;
+G4double BottCaps_thick = 2.*mm;
+
+//Top cylinder dimensions (the screw)
+G4double TopCaps_OD = 4.*mm;
+G4double TopCaps_H = 7.*mm;
+G4double TopCapsOffset = (BottCaps_H+TopCaps_H)/2.; //To attach the screw on top of the bottom capsule
+
+//Bottom cylinder geometry
+G4Tubs* BottCapsule = new G4Tubs("BottCapsule",0.0,BottCaps_OD/2.,BottCaps_H/2.,0.*deg,360.*deg);
+G4Tubs* TopCapsule = new G4Tubs("TopCapsule",0.0,TopCaps_OD/2.,TopCaps_H/2.,0.*deg,360.*deg);
+
+
+
+G4UnionSolid* Capsule = new G4UnionSolid("Capsule",BottCapsule,TopCapsule,0,G4ThreeVector(0.,0.,TopCapsOffset));
+
+
+//Internal cavity
+G4double CapsCav_OD = 10.*mm;
+G4double CapsCav_H = 1.5*mm;
+
+G4Tubs* CapsCavity = new G4Tubs("CapsCavity",0.0,CapsCav_OD/2.,CapsCav_H/2.,0.*deg,360.*deg);
+
+
+//Building logical volumes
+G4LogicalVolume* Capsule_log = new G4LogicalVolume(Capsule,Steel_304,"Capsule_log");
+
+G4LogicalVolume* CapsCavity_log = new G4LogicalVolume(CapsCavity,CapsIron,"CapsCavity_log");
+
+
+//Offset coordinates
+G4double CapsuleOffset_Z = endcapPos_z + (endcapHeight1+BottCaps_H)/2.;
+
+G4double CapsCavityOffset_Z = (BottCaps_H-CapsCav_H)/2. - BottCaps_thick; //Relative to the bottom capsule
+
+
+//Physical volumes
+G4VPhysicalVolume* Capsule_phys = new G4PVPlacement(0,G4ThreeVector(0.,0.,CapsuleOffset_Z),Capsule_log,"Capsule_phys",cavity1_log,false,0);
+
+G4VPhysicalVolume* CapsCavity_phys = new G4PVPlacement(0,G4ThreeVector(0.,0.,CapsCavityOffset_Z),CapsCavity_log,"CapsCavity_phys",Capsule_log,false,0);

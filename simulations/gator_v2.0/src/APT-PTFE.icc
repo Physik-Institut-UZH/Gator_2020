@@ -1,0 +1,58 @@
+  G4double PTFE_box_x = 10.*cm;
+  G4double PTFE_box_y = 4.*cm;
+  G4double PTFE_box_z = 20.*cm;
+
+  G4double APT_PTFE_rod_DX = 7.5*cm;
+  G4double APT_PTFE_rod_DY = 5.4844*cm;
+  G4double APT_PTFE_rod_Height = 23.241*cm;
+
+  G4Box* PTFE_box = new G4Box("PTFE_box",0.5*PTFE_box_x,0.5*PTFE_box_y,0.5*PTFE_box_z);
+  G4EllipticalTube* APT_PTFE_rod = new G4EllipticalTube("APT_PTFE_rod", APT_PTFE_rod_DX, APT_PTFE_rod_DY,
+                                   0.5*APT_PTFE_rod_Height);
+
+  G4LogicalVolume* PTFE_1_box_log = new G4LogicalVolume(PTFE_box, Teflon2, "PTFE_1_box_log");
+  G4LogicalVolume* PTFE_2_box_log = new G4LogicalVolume(PTFE_box, Teflon2, "PTFE_2_box_log");
+  G4LogicalVolume* APT_PTFE_rod_log = new G4LogicalVolume(APT_PTFE_rod, Teflon2, "APT_PTFE_rod_log");
+
+  G4RotationMatrix rotTeflonRod;
+	rotTeflonRod.rotateX(90*deg);
+
+  G4VisAttributes* PTFE_1_box_vis = new G4VisAttributes(brown);
+  PTFE_1_box_vis->SetVisibility(true);
+  PTFE_1_box_vis->SetForceSolid(false);
+  PTFE_1_box_log->SetVisAttributes(PTFE_1_box_vis);
+
+  G4VisAttributes* PTFE_2_box_vis = new G4VisAttributes(brown);
+  PTFE_2_box_vis->SetVisibility(true);
+  PTFE_2_box_vis->SetForceSolid(false);
+  PTFE_2_box_log->SetVisAttributes(PTFE_2_box_vis);
+
+  G4VisAttributes* APT_PTFE_rod_vis = new G4VisAttributes(white);
+  APT_PTFE_rod_vis->SetVisibility(true);
+  APT_PTFE_rod_vis->SetForceSolid(false);
+  APT_PTFE_rod_log->SetVisAttributes(APT_PTFE_rod_vis);
+
+  G4double PTFE_1_box_Pos_x = 0.0*cm;
+  G4double PTFE_1_box_Pos_y = 9.0*cm;
+  G4double PTFE_1_box_Pos_z = (12.865/2-1.4325-2.5-8.0)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  G4double PTFE_2_box_Pos_x = 0.*cm;
+  G4double PTFE_2_box_Pos_y = -9.0*cm;
+  G4double PTFE_2_box_Pos_z = (12.865/2-1.4325-2.5-8.0)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  G4double APT_PTFE_Pos_x = 0.0*cm; //
+  G4double APT_PTFE_Pos_y = 0.0*cm;
+  G4double APT_PTFE_Pos_z = (12.865/2-1.4325+0.21+5.5)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  PTFE_1_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(PTFE_1_box_Pos_x,PTFE_1_box_Pos_y,PTFE_1_box_Pos_z),
+                         PTFE_1_box_log,"PTFE_1_box_phys",cavity1_log,false,0);
+
+  PTFE_2_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(PTFE_2_box_Pos_x,PTFE_2_box_Pos_y,PTFE_2_box_Pos_z),
+                         PTFE_2_box_log,"PTFE_2_box_phys",cavity1_log,false,0);
+
+  APT_PTFE_rod_phys = 
+	new G4PVPlacement(G4Transform3D(rotTeflonRod,G4ThreeVector(APT_PTFE_Pos_x,APT_PTFE_Pos_y,APT_PTFE_Pos_z)),
+			 APT_PTFE_rod_log,"APT_PTFE_rod_phys",cavity1_log,false,0);
+

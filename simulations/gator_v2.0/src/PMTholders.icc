@@ -1,0 +1,137 @@
+/////////////////////////////////////////////////////////////////////////
+// This file is the only one needed to include in the GeConstruction
+// At line 48 specify the number of PMTs to include in the simulation
+// Lines 57 to 70 construct each PTFE holder. Set to "false" if the holder is not in place
+// If the holder is not contructed, the PMTs designated to that holder will not be constructed, regardless of the number specified at line 45
+// a single PMT on the endcap is at line 112
+// For just one PMT on the endcap, for example, set all holders to false and uncomment the last line in this file.
+/////////////////////////////////////////////////////////////////////////
+
+G4double PMTsZoffset=43*mm; //Vertical Offset of the lowest PMT
+G4double PMTsSpacing=80*mm; //Distance between the PMTs central axis
+G4double PMTlenght = 114*mm;
+
+G4double HolderWidth=100*mm;
+G4double HolderLenght=97*mm;
+G4double HolderHeight_short=246*mm, HolderHeight_long=326*mm;
+
+G4LogicalVolume* HolderLong_log = ConstructPMTholder_long();
+G4LogicalVolume* HolderShort_log = ConstructPMTholder_short();
+G4LogicalVolume* PMTR11410_log = ConstructPmtR11410();
+
+std::vector<G4VPhysicalVolume*>* PMTs_vec = new std::vector<G4VPhysicalVolume*>();
+
+G4double PMT1stColX=(114.5)*mm, PMT1stColY=(67.5)*mm, PMT1stColZ=PMTsZoffset-cavity1_z/2.;
+
+G4ThreeVector PMT_VertStep(0.*mm,0.*mm,PMTsSpacing); //Distance between the PMTs central axis
+G4ThreeVector PMT1stCol_offset((114.5)*mm,(67.5)*mm,PMTsZoffset-cavity1_z/2.);
+G4ThreeVector PMT2ndCol_offset((67.5)*mm,-(114.5)*mm,PMTsZoffset-cavity1_z/2.);
+G4ThreeVector PMT3rdCol_offset(-(114.5)*mm,-(67.5)*mm,PMTsZoffset-cavity1_z/2.);
+G4ThreeVector PMT4thCol_offset(-(67.5)*mm,(114.5)*mm,PMTsZoffset-(cavity1_z/2.)+80*mm); //The short column (80mm = teflon table height)
+
+G4RotationMatrix PMT1stCol_rot, PMT2ndCol_rot, PMT3rdCol_rot, PMT4thCol_rot;
+PMT1stCol_rot.rotateY(-90.*deg);
+PMT1stCol_rot.rotateZ(-15.*deg);
+PMT2ndCol_rot.rotateX(-90.*deg);
+PMT2ndCol_rot.rotateZ(-15.*deg);
+PMT3rdCol_rot.rotateY(90.*deg);
+PMT3rdCol_rot.rotateZ(-15.*deg);
+PMT4thCol_rot.rotateX(90.*deg);
+PMT4thCol_rot.rotateZ(-15.*deg);
+
+G4ThreeVector PMTpos;
+std::stringstream PMTVolName;
+
+
+//
+// 9 PMTs 24May2016
+for(G4int i=1; i<10; i++){
+//	char index[100]="";
+	PMTVolName.str("");
+//	sprintf(index,"%d",i);
+	PMTVolName <<"PMT"<<i<<"_phys";
+//	G4cout << "PMT: "<< i << G4endl;
+	G4cout << PMTVolName.str() << G4endl;
+
+
+// below rewritten for 9 PMTs (2,2,2, & 3 in each holder).
+	if(i<=3){
+		PMTpos = PMT1stCol_offset + ((i-1)%4)*PMT_VertStep;
+		if(true) PMTs_vec -> push_back(new G4PVPlacement(G4Transform3D(PMT1stCol_rot,PMTpos),PMTR11410_log,PMTVolName.str(),cavity1_log,false,0));
+	}else if(3<i && i<=5){
+		PMTpos = PMT2ndCol_offset + ((i-1)%4)*PMT_VertStep;
+		if(true) PMTs_vec -> push_back(new G4PVPlacement(G4Transform3D(PMT2ndCol_rot,PMTpos),PMTR11410_log,PMTVolName.str(),cavity1_log,false,0));
+	}else if(5<i && i<=7){
+		PMTpos = PMT3rdCol_offset + ((i-1)%4)*PMT_VertStep;
+		if(true) PMTs_vec -> push_back(new G4PVPlacement(G4Transform3D(PMT3rdCol_rot,PMTpos),PMTR11410_log,PMTVolName.str(),cavity1_log,false,0));
+	}else if(7<i && i<=9){
+		PMTpos = PMT4thCol_offset + ((i-1)%4)*PMT_VertStep;
+		if(true) PMTs_vec -> push_back(new G4PVPlacement(G4Transform3D(PMT4thCol_rot,PMTpos),PMTR11410_log,PMTVolName.str(),cavity1_log,false,0));
+	}	
+
+// below constructs PMTs into each PMT holder. Set if(true) to (false) if the PMT holders and PMTs are not in the cavity	
+/*	if(i<=4){
+		PMTpos = PMT1stCol_offset + ((i-1)%4)*PMT_VertStep;
+		if(true) PMTs_vec -> push_back(new G4PVPlacement(G4Transform3D(PMT1stCol_rot,PMTpos),PMTR11410_log,PMTVolName.str(),cavity1_log,false,0));
+	}else if(4<i && i<=8){
+		PMTpos = PMT2ndCol_offset + ((i-1)%4)*PMT_VertStep;
+		if(true) PMTs_vec -> push_back(new G4PVPlacement(G4Transform3D(PMT2ndCol_rot,PMTpos),PMTR11410_log,PMTVolName.str(),cavity1_log,false,0));
+	}else if(8<i && i<=12){
+		PMTpos = PMT3rdCol_offset + ((i-1)%4)*PMT_VertStep;
+		if(true) PMTs_vec -> push_back(new G4PVPlacement(G4Transform3D(PMT3rdCol_rot,PMTpos),PMTR11410_log,PMTVolName.str(),cavity1_log,false,0));
+	}else if(12<i && i<=15){
+		PMTpos = PMT4thCol_offset + ((i-1)%4)*PMT_VertStep;
+		if(true) PMTs_vec -> push_back(new G4PVPlacement(G4Transform3D(PMT4thCol_rot,PMTpos),PMTR11410_log,PMTVolName.str(),cavity1_log,false,0));
+	}
+*/	
+		
+}
+
+
+
+G4double HolderHrzOffset = HolderLenght-PMTlenght;
+G4double cos15 = TMath::Cos(15*TMath::Pi()/180);
+G4double sin15 = TMath::Sin(15*TMath::Pi()/180);
+
+G4RotationMatrix Holder1_rot;
+Holder1_rot.rotateZ(75.*deg);
+
+G4ThreeVector Holder1pos(114.5*mm+HolderHrzOffset*cos15,67.5*mm-HolderHrzOffset*sin15,(HolderHeight_long-cavity1_z)/2.);
+
+
+// comment out below if holder is not in use
+G4VPhysicalVolume* Holder1_phys = new G4PVPlacement(G4Transform3D(Holder1_rot,Holder1pos),HolderLong_log,"Holder1_phys",cavity1_log,false,0);
+
+
+G4RotationMatrix Holder2_rot;
+Holder2_rot.rotateZ(-15.*deg);
+
+G4ThreeVector Holder2pos(67.5*mm-HolderHrzOffset*sin15,-114.5*mm-HolderHrzOffset*cos15,(HolderHeight_long-cavity1_z)/2.);
+
+
+// comment out below if holder is not in use
+G4VPhysicalVolume* Holder2_phys = new G4PVPlacement(G4Transform3D(Holder2_rot,Holder2pos),HolderLong_log,"Holder2_phys",cavity1_log,false,0);
+
+
+G4RotationMatrix Holder3_rot;
+Holder3_rot.rotateZ(-105.*deg);
+
+G4ThreeVector Holder3pos(-114.5*mm-HolderHrzOffset*cos15,-67.5*mm+HolderHrzOffset*sin15,(HolderHeight_long-cavity1_z)/2.);
+
+
+// comment out below if holder is not in use
+G4VPhysicalVolume* Holder3_phys = new G4PVPlacement(G4Transform3D(Holder3_rot,Holder3pos),HolderLong_log,"Holder3_phys",cavity1_log,false,0);
+
+
+G4RotationMatrix Holder4_rot;
+Holder4_rot.rotateZ(-195.*deg);
+
+G4ThreeVector Holder4pos(-67.5*mm+HolderHrzOffset*sin15,114.5*mm+HolderHrzOffset*cos15,(HolderHeight_short-cavity1_z)/2.+80*mm); //The short column (80mm = teflon table height)
+
+
+// comment out below if holder is not in use
+G4VPhysicalVolume* Holder4_phys = new G4PVPlacement(G4Transform3D(Holder4_rot,Holder4pos),HolderShort_log,"Holder4_phys",cavity1_log,false,0);
+
+
+//--- A PMT on top of the end-cap as the 16th PMT ---\\
+//G4VPhysicalVolume* PMT_envel_phys16 = new G4PVPlacement(0,endcap_Shift + G4ThreeVector(0.,0.,endcapHeight1/2.+(1*mm)),PMTR11410_log,"PMTonTop", cavity1_log, false, 0);

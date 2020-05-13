@@ -1,0 +1,25 @@
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   logical Volumes definitions
+
+	G4LogicalVolume* plastic_container_log;
+	G4LogicalVolume* bases_stack1_log; 
+	G4LogicalVolume* bases_stack2_log; 
+	G4LogicalVolume* bases_stack3_log; 
+	G4LogicalVolume* bases_stack4_log; 
+	G4LogicalVolume* bases_stack5_log; 
+	G4LogicalVolume* bases_stack6_log; 
+ 	
+
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   Physical Volumes definitions
+
+	G4VPhysicalVolume* plastic_container_phys;
+	G4VPhysicalVolume* bases_stack1_phys; 
+	G4VPhysicalVolume* bases_stack2_phys; 
+	G4VPhysicalVolume* bases_stack3_phys; 
+	G4VPhysicalVolume* bases_stack4_phys; 
+	G4VPhysicalVolume* bases_stack5_phys; 
+	G4VPhysicalVolume* bases_stack6_phys; 
+	

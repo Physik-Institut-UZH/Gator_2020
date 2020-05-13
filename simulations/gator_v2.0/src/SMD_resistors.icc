@@ -1,0 +1,37 @@
+//980 SMD resistors have been weighted and the total mass is 5.0g.
+//The dimensions of each capacitor are (2.0x1.25x0.5)mm^3
+//The material composition is the same as the PEN capacitor, but the density value. Precise composition is needed only when neutrons studies are carried on.
+
+G4Material* SMD_mat = new G4Material(name="SMD_mat",density=4.082*g/cm3,ncomponents=3);
+SMD_mat -> AddElement(C,7);
+SMD_mat -> AddElement(H,5);
+SMD_mat -> AddElement(O,2);
+
+G4double SMD_x = 50.0*mm;
+G4double SMD_y = 50.0*mm;
+G4double SMD_z = 0.5*mm;
+
+
+// Geometry
+G4Box* SMD_geom = new G4Box("SMD_geom",0.5*SMD_x,0.5*SMD_y,0.5*SMD_z);
+
+
+// Logical volume
+G4LogicalVolume* SMD_log = new G4LogicalVolume(SMD_geom,SMD_mat,"SMD_log");
+
+
+// Set visibility properties
+G4VisAttributes* SMD_vis = new G4VisAttributes(red);
+SMD_vis -> SetVisibility(true);
+SMD_vis -> SetForceSolid(false);
+SMD_log -> SetVisAttributes(SMD_vis);
+
+
+// Offset coordinates
+G4ThreeVector SMD_offset(0.,0.,endcapPos_z+0.5*(endcapHeight1+SMD_z)+0.01*mm);
+
+
+// Placement
+G4VPhysicalVolume* SMD_phys = new G4PVPlacement(0,SMD_offset,SMD_log,"SMD_phys",cavity1_log,false,0);
+
+G4cout << "\nThe total mass of the SMD resistors is: " << (SMD_log->GetMass())/g << " g\n" << G4endl;

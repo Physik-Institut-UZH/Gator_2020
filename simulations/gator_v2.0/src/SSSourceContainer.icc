@@ -1,0 +1,96 @@
+//----------------------------Stainless Steel Tube with flange----------------------//
+
+G4double cylinder_ID   = 12 *mm;
+G4double cylinder_OD   = 16 *mm;
+G4double cylinder_height  = 60 *mm;
+
+G4Tubs *cylinder = new G4Tubs("cylinder", 0.5* cylinder_ID, 0.5* cylinder_OD, 0.5* cylinder_height, 0.0*deg, 360.0*deg);
+
+G4double cylinder_Pos_z = (12.865/2-1.4325+0.55)*cm+0.5*cylinder_height + 0.51*mm; //0.5 is the SSbase thickness
+G4double cylinder_Pos_x  = 0.;
+G4double cylinder_Pos_y  = 0.;
+
+G4LogicalVolume *cylinder_log = new G4LogicalVolume(cylinder, Steel_304, "cylinder_log");
+
+G4VisAttributes* cylinder_vis = new G4VisAttributes(grey);
+cylinder_vis->SetVisibility(true);
+cylinder_vis->SetForceSolid(false);
+cylinder_log->SetVisAttributes(cylinder_vis);
+
+cylinder_phys = 
+		new G4PVPlacement(0, G4ThreeVector(cylinder_Pos_x,  cylinder_Pos_y, cylinder_Pos_z), 
+							cylinder_log, "cylinder_phys", cavity1_log, false, 0);
+
+G4double SSbase_ID = 0 *mm;
+G4double SSbase_OD   = 25 *mm;
+G4double SSbase_height  = 5 *mm;
+
+G4Tubs *SSbase = new G4Tubs("SSbase", 0.5* SSbase_ID, 0.5* SSbase_OD, 0.5* SSbase_height, 0.0*deg, 360.0*deg);
+
+G4double SSbase_Pos_z = (12.865/2-1.4325+0.30)*cm;
+G4double SSbase_Pos_x  = 0.;
+G4double SSbase_Pos_y  = 0.;
+
+G4LogicalVolume *SSbase_log = new G4LogicalVolume(SSbase, Steel_304, "SSbase_log");
+
+G4VisAttributes* SSbase_vis = new G4VisAttributes(grey);
+SSbase_vis->SetVisibility(true);
+SSbase_vis->SetForceSolid(false);
+SSbase_log->SetVisAttributes(SSbase_vis);
+
+SSbase_phys = 
+		new G4PVPlacement(0, G4ThreeVector(SSbase_Pos_x,  SSbase_Pos_y, SSbase_Pos_z), 
+							SSbase_log, "SSbase_phys", cavity1_log, false, 0);
+
+G4double SSring_ID = 16.5 *mm;
+G4double SSring_OD   = 25 *mm;
+G4double SSring_height  = 5 *mm;
+
+G4Tubs *SSring = new G4Tubs("SSring", 0.5* SSring_ID, 0.5* SSring_OD, 0.5* SSring_height, 0.0*deg, 360.0*deg);
+
+G4double SSring_Pos_z = (12.865/2-1.4325+0.35)*cm + SSring_height;
+G4double SSring_Pos_x  = 0.;
+G4double SSring_Pos_y  = 0.;
+
+G4LogicalVolume *SSring_log = new G4LogicalVolume(SSring, Steel_304, "SSring_log");
+
+G4VisAttributes* SSring_vis = new G4VisAttributes(grey);
+SSring_vis->SetVisibility(true);
+SSring_vis->SetForceSolid(false);
+SSring_log->SetVisAttributes(SSring_vis);
+
+SSring_phys = 
+		new G4PVPlacement(0, G4ThreeVector(SSring_Pos_x,  SSring_Pos_y, SSring_Pos_z), 
+							SSring_log, "SSring_phys", cavity1_log, false, 0);
+
+
+//----------------------Zeolite source------------------------//
+
+	G4Material *zeolite = new G4Material(name = "zeolite", density = 1. * g / cm3, ncomponents = 5); // NATROLITE
+	zeolite->AddElement(Na, 0.086956);
+	zeolite->AddElement(Al, 0.086956);
+	zeolite->AddElement(Si, 0.130435);
+	zeolite->AddElement(O, 0.521740);
+	zeolite->AddElement(H, 0.173913);
+
+G4double source_ID = 0 *mm;
+G4double source_OD   = 11 *mm;
+G4double source_height  = 5 *mm;
+
+G4Tubs *source = new G4Tubs("source", 0.5* source_ID, 0.5* source_OD, 0.5* source_height, 0.0*deg, 360.0*deg);
+
+G4double source_Pos_z = (12.865/2-1.4325+0.35)*cm + SSring_height;
+G4double source_Pos_x  = 0.;
+G4double source_Pos_y  = 0.;
+
+G4LogicalVolume *source_log = new G4LogicalVolume(source, zeolite, "source_log");
+
+G4VisAttributes* source_vis = new G4VisAttributes(brown);
+source_vis->SetVisibility(true);
+source_vis->SetForceSolid(true);
+source_log->SetVisAttributes(source_vis);
+
+source_phys = 
+		new G4PVPlacement(0, G4ThreeVector(source_Pos_x,  source_Pos_y, source_Pos_z), 
+							source_log, "source_phys", cavity1_log, false, 0);
+

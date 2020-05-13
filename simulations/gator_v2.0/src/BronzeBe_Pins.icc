@@ -1,0 +1,39 @@
+//Material definitions
+G4Element* Copper = G4NistManager::Instance()->FindOrBuildElement("Cu");
+G4Element* Beryllium = G4NistManager::Instance()->FindOrBuildElement("Be");
+G4Material* PinsBronzeBe_mat = new G4Material("PinsBronzeBe_mat",density=7.29*g/cm3,2,kStateSolid);
+PinsBronzeBe_mat -> AddElement(Copper,0.98);
+PinsBronzeBe_mat -> AddElement(Beryllium,0.02);
+
+
+//Dimension of sample in box 
+G4double PinsBronzeBe_x = 70.0*mm;
+G4double PinsBronzeBe_y = 70.0*mm;
+G4double PinsBronzeBe_z = 10.0*mm;
+
+
+//Definition of the geometry
+G4Box* PinsBronzeBe = new G4Box("PinsBronzeBe",0.5*PinsBronzeBe_x,0.5*PinsBronzeBe_y,0.5*PinsBronzeBe_z);
+
+
+//Contruction of logical volume
+G4LogicalVolume* PinsBronzeBe_log = new G4LogicalVolume(PinsBronzeBe,PinsBronzeBe_mat,"PinsBronzeBe_log");
+
+
+// Set visibility properties
+G4VisAttributes* PinsBronzeBe_vis = new G4VisAttributes(red);
+PinsBronzeBe_vis -> SetVisibility(true);
+PinsBronzeBe_vis -> SetForceSolid(false);
+PinsBronzeBe_log -> SetVisAttributes(PinsBronzeBe_vis);
+
+
+// Shift coordinates for the sample placement
+G4double PinsBronzeBeShift_z = endcapPos_z + 0.5*(endcapHeight1+PinsBronzeBe_z) + 0.01*mm;
+G4double PinsBronzeBeShift_x = 0;
+G4double PinsBronzeBeShift_y = 0;
+
+
+G4ThreeVector ShiftPinsBronzeBe(PinsBronzeBeShift_x,PinsBronzeBeShift_y,PinsBronzeBeShift_z);
+
+
+G4VPhysicalVolume* PinsBronzeBe_phys = new G4PVPlacement(0,ShiftPinsBronzeBe,PinsBronzeBe_log,"PinsBronzeBe_phys",cavity1_log,false,0);

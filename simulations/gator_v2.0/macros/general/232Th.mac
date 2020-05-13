@@ -1,0 +1,27 @@
+#232Th - 228Ac  subchain
+
+#/xe/generateCE  0
+#/tracking/verbose 0
+#/run/verbose 0
+#/control/verbose 0
+#/xe/gun/verbose 0
+
+/Xe/saveHits 1
+/Xe/printModulo 1000
+
+
+/xe/gun/particle ion
+/xe/gun/ion 90 232 0 0
+#Decay limits: aMin aMax zMin zMax
+/grdm/nucleusLimits 228 232 90 90
+
+/xe/gun/energy 0 keV
+
+/xe/gun/type Volume
+/xe/gun/shape Cylinder
+/xe/gun/radius 45 mm
+/xe/gun/halfz 4 mm
+/xe/gun/center 0 0 148.796 mm
+/xe/gun/confine mylar_phys
+
+/run/beamOn 10000

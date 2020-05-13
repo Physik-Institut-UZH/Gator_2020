@@ -1,0 +1,82 @@
+G4double PTFE_Brick_x = 10.*cm;
+G4double PTFE_Brick_y = 3.5*cm;
+G4double PTFE_Brick_z = 20.*cm;
+
+G4double SSPlate_x = 15.0*cm;
+G4double SSPlate_y = 18.0*cm; 
+G4double SSPlate_z = 5.0*cm;
+
+
+
+G4Box* PTFE_Brick1 = new G4Box("PTFE_Brick1",0.5*PTFE_Brick_x,0.5*PTFE_Brick_y,0.5*PTFE_Brick_z);
+
+G4Box* PTFE_Brick2 = new G4Box("PTFE_Brick2",0.5*PTFE_Brick_x,0.5*PTFE_Brick_y,0.5*PTFE_Brick_z);
+
+
+G4Box* SSPlate = new G4Box("SSPlate",0.5*SSPlate_x,0.5*SSPlate_y,0.5*SSPlate_z);
+
+//Material definition
+G4Material* NironitSS_mat = new G4Material(name="NironitSS_mat",density=8.03*g/cm3,1);
+NironitSS_mat -> AddMaterial(Steel_304,1.0);
+
+
+G4LogicalVolume* PTFE_Brick1_log = new G4LogicalVolume(PTFE_Brick1,Teflon,"PTFE_Brick1_log");
+
+G4LogicalVolume* PTFE_Brick2_log = new G4LogicalVolume(PTFE_Brick2,Teflon,"PTFE_Brick2_log");
+
+G4LogicalVolume* SSPlate_log = new G4LogicalVolume(SSPlate,NironitSS_mat,"SSPlate_log");
+
+
+//Visibility properties
+
+G4VisAttributes* PTFE_Brick1_vis = new G4VisAttributes(blue);
+PTFE_Brick1_vis -> SetVisibility(true);
+PTFE_Brick1_vis -> SetForceSolid(false);
+PTFE_Brick1_log -> SetVisAttributes(PTFE_Brick1_vis);
+
+G4VisAttributes* PTFE_Brick2_vis = new G4VisAttributes(blue);
+PTFE_Brick2_vis -> SetVisibility(true);
+PTFE_Brick2_vis -> SetForceSolid(false);
+PTFE_Brick2_log -> SetVisAttributes(PTFE_Brick2_vis);
+
+G4VisAttributes* NironitSS_vis = new G4VisAttributes(red);
+NironitSS_vis -> SetVisibility(true);
+NironitSS_vis -> SetForceSolid(false);
+SSPlate_log -> SetVisAttributes(NironitSS_vis);
+
+
+//Shift coordinates for PTFE Bricks
+
+G4double PTFE_Brick1_shift_x = 0; 
+G4double PTFE_Brick1_shift_y = (baseOD1/2) + (PTFE_Brick_y/2);
+G4double PTFE_Brick1_shift_z = -(cavity1_z/2) + (PTFE_Brick_z/2);
+
+G4ThreeVector PTFE_Brick1_Shift(PTFE_Brick1_shift_x,PTFE_Brick1_shift_y,PTFE_Brick1_shift_z);
+
+
+G4double PTFE_Brick2_shift_x = 0; 
+G4double PTFE_Brick2_shift_y = -(baseOD1/2) - (PTFE_Brick_y/2);
+G4double PTFE_Brick2_shift_z = -(cavity1_z/2) + (PTFE_Brick_z/2);
+
+G4ThreeVector PTFE_Brick2_Shift(PTFE_Brick2_shift_x,PTFE_Brick2_shift_y,PTFE_Brick2_shift_z);
+
+
+G4double SSPlate_shift_x = 0; 
+G4double SSPlate_shift_y = 0;
+G4double SSPlate_shift_z = -(cavity1_z/2) + PTFE_Brick_z + (SSPlate_z/2) + (0.05*mm); //Added a little shift to avoid surfaces overlaps
+
+G4ThreeVector SSPlate_Shift(SSPlate_shift_x,SSPlate_shift_y,SSPlate_shift_z);
+
+
+//Volumes placements
+
+G4VPhysicalVolume* PTFE_Brick1_phys = new G4PVPlacement(0,PTFE_Brick1_Shift,PTFE_Brick1_log,"PTFE_Brick1_phys",cavity1_log,false,0);
+
+G4VPhysicalVolume* PTFE_Brick2_phys = new G4PVPlacement(0,PTFE_Brick2_Shift,PTFE_Brick2_log,"PTFE_Brick2_phys",cavity1_log,false,0);
+
+G4VPhysicalVolume* SSPlate_phys = new G4PVPlacement(0,SSPlate_Shift,SSPlate_log,"SSPlate_phys",cavity1_log,false,0);
+
+/*
+The z absolute coordinates of the SSPlate should be (bottom, center, top): (17.005,19.505,22.005)cm 
+NOTE: top-surfaceI shifted upward the Titanium plate of 0.005cm (abitrary) to avoid that the bottom surface and the PTFE bricks top surfaces are in overlapping ==> Consider this little shift for simulation primary event generation.
+*/

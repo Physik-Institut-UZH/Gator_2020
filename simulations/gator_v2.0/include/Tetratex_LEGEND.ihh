@@ -1,0 +1,6 @@
+
+// ---------- volume Tetratex_LEGEND ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* Tetratex_LEGEND_log;
+ G4VPhysicalVolume* Tetratex_LEGEND_phys;

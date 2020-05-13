@@ -1,0 +1,43 @@
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//_______________   logical Volumes definitions
+
+	G4LogicalVolume* QUPID1_log;
+	G4LogicalVolume* QUPID2_log;
+	G4LogicalVolume* QUPID3_log;
+	G4LogicalVolume* QUPID4_log;
+	G4LogicalVolume* QUPID5_log;
+	G4LogicalVolume* QUPID1_TopWin_log;
+	G4LogicalVolume* QUPID2_TopWin_log;
+	G4LogicalVolume* QUPID3_TopWin_log;
+	G4LogicalVolume* QUPID4_TopWin_log;
+	G4LogicalVolume* QUPID5_TopWin_log;
+	G4LogicalVolume* QUPID1_BotWin_log;
+	G4LogicalVolume* QUPID2_BotWin_log;
+	G4LogicalVolume* QUPID3_BotWin_log;
+	G4LogicalVolume* QUPID4_BotWin_log;
+	G4LogicalVolume* QUPID5_BotWin_log;
+	G4LogicalVolume* plastic_container_log;
+ 	
+
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//_______________   Physical Volumes definitions
+
+	G4VPhysicalVolume* QUPID1_phys;
+	G4VPhysicalVolume* QUPID2_phys;
+	G4VPhysicalVolume* QUPID3_phys;
+	G4VPhysicalVolume* QUPID4_phys;
+	G4VPhysicalVolume* QUPID5_phys;
+	G4VPhysicalVolume* QUPID1_TopWin_phys;
+	G4VPhysicalVolume* QUPID2_TopWin_phys;
+	G4VPhysicalVolume* QUPID3_TopWin_phys;
+	G4VPhysicalVolume* QUPID4_TopWin_phys;
+	G4VPhysicalVolume* QUPID5_TopWin_phys;
+	G4VPhysicalVolume* QUPID1_BotWin_phys;
+	G4VPhysicalVolume* QUPID2_BotWin_phys;
+	G4VPhysicalVolume* QUPID3_BotWin_phys;
+	G4VPhysicalVolume* QUPID4_BotWin_phys;
+	G4VPhysicalVolume* QUPID5_BotWin_phys;
+	G4VPhysicalVolume* plastic_container_phys;
+	

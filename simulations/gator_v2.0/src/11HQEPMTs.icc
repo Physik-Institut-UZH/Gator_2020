@@ -1,0 +1,150 @@
+//--------------------------------------Polypropylene disk
+  G4Material* Polypropylene = new G4Material(name="Polypropylene", density = 0.87*g/cm3, ncomponents = 2);
+        Polypropylene->AddElement(C,3);
+        Polypropylene->AddElement(H,6);
+  G4double plastic_container_ID = 0.0*cm;
+  G4double plastic_container_OD = 20.*cm;
+  G4double plastic_container_Height = 0.2*cm;
+
+  G4Tubs* plastic_disk = new G4Tubs("plastic_disk", 0.5*plastic_container_ID, 0.5*plastic_container_OD,
+                                   0.5*plastic_container_Height, 0.0*deg, 360.0*deg);
+
+  G4LogicalVolume* plastic_container_log = new G4LogicalVolume(plastic_disk,Polypropylene,"plastic_container_log");
+
+  G4VisAttributes* plastic_container_vis = new G4VisAttributes(white);
+  plastic_container_vis->SetVisibility(true);
+  plastic_container_vis->SetForceSolid(false);
+  plastic_container_log->SetVisAttributes(plastic_container_vis);
+
+  G4double plastic_container_Pos_x = 0.0*cm; //
+  G4double plastic_container_Pos_y = 0.0*cm;
+  G4double plastic_container_Pos_z = (12.865/2-1.4325+0.21)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  plastic_container_phys =
+       new G4PVPlacement(0,G4ThreeVector(plastic_container_Pos_x,plastic_container_Pos_y,plastic_container_Pos_z),
+                         plastic_container_log,"plastic_container_phys",cavity1_log,false,0);
+
+
+//-------------------------------------- PMTs -----------------------------------
+///////////////////////////////////////////////////////////////////////////////////////
+
+// NO Cathode Material!
+
+// Quarz for PMT window
+G4Material *quartz = new G4Material(name = "quartz", density = 2.200 * g / cm3, ncomponents = 2);
+quartz->AddElement(Si, 1);
+quartz->AddElement(O,  2);
+
+ //------ PMT material---------------------------------------
+G4Material *PMTmat = new G4Material(name = "PMTmat", density = 1.21 * g / cm3, ncomponents = 3);
+PMTmat->AddElement(C,  0.04);
+PMTmat->AddElement(Fe, 0.88);
+PMTmat->AddElement(Co, 0.08);
+// Material for PMT, same as SS but with reduced density, calculated from 
+// the actual mass/volume ratio from one of the 1" square Hamamatsu PMTs
+// x=25.4*mm, y=25.4*mm,z=28.6*mm, mass=22.4*g
+
+
+G4double PMT_width   = 25.4 *mm;
+G4double PMT_height  = 28.6 *mm;
+G4double PMT_spacing = 2 *mm;
+G4double PMT_dist    = PMT_width + PMT_spacing;
+
+G4Box *PMT = new G4Box("PMT", 0.5* PMT_width, 0.5* PMT_width, 0.5* PMT_height);
+
+G4double PMTwin_XY      = 25.4 *mm; // PMT window
+G4double PMTwin_height  = 3 *mm;
+
+G4Box *PMTwin = new G4Box("PMTwin", 0.5*PMTwin_XY, 0.5*PMTwin_XY, 0.5*PMTwin_height);
+
+G4double PMT_Pos_x, PMT_Pos_y;
+G4int rowNS, pmtNS, n_pmt;
+
+G4double Dist_ICTF_PMTtop = 86 * mm; // from Xe10
+G4double Dist_ICBF_PMTbot = 30 * mm; // 24 mm in Xe10
+G4double PMT_Pos_z = plastic_container_Pos_z + 0.5*PMT_height + PMTwin_height + 0.5*plastic_container_Height + 0.5*mm; 
+G4double PMTwin_Pos_z = -0.5*PMT_height - 0.5*PMTwin_height - 0.1*mm;
+
+
+//--------------------------- PMT array, consisting of a matrix of 3x4 - 1 PMTs ----------------------------
+char PMT_matrix_l[100];
+char PMT_matrix_log[100];
+char PMT_matrix_p[100];
+char PMT_matrix_phys[100];
+
+char WIN_matrix_l[100];
+char WIN_matrix_log[100];
+char WIN_matrix_p[100];
+char WIN_matrix_phys[100];
+
+G4double PMT13rowL = 82. *mm;
+
+for(rowNS = 0; rowNS<4; rowNS++)
+{  
+    if     (rowNS == 0)
+	{   
+	    PMT_Pos_x  = -0.5*PMT13rowL + 0.5*PMT_dist - 1*mm;
+		PMT_Pos_y  = -1.5*PMT_dist;
+		n_pmt = 3;
+	}
+	else if(rowNS == 1)
+	{   
+	    PMT_Pos_x  = -0.5*PMT13rowL + 0.5*PMT_dist - 1*mm;
+		PMT_Pos_y  = -0.5*PMT_dist;
+		n_pmt = 3;
+	}
+	else if(rowNS == 2)
+	{
+	    PMT_Pos_x  = -0.5*PMT13rowL + 0.5*PMT_dist - 1*mm;
+		PMT_Pos_y  = 0.5*PMT_dist;
+		n_pmt = 3;
+	}
+	else if(rowNS == 3)
+	{
+	    PMT_Pos_x  = -0.5*PMT13rowL + 0.5*PMT_dist - 1*mm;
+		PMT_Pos_y  = 1.5*PMT_dist;
+		n_pmt = 2;
+	}
+
+    for (pmtNS = 0; pmtNS < n_pmt; pmtNS++)
+	{
+	   sprintf(PMT_matrix_l,    "PMT_matrix%d_%d_log",  rowNS, pmtNS);
+	   sprintf(PMT_matrix_log,  "PMT_matrix%d_%d_log",  rowNS, pmtNS);
+	   sprintf(PMT_matrix_p,    "PMT_matrix%d_%d_phys",  rowNS, pmtNS);
+	   sprintf(PMT_matrix_phys, "PMT_matrix%d_%d_phys", rowNS, pmtNS);
+	   
+	   sprintf(WIN_matrix_l,    "WIN_matrix%d_%d_log",  rowNS, pmtNS);
+	   sprintf(WIN_matrix_log,  "WIN_matrix%d_%d_log",  rowNS, pmtNS);
+	   sprintf(WIN_matrix_p,    "WIN_matrix%d_%d_phys",  rowNS, pmtNS);
+	   sprintf(WIN_matrix_phys, "WIN_matrix%d_%d_phys", rowNS, pmtNS);
+	   
+
+// ----------------------- place PMTs ----------------------------
+	   G4LogicalVolume *PMT_matrix_log = new G4LogicalVolume(PMT, PMTmat, PMT_matrix_l);
+	   G4VPhysicalVolume *PMT_matrix_phys;
+	   PMT_matrix_phys = new G4PVPlacement(0, G4ThreeVector(PMT_Pos_x,  PMT_Pos_y, PMT_Pos_z), PMT_matrix_log, PMT_matrix_p, cavity1_log, false, 0);
+	   
+// ----------------------- place PMT window inside PMT box -----------------------
+	   G4LogicalVolume *WIN_matrix_log = new G4LogicalVolume(PMTwin, quartz, WIN_matrix_l);
+	   G4VPhysicalVolume *WIN_matrix_phys;
+	   WIN_matrix_phys = new G4PVPlacement(0, G4ThreeVector(0.0, 0.0, PMTwin_Pos_z), WIN_matrix_log, WIN_matrix_p, PMT_matrix_log, false, 0);
+	   
+	
+	// vis
+	G4VisAttributes* PMT_vis = new G4VisAttributes(gray);
+	PMT_vis->SetVisibility(true);
+	PMT_vis->SetForceSolid(false);
+
+	G4VisAttributes* WIN_vis = new G4VisAttributes(yellow);
+	WIN_vis->SetVisibility(true);
+	WIN_vis->SetForceSolid(false);
+
+	PMT_matrix_log->SetVisAttributes(PMT_vis);
+	PMT_matrix_log->SetVisAttributes(PMT_vis);
+
+	WIN_matrix_log->SetVisAttributes(WIN_vis);
+	WIN_matrix_log->SetVisAttributes(WIN_vis);
+
+	   PMT_Pos_x += PMT_dist;
+	}
+}

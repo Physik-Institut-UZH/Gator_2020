@@ -1,0 +1,77 @@
+// Screening Nov/Dec 2016
+//Bulk material for XENONnT PMTs from Hamamatsu
+//P01N02 Aluminum ring: pure Al sheet
+//config: 100 x 90 x 0.5 mm 1 sheet (12 g), × 42 sheet (about 506 g) divided into 3 stacks and placed in the cavity on 3 sides (not on feedthrough side) surrounding the detector.
+//Total mass:  g
+//Density Al: 2.7 g cm-3
+// volume should be    cm^3 of each stack
+
+
+// Taking Al plate to be a set of 14 thin plates stacked together
+G4double AlPlate_x = 100*mm;  // width in cavity
+G4double AlPlate_y = 14*0.5*mm;  //thickness
+G4double AlPlate_z = 90*mm;  //height in cavity
+
+//Defining the material (density is in mm^3??)
+G4double AlPlate_mass = 168.68*g;  // 506/3
+density = (AlPlate_mass)/(AlPlate_x*AlPlate_y*AlPlate_z);
+
+
+  	
+G4Material* AlPlate_mat = new G4Material("AlPlate_mat",density,ncomponents=1);
+  	AlPlate_mat->AddElement(Al,1);
+
+
+// Geometry
+G4Box* AlPlate_geom1 = new G4Box("AlPlate_geom1",0.5*AlPlate_x,0.5*AlPlate_y,0.5*AlPlate_z);
+G4Box* AlPlate_geom2 = new G4Box("AlPlate_geom2",0.5*AlPlate_y,0.5*AlPlate_x,0.5*AlPlate_z);
+
+
+// Logical volume
+G4LogicalVolume* AlPlateLS_log = new G4LogicalVolume(AlPlate_geom1,AlPlate_mat,"AlPlate_log");
+G4LogicalVolume* AlPlateC_log = new G4LogicalVolume(AlPlate_geom2,AlPlate_mat,"AlPlate_log");
+G4LogicalVolume* AlPlateRS_log = new G4LogicalVolume(AlPlate_geom1,AlPlate_mat,"AlPlate_log");
+
+
+// Set visibility properties
+G4VisAttributes* AlPlate_vis = new G4VisAttributes(red);
+AlPlate_vis -> SetVisibility(true);
+AlPlate_vis -> SetForceSolid(false);
+AlPlateLS_log -> SetVisAttributes(AlPlate_vis);
+AlPlateC_log -> SetVisAttributes(AlPlate_vis);
+AlPlateRS_log -> SetVisAttributes(AlPlate_vis);
+
+// Offset coordinates (z-pos)
+//G4ThreeVector AlPlate_offset(0.,0.,endcapPos_z+0.5*(endcapHeight1+AlPlate_z)+0.01*mm); //needed?
+
+// Coordinates for aluminum plates
+
+G4double AlPlate_pos_z = -(cavity1_z/2) + (AlPlate_z/2);
+
+
+G4double AlPlateSides_pos_x = 0; 
+G4double AlPlateC_pos_x = (baseOD1/2) + (AlPlate_x/2);
+
+G4double AlPlateLS_pos_y = (baseOD1/2) + (AlPlate_y/2);
+G4double AlPlateC_pos_y = 0;
+G4double AlPlateRS_pos_y = (baseOD1/2) + (AlPlate_y/2);
+
+
+G4ThreeVector AlPlateLS_Pos(AlPlateSides_pos_x,AlPlateLS_pos_y,AlPlate_pos_z);
+G4ThreeVector AlPlateC_Pos(AlPlateC_pos_x,AlPlateC_pos_y,AlPlate_pos_z);
+G4ThreeVector AlPlateRS_Pos(AlPlateSides_pos_x,AlPlateRS_pos_y,AlPlate_pos_z);
+
+
+// Placement
+G4VPhysicalVolume* AlPlateLS_phys = new G4PVPlacement(0,AlPlateLS_Pos,AlPlateLS_log,"AlPlateLS_phys",cavity1_log,false,0,true);
+G4VPhysicalVolume* AlPlateC_phys = new G4PVPlacement(0,AlPlateC_Pos,AlPlateC_log,"AlPlateC_phys",cavity1_log,false,0,true);
+G4VPhysicalVolume* AlPlateRS_phys = new G4PVPlacement(0,AlPlateRS_Pos,AlPlateRS_log,"AlPlateRS_phys",cavity1_log,false,0,true);
+
+
+G4double TotalMass = (AlPlateLS_log->GetMass() + AlPlateC_log->GetMass() + AlPlateRS_log->GetMass())/g;
+G4cout << "\nThe total mass of the Al Ring sample is: " << TotalMass << " g\n" << G4endl;
+
+
+///////////////////end
+
+

@@ -1,0 +1,36 @@
+  // Note: there was previously a sample geometry "GERDA_tetratex", some inputs were copied from there.
+
+//NOTE: Here I represent as a box the folded Tetratex foils, with a density given by the average density. The composition is the same as a PTFE. volume of the box=3520cm3. the weight is 1059.7g. This gives a density of 0.301g/cm3. Verry similar to the density inferred before 297*g
+
+G4Material* Tetratex_mat = new G4Material("Tetratex_mat",density=0.301*g/cm3,2);
+Tetratex_mat->AddElement(C, 0.240183);
+Tetratex_mat->AddElement(F, 0.759817);
+
+
+  G4double TTX_box_x = 22.*cm;
+  G4double TTX_box_y = 20.*cm;
+  G4double TTX_box_z = 8.*cm;
+
+  G4Box* TTX_box = new G4Box("TTX_box",0.5*TTX_box_x,0.5*TTX_box_y,0.5*TTX_box_z);
+  G4LogicalVolume* TTX_box_log = new G4LogicalVolume(TTX_box, Tetratex_mat, "TTX_box_log");
+
+
+  G4VisAttributes* TTX_box_vis = new G4VisAttributes(brown);
+  TTX_box_vis->SetVisibility(true);
+  TTX_box_vis->SetForceSolid(false);
+  TTX_box_log->SetVisAttributes(TTX_box_vis);
+
+  G4double TTX_box_Pos_x = 0.0*cm;
+  G4double TTX_box_Pos_y = 0.*cm;
+  G4double TTX_box_Pos_z = endcapPos_z + 0.5*(endcapHeight1+TTX_box_z) + 0.01*mm; //This is the way it was last time: = endcapPos_z + 0.5*(endcapHeight1+Tetratex_z) + 0.01*mm; 
+
+
+ G4VPhysicalVolume* TTX_phys =  new G4PVPlacement(0,G4ThreeVector(TTX_box_Pos_x,TTX_box_Pos_y,TTX_box_Pos_z),TTX_box_log,"TTX_phys",cavity1_log,false,0);
+
+
+
+// This is how the sample was constructed last time
+//G4ThreeVector TetratexShift(TetratexShift_x,TetratexShift_y,TetratexShift_z);
+//G4VPhysicalVolume* Tetratex_phys = new G4PVPlacement(0,TetratexShift,Tetratex_log,"Tetratex_phys",cavity1_log,false,0);
+
+

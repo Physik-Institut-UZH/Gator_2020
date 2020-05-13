@@ -1,0 +1,14 @@
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   logical Volumes definitions
+
+	G4LogicalVolume* TTX_box_log;
+ 	
+
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   Physical Volumes definitions
+
+	G4VPhysicalVolume* TTX_phys;
+
+	

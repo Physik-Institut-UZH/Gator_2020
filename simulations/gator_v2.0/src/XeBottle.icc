@@ -1,0 +1,175 @@
+//Definition of the materials
+
+G4Material* XeBotSS = new G4Material("XeBotSS",density=7.98*g/cm3,ncomponents =9); //This is a trick to call a normal SS304L with another name for the Random Generating Routine
+XeBotSS -> AddElement(Fe, fractionmass=67.04*perCent);
+XeBotSS -> AddElement(C, fractionmass=0.03*perCent);   
+XeBotSS -> AddElement(Cr, fractionmass=18.00*perCent);
+XeBotSS -> AddElement(Ni, fractionmass=12.00*perCent);
+XeBotSS -> AddElement(Mn, fractionmass=2.00*perCent);
+XeBotSS -> AddElement(Si, fractionmass=0.75*perCent);
+XeBotSS -> AddElement(P, fractionmass=0.05*perCent);
+XeBotSS -> AddElement(S, fractionmass=0.03*perCent);
+XeBotSS -> AddElement(N, fractionmass=0.10*perCent);
+
+
+G4Material* gasXenon = new G4Material("gasXenon",z=54,a=131.293*g/mole,density=1.85*g/cm3,kStateGas,temperature=294.15*kelvin);
+
+
+
+//The Geometry is devided in 2 parts. The first is about the SS components and the second about the internal Xe gas part.
+
+//First part --> Building the SS bottle that contains Xenon gas
+G4double XeBot_ExtCylSS_ID = 0.0*cm;
+G4double XeBot_ExtCylSS_OD = 8.890*cm;
+G4double XeBot_ExtCylSS_Height = 16.999*cm;
+
+
+G4double XeBot_IntCylSS_ID = 0.0*cm;
+G4double XeBot_IntCylSS_OD = 2.032*cm;
+G4double XeBot_IntCylSS_Height = 27.686*cm;
+
+
+G4double XeBot_ExtSphSS_rad = 0.5*XeBot_ExtCylSS_OD;
+
+
+G4Tubs* XeBot_ExtCylSS = new G4Tubs("XeBot_ExtCylSS",0.5*XeBot_ExtCylSS_ID,0.5*XeBot_ExtCylSS_OD,0.5*XeBot_ExtCylSS_Height,0.*deg,360.*deg);
+
+
+G4Tubs* XeBot_IntCylSS = new G4Tubs("XeBot_IntCylSS",0.5*XeBot_IntCylSS_ID,0.5*XeBot_IntCylSS_OD,0.5*XeBot_IntCylSS_Height,0.*deg,360.*deg);
+
+
+G4Sphere* XeBot_ExtSphSS1 = new G4Sphere("XeBot_ExtSphSS1",0.5*XeBot_ExtCylSS_ID,XeBot_ExtSphSS_rad,0*deg,360*deg,0*deg,180*deg);
+
+G4Sphere* XeBot_ExtSphSS2 = new G4Sphere("XeBot_ExtSphSS2",0.5*XeBot_ExtCylSS_ID,XeBot_ExtSphSS_rad,0*deg,360*deg,0*deg,180*deg);
+
+
+G4UnionSolid* XeBot_IntExtCylSS = new G4UnionSolid("XeBot_IntExtCylSS",XeBot_ExtCylSS,XeBot_IntCylSS,0,G4ThreeVector(0,0,0));
+
+
+//Adding the first SS sphere on the "top"
+G4ThreeVector Sph1Shift(0,0,0.5*XeBot_ExtCylSS_Height);
+
+G4UnionSolid* XeBot_IntExtCylSphSS = new G4UnionSolid("XeBot_IntExtCylSphSS",XeBot_IntExtCylSS,XeBot_ExtSphSS1,0,Sph1Shift);
+
+
+//Adding the second SS sphere on the "bottom"
+G4ThreeVector Sph2Shift(0,0,-0.5*XeBot_ExtCylSS_Height);
+
+G4UnionSolid* XeBot_MainSS_geom = new G4UnionSolid("XeBot_MainSS_geom",XeBot_IntExtCylSphSS,XeBot_ExtSphSS2,0,Sph2Shift);
+
+
+G4LogicalVolume* XeBotSS_log = new G4LogicalVolume(XeBot_MainSS_geom,XeBotSS,"XeBotSS_log");
+
+
+G4VisAttributes* XeBotSS_vis = new G4VisAttributes(red);
+XeBotSS_vis -> SetVisibility(true);
+XeBotSS_vis -> SetForceSolid(false);
+XeBotSS_log -> SetVisAttributes(XeBotSS_vis);
+
+
+G4double XeBotSS_pos_x = 0; 
+G4double XeBotSS_pos_y = 0;
+G4double XeBotSS_pos_z = (endcapPos_z+(0.5*endcapHeight1)) + 0.5*(XeBot_ExtCylSS_OD) + (0.005*cm); //Little shift to avoid that the surfaces are in touch
+G4ThreeVector shiftXeBotSS(XeBotSS_pos_x,XeBotSS_pos_y,XeBotSS_pos_z);
+
+
+G4RotationMatrix rotXeBot;
+rotXeBot.rotateY(90*deg);
+rotXeBot.rotateZ(45*deg);
+
+
+G4Transform3D tranfXeBotSS(rotXeBot,shiftXeBotSS);
+
+
+G4VPhysicalVolume* XeBotSS_phys = new G4PVPlacement(tranfXeBotSS,XeBotSS_log,"XeBotSS_phys",cavity1_log,false,0);
+
+
+
+//Second part --> Building the same volume (smaller) for Xenon gas inside the bottle
+G4double XeBot_CylXe_ID = 0.0*cm;
+G4double XeBot_CylXe_OD = 7.976*cm;
+G4double XeBot_CylXe_Height = XeBot_ExtCylSS_Height;
+
+G4double XeBot_SphXe_rad = 0.5*XeBot_CylXe_OD;
+
+
+G4Tubs* XeBot_CylXe = new G4Tubs("XeBot_CylXe",0.5*XeBot_CylXe_ID,0.5*XeBot_CylXe_OD,0.5*XeBot_CylXe_Height,0.*deg,360.*deg);
+
+G4Sphere* XeBot_SphXe1 = new G4Sphere("XeBot_SphXe1",0.5*XeBot_CylXe_ID,XeBot_SphXe_rad,0*deg,360*deg,0*deg,180*deg);
+
+G4Sphere* XeBot_SphXe2 = new G4Sphere("XeBot_SphXe2",0.5*XeBot_CylXe_ID,XeBot_SphXe_rad,0*deg,360*deg,0*deg,180*deg);
+
+
+//Adding the first Xe sphere on the "top"
+G4ThreeVector shiftSphXe1(0,0,0.5*XeBot_CylXe_Height);
+
+G4UnionSolid* XeBot_CylSph1Xe = new G4UnionSolid("XeBot_CylSph1Xe",XeBot_CylXe,XeBot_SphXe1,0,shiftSphXe1);
+
+
+//Adding the second Xe sphere on the "bottom"
+G4ThreeVector shiftSphXe2(0,0,-0.5*XeBot_CylXe_Height);
+
+G4UnionSolid* XeBot_MainXe_geom = new G4UnionSolid("XeBot_MainXe_geom",XeBot_CylSph1Xe,XeBot_SphXe2,0,shiftSphXe2);
+
+
+
+//Building the logical volume and the visualization properties
+G4LogicalVolume* XeBotXe_log = new G4LogicalVolume(XeBot_MainXe_geom,gasXenon,"XeBotXe_log");
+
+G4VisAttributes* XeBotXe_vis = new G4VisAttributes(lblue);
+XeBotXe_vis -> SetVisibility(true);
+XeBotXe_vis -> SetForceSolid(false);
+XeBotXe_log -> SetVisAttributes(XeBotXe_vis);
+
+
+
+//--------Placing it inside the SS bottle (mother volume)--------//
+//Shift coordinates respect to the mother volume
+G4double XeBotXe_pos_x = 0; 
+G4double XeBotXe_pos_y = 0;
+G4double XeBotXe_pos_z = 0; 
+G4ThreeVector shiftXeBotXe(XeBotXe_pos_x,XeBotXe_pos_y,XeBotXe_pos_z);
+
+
+
+
+G4VPhysicalVolume* XeBotXe_phys = new G4PVPlacement(0,shiftXeBotXe,XeBotXe_log,"XeBotXe_phys",XeBotSS_log,false,0);
+
+
+//Dimensions of the pieces of pipes and the corners
+
+//Pipes
+/*G4double XeBot_PipeSS_ID = 0.0*cm;
+G4double XeBot_PipeSS_OD = 0.98*cm;
+G4double XeBot_PipeSS1_Height = 2.5*cm;
+G4double XeBot_PipeSS2_Height = 6.0*cm;
+G4double XeBot_PipeSS3_Height = 10.0*cm;
+G4double XeBot_PipeSS4_Height = 65.0*cm;*/
+
+/*
+G4tubs* XeBot_PipeSS1_geom = new G4tubs("XeBot_PipeSS1_geom",0.5*XeBot_PipeSS_ID,0.5*XeBot_PipeSS_OD,0.5*XeBot_PipeSS1_Height,0*deg,360*deg);
+
+G4tubs* XeBot_PipeSS2_geom = new G4tubs("XeBot_PipeSS2_geom",0.5*XeBot_PipeSS_ID,0.5*XeBot_PipeSS_OD,0.5*XeBot_PipeSS2_Height,0*deg,360*deg);
+
+G4tubs* XeBot_PipeSS3_geom = new G4tubs("XeBot_PipeSS3_geom",0.5*XeBot_PipeSS_ID,0.5*XeBot_PipeSS_OD,0.5*XeBot_PipeSS3_Height,0*deg,360*deg);
+
+G4tubs* XeBot_PipeSS4_geom = new G4tubs("XeBot_PipeSS4_geom",0.5*XeBot_PipeSS_ID,0.5*XeBot_PipeSS_OD,0.5*XeBot_PipeSS4_Height,0*deg,360*deg);
+*/
+
+
+//Corners (Other dimentions are the same as the pipes)
+/*G4double XeBot_CornRad = 2.0*cm;
+
+G4Torus* XeBot_CornSS1 = new G4Torus("XeBot_CornSS1",0.5*XeBot_PipeSS_ID,0.5*XeBot_PipeSS_OD,XeBot_CornRad,0*deg,90*deg);
+G4Torus* XeBot_CornSS2 = new G4Torus("XeBot_CornSS2",0.5*XeBot_PipeSS_ID,0.5*XeBot_PipeSS_OD,XeBot_CornRad,0*deg,90*deg);
+G4Torus* XeBot_CornSS3 = new G4Torus("XeBot_CornSS3",0.5*XeBot_PipeSS_ID,0.5*XeBot_PipeSS_OD,XeBot_CornRad,0*deg,90*deg);
+
+//Combine pipes with corners
+G4ThreeVector Corn1_shift(0,0,0.5*XeBot_PipeSS1_Height);
+G4RotationMatrix* cornrot1 = new G4RotationMatrix();
+cornrot1 -> rotateY(90*deg);
+
+G4UnionSolid* pipesunion1SS = G4UnionSolid("pipesunion1SS",XeBot_PipeSS1_geom,XeBot_CornSS1);
+*/
+
+

@@ -1,0 +1,63 @@
+  G4double PolishPb_box_x = 10.*cm;
+  G4double PolishPb_box_y = 5.*cm;
+  G4double PolishPb_box_z = 20.*cm;
+
+  G4Box* PolishPb_box = new G4Box("PolishPb_box",0.5*PolishPb_box_x,0.5*PolishPb_box_y,0.5*PolishPb_box_z);
+
+  G4LogicalVolume* PolishPb_1_box_log = new G4LogicalVolume(PolishPb_box, PoPb, "PolishPb_1_box_log");
+  G4LogicalVolume* PolishPb_2_box_log = new G4LogicalVolume(PolishPb_box, PoPb, "PolishPb_2_box_log");
+  G4LogicalVolume* PolishPb_3_box_log = new G4LogicalVolume(PolishPb_box, PoPb, "PolishPb_3_box_log");
+  G4LogicalVolume* PolishPb_4_box_log = new G4LogicalVolume(PolishPb_box, PoPb, "PolishPb_4_box_log");
+
+  G4VisAttributes* PolishPb_1_box_vis = new G4VisAttributes(brown);
+  PolishPb_1_box_vis->SetVisibility(true);
+  PolishPb_1_box_vis->SetForceSolid(false);
+  PolishPb_1_box_log->SetVisAttributes(PolishPb_1_box_vis);
+
+  G4VisAttributes* PolishPb_2_box_vis = new G4VisAttributes(brown);
+  PolishPb_2_box_vis->SetVisibility(true);
+  PolishPb_2_box_vis->SetForceSolid(false);
+  PolishPb_2_box_log->SetVisAttributes(PolishPb_2_box_vis);
+
+  G4VisAttributes* PolishPb_3_box_vis = new G4VisAttributes(brown);
+  PolishPb_3_box_vis->SetVisibility(true);
+  PolishPb_3_box_vis->SetForceSolid(false);
+  PolishPb_3_box_log->SetVisAttributes(PolishPb_3_box_vis);
+
+  G4VisAttributes* PolishPb_4_box_vis = new G4VisAttributes(brown);
+  PolishPb_4_box_vis->SetVisibility(true);
+  PolishPb_4_box_vis->SetForceSolid(false);
+  PolishPb_4_box_log->SetVisAttributes(PolishPb_4_box_vis);
+
+  G4double PolishPb_1_box_Pos_x = -5.1*cm;
+  G4double PolishPb_1_box_Pos_y = 9.3*cm;
+  G4double PolishPb_1_box_Pos_z = (12.865/2-1.4325-6.5)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  G4double PolishPb_2_box_Pos_x = -5.1*cm;
+  G4double PolishPb_2_box_Pos_y = -9.3*cm;
+  G4double PolishPb_2_box_Pos_z = (12.865/2-1.4325-6.5)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  G4double PolishPb_3_box_Pos_x = 5.1*cm;
+  G4double PolishPb_3_box_Pos_y = -9.3*cm;
+  G4double PolishPb_3_box_Pos_z = (12.865/2-1.4325-6.5)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  G4double PolishPb_4_box_Pos_x = 5.1*cm;
+  G4double PolishPb_4_box_Pos_y = 9.3*cm;
+  G4double PolishPb_4_box_Pos_z = (12.865/2-1.4325-6.5)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  PolishPb_1_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(PolishPb_1_box_Pos_x,PolishPb_1_box_Pos_y,PolishPb_1_box_Pos_z),
+                         PolishPb_1_box_log,"PolishPb_1_box_phys",cavity1_log,false,0);
+
+  PolishPb_2_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(PolishPb_2_box_Pos_x,PolishPb_2_box_Pos_y,PolishPb_2_box_Pos_z),
+                         PolishPb_2_box_log,"PolishPb_2_box_phys",cavity1_log,false,0);
+
+  PolishPb_3_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(PolishPb_3_box_Pos_x,PolishPb_3_box_Pos_y,PolishPb_3_box_Pos_z),
+                         PolishPb_3_box_log,"PolishPb_3_box_phys",cavity1_log,false,0);
+
+  PolishPb_4_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(PolishPb_4_box_Pos_x,PolishPb_4_box_Pos_y,PolishPb_4_box_Pos_z),
+                         PolishPb_4_box_log,"PolishPb_4_box_phys",cavity1_log,false,0);
+

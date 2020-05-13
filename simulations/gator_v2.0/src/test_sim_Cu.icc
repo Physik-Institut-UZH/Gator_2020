@@ -1,0 +1,83 @@
+//The 40kg are coded as an entire block of PTFE, subtracting to them the central space (for the cryostat) and a groove for the cold finger
+
+
+/*G4double PTFE_x = 248.*mm;
+G4double PTFE_y = 248.*mm;
+G4double PTFE_z_low = 190.*mm;
+G4double PTFE_z_top = 130.*mm;
+
+G4double PTFE_z = PTFE_z_low + PTFE_z_top;*/
+
+G4double Cu_box_y = 25*cm;
+G4double Cu_box_x = 25*cm;
+G4double Cu_box_z = 13.58*cm;
+
+//G4Box* Cu_box = new G4Box("Cu_box",0.5*Cu_box_x,0.5*Cu_box_y,0.5*Cu_box_z);
+
+
+//This box has to be subtracted to the entire block
+/*G4double PTFE_wall_low_thick = 57.*mm;
+
+G4double PTFE_hole_x = PTFE_x - 2.*PTFE_wall_low_thick;
+G4double PTFE_hole_y = PTFE_y - 2.*PTFE_wall_low_thick;
+G4double PTFE_hole_z = PTFE_z_low + 1.*mm; //It will be 1mm longer for subtraction operation
+
+G4ThreeVector PTFE_Hole_shift(0., 0., (-PTFE_z+PTFE_hole_z-1.*mm)/2.);
+
+//This box has to be subtracted to the entire block (for the cold finger)
+G4double PTFE_groove_x = PTFE_wall_low_thick + 1.*mm; //It's 1mm longer for subtraction operation
+G4double PTFE_groove_y = 40.*mm;
+G4double PTFE_groove_z = 30.*mm + 1.*mm; //It's 1mm longer for subtraction operation
+
+G4ThreeVector PTFE_groove_shift((-PTFE_hole_x-PTFE_wall_low_thick)/2., 0., (-PTFE_z+PTFE_groove_z-1.*mm)/2.);*/
+
+G4double vacuum_cylinder_IR = 0.*cm;
+G4double vacuum_cylinder_OR = 8.5*cm;
+G4double vacuum_cylinder_z = 8.5*cm;
+
+G4ThreeVector vacuum_cylinder_shift(0., 0., vacuum_cylinder_z/2.);
+
+G4RotationMatrix rotSubtraction;
+	rotSubtraction.rotateY(90*deg);
+
+G4RotationMatrix rotSubtraction2;
+	rotSubtraction2.rotateX(90*deg);
+
+
+
+//Solid volumes (geometry)
+/*G4Box* PTFE_block = new G4Box("PTFE_block", 0.5*PTFE_x, 0.5*PTFE_y, 0.5*(PTFE_z_low+PTFE_z_top));
+
+G4Box* PTFE_hole = new G4Box("PTFE_hole", 0.5*PTFE_hole_x, 0.5*PTFE_hole_y, 0.5*PTFE_hole_z);
+
+G4Box* PTFE_groove = new G4Box("PTFE_groove", 0.5*PTFE_groove_x, 0.5*PTFE_groove_y, 0.5*PTFE_groove_z);*/
+
+
+G4Box* Cu_box = new G4Box("Cu_box",0.5*Cu_box_x,0.5*Cu_box_y,0.5*Cu_box_z);
+G4Tubs* vacuum_cylinder = new G4Tubs("vacuum_cylinder",vacuum_cylinder_IR,
+							vacuum_cylinder_OR,vacuum_cylinder_z, 0.0*deg, 90*deg);
+
+
+//Boolean operations
+//G4SubtractionSolid* PTFE_Castle_A_geom = new G4SubtractionSolid("PTFE_Castle_A_geom", PTFE_block, PTFE_hole, 0, PTFE_Hole_shift);
+
+G4SubtractionSolid* Cu_subtracted = new G4SubtractionSolid("Cu_subtracted", Cu_box, vacuum_cylinder, 0, vacuum_cylinder_shift);
+
+
+G4LogicalVolume* Cu_final_log = new G4LogicalVolume(Cu_subtracted,Cu,"Cu_final_log");
+
+
+G4VisAttributes* Cu_final_vis = new G4VisAttributes(red);
+Cu_final_vis -> SetVisibility(true);
+Cu_final_vis -> SetForceSolid(false);
+Cu_final_log -> SetVisAttributes(Cu_final_vis);
+
+/*G4ThreeVector PTFE_Castle_shift(0., 0., (PTFE_z-cavity1_z)/2.+0.5*mm); 
+
+G4VPhysicalVolume* PTFE_Castle_phys = new G4PVPlacement(0, PTFE_Castle_shift, PTFE_Castle_log, "PTFE_Castle_phys", cavity1_log, false, 0);*/
+
+//G4ThreeVector Cu_final_shift(0., 0., (PTFE_z-cavity1_z)/2.+0.5*mm); 
+G4VPhysicalVolume* Cu_final_phys = new G4PVPlacement(0, 0, Cu_final_log, "Cu_final_phys", cavity1_log, false, 0);
+
+
+

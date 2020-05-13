@@ -1,0 +1,37 @@
+G4double TiCastle_Tot_x = 20.*cm;
+G4double TiCastle_Tot_y = 20.*cm;
+G4double TiCastle_Tot_z = 30.*cm;
+
+G4double TiCastle_Hole_x = 21.*cm;//The lenghts of the legs is 20cm.... tips to avoid borders problems!!!
+G4double TiCastle_Hole_y = 17.*cm; 
+G4double TiCastle_Hole_z = 19.*cm; //The height of the legs is 18cm.... tips to avoid borders problems!!!
+
+
+G4Box* TiCastle_Tot = new G4Box("TiCastle_Tot",0.5*TiCastle_Tot_x,0.5*TiCastle_Tot_y,0.5*TiCastle_Tot_z);
+
+
+G4Box* TiCastle_Hole = new G4Box("TiCastle_Hole",0.5*TiCastle_Hole_x,0.5*TiCastle_Hole_y,0.5*TiCastle_Hole_z);
+
+
+G4ThreeVector TiCastle_Hole_Shift(0,0,0.5*(TiCastle_Hole_z-TiCastle_Tot_z)-(1.*cm));
+
+G4SubtractionSolid* TiCastle_solid = new G4SubtractionSolid("TiCastle_Tot-TiCastle_Hole",TiCastle_Tot,TiCastle_Hole,0,TiCastle_Hole_Shift);
+
+
+G4Material* Titanium = new G4Material(name="Titanium",z=22.,a=47.867*g/mole,density=4.506*g/cm3);
+
+G4LogicalVolume* TiCastle_log = new G4LogicalVolume(TiCastle_solid,Titanium,"TiCastle_log");
+
+
+G4VisAttributes* TiCastle_vis = new G4VisAttributes(grey);
+TiCastle_vis -> SetVisibility(true);
+TiCastle_vis -> SetForceSolid(false);
+TiCastle_log -> SetVisAttributes(TiCastle_vis);
+
+
+G4ThreeVector TiCastle_Shift(0,0,0.5*(TiCastle_Tot_z-cavity1_z)+0.6*cm); //There is an additional shift to avoid the overlap of this volume and the endcap volume.
+
+G4VPhysicalVolume* TiCastle_phys = new G4PVPlacement(0,TiCastle_Shift,TiCastle_log,"TiCastle_phys",cavity1_log,false,0);
+
+
+

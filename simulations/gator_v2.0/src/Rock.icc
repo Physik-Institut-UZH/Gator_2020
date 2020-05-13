@@ -1,0 +1,35 @@
+//-------------------------------------- China Rock -----------------------------------
+///////////////////////////////////////////////////////////////////////////////////////
+
+	//------- China rock ---------------------------------------------
+	// With the missing 1.01 % I increased the amount of Al and K...
+	G4Material *China_rock = new G4Material ("China_rock", 2.71 * g / cm3, ncomponents=7);
+	China_rock->AddElement( C, 11.88 * perCent);
+	China_rock->AddElement( O, 47.91 * perCent);
+	China_rock->AddElement(Mg, 5.58 * perCent);
+	China_rock->AddElement(Al, 1.535 * perCent);
+	China_rock->AddElement(Si, 1.27 * perCent);
+	China_rock->AddElement( K, 1.535 * perCent);
+	China_rock->AddElement(Ca, 30.29 * perCent);
+
+G4double box_x   = 130. *mm;
+G4double box_y   = 125 *mm;
+G4double box_height  = 15. *mm;
+
+G4Box *ChinaRock_box = new G4Box("ChinaRock_box", 0.5* box_x, 0.5* box_y, 0.5* box_height);
+
+G4LogicalVolume* ChinaRock_box_log = new G4LogicalVolume(ChinaRock_box, China_rock, "ChinaRock_box_log");
+
+G4VisAttributes* ChinaRock_box_vis = new G4VisAttributes(brown);
+ChinaRock_box_vis->SetVisibility(true);
+ChinaRock_box_vis->SetForceSolid(false);
+ChinaRock_box_log->SetVisAttributes(ChinaRock_box_vis);
+
+G4double ChinaRock_box_Pos_x = 0.0*cm;
+G4double ChinaRock_box_Pos_y = 0.0*cm;
+G4double ChinaRock_box_Pos_z = (12.865/2-1.4325+2.41)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+ChinaRock_box_phys = 
+	new G4PVPlacement(0,G4ThreeVector(ChinaRock_box_Pos_x,ChinaRock_box_Pos_y,ChinaRock_box_Pos_z),
+		ChinaRock_box_log,"ChinaRock_box_phys",cavity1_log,false,0);
+

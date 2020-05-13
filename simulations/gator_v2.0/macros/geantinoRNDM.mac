@@ -1,0 +1,32 @@
+# create empty scene
+#/vis/scene/create
+
+#/vis/open DAWNFILE
+#/vis/open VRML2FILE
+/vis/open HepRepFile
+#/vis/open OGLIX
+/vis/viewer/set/style wireframe
+
+/vis/drawVolume
+
+/tracking/storeTrajectory 1
+/vis/scene/add/trajectories
+#/vis/drawVolume
+/vis/scene/add/hits
+/vis/scene/endOfEventAction accumulate 1000
+
+#/Xe/printModulo 10
+
+/xe/gun/particle gamma
+/xe/gun/energy 1 keV
+
+/xe/gun/type Volume
+/xe/gun/shape Cylinder
+/xe/gun/radius 80 mm
+/xe/gun/halfz 20 mm
+/xe/gun/center 0 0 171.9 mm
+/xe/gun/confine KapCoaxCable_phys
+
+/run/beamOn 1000
+
+/vis/viewer/flush

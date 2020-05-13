@@ -1,0 +1,20 @@
+#235U 186keV line direct simulation
+
+#/Xe/generateCE  0
+/tracking/verbose 0
+/run/verbose 0
+/control/verbose 0
+/Xe/gun/verbose 0
+
+/Xe/saveHits 1
+/Xe/printModulo 10000
+
+/Xe/gun/particle gamma
+#/Xe/gun/ion 55 137 0 0
+
+/Xe/gun/energy 185.72 keV
+
+/Xe/gun/type PointRandomPMTAl2O3
+
+/run/beamOn 1000000
+

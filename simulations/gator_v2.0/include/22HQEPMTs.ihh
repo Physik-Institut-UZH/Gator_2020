@@ -1,0 +1,19 @@
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   logical Volumes definitions
+
+	G4LogicalVolume* PMT_matrix_log;
+	G4LogicalVolume* WIN_matrix_log; 
+	G4LogicalVolume* PMTside_log; 
+	G4LogicalVolume* WINside_log; 
+ 	
+
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   Physical Volumes definitions
+
+	G4VPhysicalVolume* PMT_matrix_phys;
+	G4VPhysicalVolume* WIN_matrix_phys; 
+	G4VPhysicalVolume* PMTside_phys; 
+	G4VPhysicalVolume* WINside_phys; 
+	

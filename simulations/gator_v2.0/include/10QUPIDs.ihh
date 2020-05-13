@@ -1,0 +1,19 @@
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   logical Volumes definitions
+
+	G4LogicalVolume* QUPID_matrix_log;
+	G4LogicalVolume* BotWin_matrix_log; 
+	G4LogicalVolume* TopWin_matrix_log;
+	G4LogicalVolume* Inside_matrix_log; 
+ 	
+
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   Physical Volumes definitions
+
+	G4VPhysicalVolume* QUPID_matrix_phys;
+	G4VPhysicalVolume* BotWin_matrix_phys; 
+	G4VPhysicalVolume* TopWin_matrix_phys;
+	G4VPhysicalVolume* Inside_matrix_phys; 
+	

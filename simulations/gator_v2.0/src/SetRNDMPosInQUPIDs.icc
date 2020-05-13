@@ -1,0 +1,27 @@
+void
+GeParticleSource::SetRandomPosInMaterial_QUPIDs()
+{
+	G4String VolName;
+	G4double posX = 0., posY = 0., posZ = 0.;
+
+	G4VPhysicalVolume *theVolume;
+
+	do{
+		G4double theRandR2 = CLHEP::RandFlat::shoot(11.5*11.5,2.9*2.9);
+		G4double theRandTheta = CLHEP::RandFlat::shoot(0.0,2*pi);
+		G4double theRandZ = CLHEP::RandFlat::shoot(19.,27.5);
+		posX = sqrt(theRandR2)*cos(theRandTheta)*cm;
+		posY = sqrt(theRandR2)*sin(theRandTheta)*cm;
+		posZ = theRandZ*cm;
+		theVolume =
+			gNavigator->LocateGlobalPointAndSetup(G4ThreeVector(posX,posY,posZ));
+//		G4cout<<"posX = "<<posX<<"  posY = "<<posY<<"  posZ = "<<posZ<<G4endl;
+
+	}while(theVolume->GetLogicalVolume()->GetMaterial()->GetName()!="quartz");
+
+        particle_position.setX(posX);
+        particle_position.setY(posY);
+        particle_position.setZ(posZ);
+
+}
+

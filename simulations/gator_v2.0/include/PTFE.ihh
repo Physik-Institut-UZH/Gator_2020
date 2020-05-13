@@ -1,0 +1,15 @@
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   logical Volumes definitions
+
+	G4LogicalVolume* PTFE_1_box_log;
+	G4LogicalVolume* PTFE_2_box_log;
+ 	
+
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   Physical Volumes definitions
+
+	G4VPhysicalVolume* PTFE_1_box_phys;
+	G4VPhysicalVolume* PTFE_2_box_phys;
+	

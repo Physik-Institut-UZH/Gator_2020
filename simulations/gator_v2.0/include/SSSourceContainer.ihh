@@ -1,0 +1,19 @@
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   logical Volumes definitions
+
+	G4LogicalVolume* cylinder_log;
+	G4LogicalVolume* SSbase_log;
+	G4LogicalVolume* SSring_log;
+	G4LogicalVolume* source_log;
+ 	
+
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   Physical Volumes definitions
+
+	G4VPhysicalVolume* cylinder_phys;
+	G4VPhysicalVolume* SSbase_phys;
+	G4VPhysicalVolume* SSring_phys;
+	G4VPhysicalVolume* source_phys;
+	

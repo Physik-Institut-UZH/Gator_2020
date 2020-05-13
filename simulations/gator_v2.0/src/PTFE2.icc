@@ -1,0 +1,116 @@
+  G4double PTFE_box_x = 10.*cm;
+  G4double PTFE_box_y = 4.*cm;
+  G4double PTFE_box_z = 20.*cm;
+
+  G4Box* PTFE_box = new G4Box("PTFE_box",0.5*PTFE_box_x,0.5*PTFE_box_y,0.5*PTFE_box_z);
+  G4Box* PTFE_box1 = new G4Box("PTFE_box1",0.5*PTFE_box_x,0.5*PTFE_box_z,0.5*PTFE_box_y);
+
+  G4LogicalVolume* PTFE_1_box_log = new G4LogicalVolume(PTFE_box, Teflon2, "PTFE_1_box_log");
+  G4LogicalVolume* PTFE_2_box_log = new G4LogicalVolume(PTFE_box, Teflon2, "PTFE_2_box_log");
+  G4LogicalVolume* PTFE_3_box_log = new G4LogicalVolume(PTFE_box, Teflon2, "PTFE_3_box_log");
+  G4LogicalVolume* PTFE_4_box_log = new G4LogicalVolume(PTFE_box, Teflon2, "PTFE_4_box_log");
+  G4LogicalVolume* PTFE_5_box_log = new G4LogicalVolume(PTFE_box1, Teflon2, "PTFE_5_box_log");
+  G4LogicalVolume* PTFE_6_box_log = new G4LogicalVolume(PTFE_box1, Teflon2, "PTFE_6_box_log");
+  G4LogicalVolume* PTFE_7_box_log = new G4LogicalVolume(PTFE_box1, Teflon2, "PTFE_7_box_log");
+  G4LogicalVolume* PTFE_8_box_log = new G4LogicalVolume(PTFE_box1, Teflon2, "PTFE_8_box_log");
+
+  G4VisAttributes* PTFE_1_box_vis = new G4VisAttributes(brown);
+  PTFE_1_box_vis->SetVisibility(true);
+  PTFE_1_box_vis->SetForceSolid(false);
+  PTFE_1_box_log->SetVisAttributes(PTFE_1_box_vis);
+
+  G4VisAttributes* PTFE_2_box_vis = new G4VisAttributes(brown);
+  PTFE_2_box_vis->SetVisibility(true);
+  PTFE_2_box_vis->SetForceSolid(false);
+  PTFE_2_box_log->SetVisAttributes(PTFE_2_box_vis);
+
+  G4VisAttributes* PTFE_3_box_vis = new G4VisAttributes(brown);
+  PTFE_3_box_vis->SetVisibility(true);
+  PTFE_3_box_vis->SetForceSolid(false);
+  PTFE_3_box_log->SetVisAttributes(PTFE_3_box_vis);
+
+  G4VisAttributes* PTFE_4_box_vis = new G4VisAttributes(brown);
+  PTFE_4_box_vis->SetVisibility(true);
+  PTFE_4_box_vis->SetForceSolid(false);
+  PTFE_4_box_log->SetVisAttributes(PTFE_4_box_vis);
+
+  G4VisAttributes* PTFE_5_box_vis = new G4VisAttributes(brown);
+  PTFE_5_box_vis->SetVisibility(true);
+  PTFE_5_box_vis->SetForceSolid(false);
+  PTFE_5_box_log->SetVisAttributes(PTFE_5_box_vis);
+
+  G4VisAttributes* PTFE_6_box_vis = new G4VisAttributes(brown);
+  PTFE_6_box_vis->SetVisibility(true);
+  PTFE_6_box_vis->SetForceSolid(false);
+  PTFE_6_box_log->SetVisAttributes(PTFE_6_box_vis);
+
+  G4VisAttributes* PTFE_7_box_vis = new G4VisAttributes(brown);
+  PTFE_7_box_vis->SetVisibility(true);
+  PTFE_7_box_vis->SetForceSolid(false);
+  PTFE_7_box_log->SetVisAttributes(PTFE_7_box_vis);
+
+  G4VisAttributes* PTFE_8_box_vis = new G4VisAttributes(brown);
+  PTFE_8_box_vis->SetVisibility(true);
+  PTFE_8_box_vis->SetForceSolid(false);
+  PTFE_8_box_log->SetVisAttributes(PTFE_8_box_vis);
+
+  G4double PTFE_1_box_Pos_x = -5.5*cm;
+  G4double PTFE_1_box_Pos_y = 9.0*cm;
+  G4double PTFE_1_box_Pos_z = (12.865/2-1.4325-7.5)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  G4double PTFE_2_box_Pos_x = -5.5*cm;
+  G4double PTFE_2_box_Pos_y = -9.0*cm;
+  G4double PTFE_2_box_Pos_z = (12.865/2-1.4325-7.5)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  G4double PTFE_3_box_Pos_x = 5.5*cm;
+  G4double PTFE_3_box_Pos_y = 9.0*cm;
+  G4double PTFE_3_box_Pos_z = (12.865/2-1.4325-7.5)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  G4double PTFE_4_box_Pos_x = 5.5*cm;
+  G4double PTFE_4_box_Pos_y = -9.0*cm;
+  G4double PTFE_4_box_Pos_z = (12.865/2-1.4325-7.5)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  G4double PTFE_5_box_Pos_x = 5.5*cm;
+  G4double PTFE_5_box_Pos_y = 0.*cm;
+  G4double PTFE_5_box_Pos_z = (12.865/2-1.4325+5.1)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  G4double PTFE_6_box_Pos_x = -5.5*cm;
+  G4double PTFE_6_box_Pos_y = 0.*cm;
+  G4double PTFE_6_box_Pos_z = (12.865/2-1.4325+5.1)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  G4double PTFE_7_box_Pos_x = -5.5*cm;
+  G4double PTFE_7_box_Pos_y = 0.*cm;
+  G4double PTFE_7_box_Pos_z = (12.865/2-1.4325+9.2)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  G4double PTFE_8_box_Pos_x = 5.5*cm;
+  G4double PTFE_8_box_Pos_y = 0.*cm;
+  G4double PTFE_8_box_Pos_z = (12.865/2-1.4325+9.2)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  PTFE_1_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(PTFE_1_box_Pos_x,PTFE_1_box_Pos_y,PTFE_1_box_Pos_z),
+                         PTFE_1_box_log,"PTFE_1_box_phys",cavity1_log,false,0);
+
+  PTFE_2_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(PTFE_2_box_Pos_x,PTFE_2_box_Pos_y,PTFE_2_box_Pos_z),
+                         PTFE_2_box_log,"PTFE_2_box_phys",cavity1_log,false,0);
+  PTFE_3_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(PTFE_3_box_Pos_x,PTFE_3_box_Pos_y,PTFE_3_box_Pos_z),
+                         PTFE_3_box_log,"PTFE_3_box_phys",cavity1_log,false,0);
+  PTFE_4_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(PTFE_4_box_Pos_x,PTFE_4_box_Pos_y,PTFE_4_box_Pos_z),
+                         PTFE_4_box_log,"PTFE_4_box_phys",cavity1_log,false,0);
+  PTFE_5_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(PTFE_5_box_Pos_x,PTFE_5_box_Pos_y,PTFE_5_box_Pos_z),
+                         PTFE_5_box_log,"PTFE_5_box_phys",cavity1_log,false,0);
+  PTFE_6_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(PTFE_6_box_Pos_x,PTFE_6_box_Pos_y,PTFE_6_box_Pos_z),
+                         PTFE_6_box_log,"PTFE_6_box_phys",cavity1_log,false,0);
+  PTFE_7_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(PTFE_7_box_Pos_x,PTFE_7_box_Pos_y,PTFE_7_box_Pos_z),
+                         PTFE_7_box_log,"PTFE_7_box_phys",cavity1_log,false,0);
+  PTFE_8_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(PTFE_8_box_Pos_x,PTFE_8_box_Pos_y,PTFE_8_box_Pos_z),
+                         PTFE_8_box_log,"PTFE_8_box_phys",cavity1_log,false,0);
+
+
+

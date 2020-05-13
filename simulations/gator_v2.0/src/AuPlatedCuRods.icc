@@ -1,0 +1,35 @@
+//23x Au plated Cu rods: 9x with dimension (190x11x5)mm^3; 4x with dimension (190x22x5)mm^3
+//They are arranged on top of the endcap as a single box of dimension (190x99x15)mm^3
+//The plating is 2.5 um thick (not coded)
+//Total mass: 2.34 kg
+
+
+
+G4double CuRods_x = 190*mm;
+G4double CuRods_y = 99*mm;
+G4double CuRods_z = 15*mm;
+
+
+// Geometry
+G4Box* CuRods_geom = new G4Box("CuRods_geom",0.5*CuRods_x,0.5*CuRods_y,0.5*CuRods_z);
+
+
+// Logical volume
+G4LogicalVolume* CuRods_log = new G4LogicalVolume(CuRods_geom,Cu,"CuRods_log");
+
+
+// Set visibility properties
+G4VisAttributes* CuRods_vis = new G4VisAttributes(red);
+CuRods_vis -> SetVisibility(true);
+CuRods_vis -> SetForceSolid(false);
+CuRods_log -> SetVisAttributes(CuRods_vis);
+
+
+// Offset coordinates
+G4ThreeVector CuRods_offset(0.,0.,endcapPos_z+0.5*(endcapHeight1+CuRods_z)+0.01*mm);
+
+
+// Placement
+G4VPhysicalVolume* CuRods_phys = new G4PVPlacement(0,CuRods_offset,CuRods_log,"CuRods_phys",cavity1_log,false,0);
+
+G4cout << "\nThe total mass of the Au plated Cu rods is: " << (CuRods_log->GetMass())/g << " g\n" << G4endl;

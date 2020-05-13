@@ -1,0 +1,47 @@
+//2000x DSub pins couples: the males and the females are in two separate bags.
+//They are arranged on top of the endcap as two boxes of dimension (71x95x19)mm^3
+//Total mass: 328 g
+
+
+
+G4double DSubPins_x = 71.*mm;
+G4double DSubPins_y = 95.*mm;
+G4double DSubPins_z = 19.*mm;
+
+//Defining the material
+G4double DSubPins_mass = 328.*g;
+density = DSubPins_mass/(DSubPins_x*DSubPins_y*DSubPins_z);
+
+G4double AuFracMass = 1.3e-3;
+G4double PbFracMass = 1e-2;
+G4double CuFracMass = 1.-AuFracMass-PbFracMass;
+
+
+G4Material* DSubPins_mat = new G4Material("DSubPins_mat",density,ncomponents=3);
+  	DSubPins_mat->AddElement(Cu_el,CuFracMass);
+  	DSubPins_mat->AddElement(Pb_el,PbFracMass);
+  	DSubPins_mat->AddElement(Au,AuFracMass);
+
+// Geometry
+G4Box* DSubPins_geom = new G4Box("DSubPins_geom",0.5*DSubPins_x,0.5*DSubPins_y,0.5*DSubPins_z);
+
+
+// Logical volume
+G4LogicalVolume* DSubPins_log = new G4LogicalVolume(DSubPins_geom,DSubPins_mat,"DSubPins_log");
+
+
+// Set visibility properties
+G4VisAttributes* DSubPins_vis = new G4VisAttributes(red);
+DSubPins_vis -> SetVisibility(true);
+DSubPins_vis -> SetForceSolid(false);
+DSubPins_log -> SetVisAttributes(DSubPins_vis);
+
+
+// Offset coordinates
+G4ThreeVector DSubPins_offset(0.,0.,endcapPos_z+0.5*(endcapHeight1+DSubPins_z)+0.01*mm);
+
+
+// Placement
+G4VPhysicalVolume* DSubPins_phys = new G4PVPlacement(0,DSubPins_offset,DSubPins_log,"DSubPins_phys",cavity1_log,false,0);
+
+G4cout << "\nThe total mass of the 2000 D-Sub pin couples is: " << (DSubPins_log->GetMass())/g << " g\n" << G4endl;

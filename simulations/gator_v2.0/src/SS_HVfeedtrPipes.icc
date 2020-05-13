@@ -1,0 +1,108 @@
+//This are 60 stainless steel pipes for HV feedthrough put in the cavity and thanks to Andreas I have the coordinates
+//This geometry source code should always be with 2 coordinate file: "LargePipesCoord.dat" and "SmallPipesCoord.dat". Here there are the x-y coordinates for each pipe... many thanks to Andreas James for this work!!!
+
+G4cout << "\n\nThe sample is: 55 feedthrough ssteel piepes" << G4endl;
+
+//Dimensions of large pipes
+G4double SS_largePipe_ID = (22.0-0.05)*mm;
+G4double SS_largePipe_OD = (25.0-0.05)*mm;
+
+//Dimensions of small pipes
+G4double SS_smallPipe_ID = (10.6-0.05)*mm;
+G4double SS_smallPipe_OD = (12.0-0.05)*mm;
+
+G4double SS_Pipe_H = 200.0*mm; //This is the same for both types
+
+
+//Definition of the geometry
+G4Tubs* SS_largePipe = new G4Tubs("SS_largePipe",0.5*SS_largePipe_ID,0.5*SS_largePipe_OD,0.5*SS_Pipe_H,0.*deg,360.*deg);
+G4Tubs* SS_smallPipe = new G4Tubs("SS_smallPipe",0.5*SS_smallPipe_ID,0.5*SS_smallPipe_OD,0.5*SS_Pipe_H,0.*deg,360.*deg);
+
+
+
+//Construction of logical volume
+G4LogicalVolume* SS_largePipe_log = new G4LogicalVolume(SS_largePipe,Steel_304,"SS_largePipe_log");
+G4LogicalVolume* SS_smallPipe_log = new G4LogicalVolume(SS_smallPipe,Steel_304,"SS_smallPipe_log");
+
+
+
+// Set visibility properties
+G4VisAttributes* SS_largePipe_vis = new G4VisAttributes(red);
+SS_largePipe_vis -> SetVisibility(true);
+SS_largePipe_vis -> SetForceSolid(false);
+SS_largePipe_log -> SetVisAttributes(SS_largePipe_vis);
+
+G4VisAttributes* SS_smallPipe_vis = new G4VisAttributes(red);
+SS_smallPipe_vis -> SetVisibility(true);
+SS_smallPipe_vis -> SetForceSolid(false);
+SS_smallPipe_log -> SetVisAttributes(SS_smallPipe_vis);
+
+
+
+// Vertical shift coordinates for each pipe is the same (they are referred to the center of the cavity).
+G4double coordZ = 0.5*(SS_Pipe_H - cavity1_z) + 0.05*mm; //This is the same for each pipe
+
+
+
+//Here I have to load from files the X and Y coordinates of the pipes
+std::vector<G4VPhysicalVolume*>* v_SS_largePipe_phys = new std::vector<G4VPhysicalVolume*>;
+std::vector<G4VPhysicalVolume*>* v_SS_smallPipe_phys = new std::vector<G4VPhysicalVolume*>;
+
+G4double coordX, coordY;
+std::string coordX_str, coordY_str, physVolName;
+G4ThreeVector SS_PipeOffset;
+
+//Large pipes coordinates loading and placing of the physical volumes
+std::ifstream coord_file("/home/atp/galloway/g4sims/gator_v1.2/LargePipesCoord.dat");
+G4int i=1;
+while(coord_file.good()){
+	
+	coord_file >> coordX_str;
+	coord_file >> coordY_str;
+	coordX = (-atof(coordX_str.c_str())+125)*mm;
+	coordY = (atof(coordY_str.c_str())-125)*mm;
+	SS_PipeOffset.setX(coordX);
+	SS_PipeOffset.setY(coordY);
+	SS_PipeOffset.setZ(coordZ);
+	//v_SS_PipeOffset.push_back(SS_PipeOffset);
+	
+	physVolName = "SS_largePipe_phys";
+	physVolName += i;
+	//v_physVolName.push_back(physVolName);
+	
+	v_SS_largePipe_phys->push_back(new G4PVPlacement(0,SS_PipeOffset,SS_largePipe_log,physVolName.c_str(),cavity1_log,false,0));
+	
+	if(i==26) break;
+	
+	i++;
+}
+coord_file.close();
+
+G4cout << "Large pipes number: " << v_SS_largePipe_phys->size() << G4endl;
+
+//Small pipes coordinates loading and placing of the physical volumes (if the first one works)
+coord_file.open("/home/atp/galloway/g4sims/gator_v1.2/SmallPipesCoord.dat");
+i=1; //Reset this counter
+while(coord_file.good()){
+	
+	coord_file >> coordX_str;
+	coord_file >> coordY_str;
+	coordX = (-atof(coordX_str.c_str())+125)*mm;
+	coordY = (atof(coordY_str.c_str())-125)*mm;
+	SS_PipeOffset.setX(coordX);
+	SS_PipeOffset.setY(coordY);
+	SS_PipeOffset.setZ(coordZ);
+	//v_SS_PipeOffset.push_back(SS_PipeOffset);
+	
+	physVolName = "SS_smallPipe_phys";
+	physVolName += i;
+	//v_physVolName.push_back(physVolName);
+	
+	v_SS_smallPipe_phys->push_back(new G4PVPlacement(0,SS_PipeOffset,SS_smallPipe_log,physVolName.c_str(),cavity1_log,false,0));
+	
+	if(i==29) break;
+	
+	i++;
+}
+coord_file.close();
+G4cout << "Small pipes number: " << v_SS_smallPipe_phys->size() << "\n\n" << G4endl;

@@ -1,0 +1,19 @@
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   logical Volumes definitions
+
+	G4LogicalVolume* PolishPb_1_box_log;
+	G4LogicalVolume* PolishPb_2_box_log;
+	G4LogicalVolume* PolishPb_3_box_log;
+	G4LogicalVolume* PolishPb_4_box_log;
+ 	
+
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   Physical Volumes definitions
+
+	G4VPhysicalVolume* PolishPb_1_box_phys;
+	G4VPhysicalVolume* PolishPb_2_box_phys;
+	G4VPhysicalVolume* PolishPb_3_box_phys;
+	G4VPhysicalVolume* PolishPb_4_box_phys;
+	

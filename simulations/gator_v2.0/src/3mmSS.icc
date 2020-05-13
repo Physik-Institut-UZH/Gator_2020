@@ -1,0 +1,73 @@
+//-------------------------------------- Stainless Steel Box 
+  G4Material* StainlessSteel = new G4Material(name="StainlessSteel" , density=8.03*g/cm3, ncomponents=10);
+       StainlessSteel->AddElement(Fe, fractionmass=0.64945);
+       StainlessSteel->AddElement(C, fractionmass=0.008);
+       StainlessSteel->AddElement(Cr, fractionmass=0.17);
+       StainlessSteel->AddElement(Ni, fractionmass=0.12);
+       StainlessSteel->AddElement(Mn, fractionmass=0.02);
+       StainlessSteel->AddElement(Si, fractionmass=0.01);
+       StainlessSteel->AddElement(P, fractionmass=0.00045);
+       StainlessSteel->AddElement(S, fractionmass=0.0003);
+       StainlessSteel->AddElement(Mo, fractionmass=0.025);
+       StainlessSteel->AddElement(Ti, fractionmass=0.004);
+
+  G4double SS_side_box_x = 1.2*cm;
+  G4double SS_side_box_y = 12*cm;
+  G4double SS_side_box_z = 19*cm;
+
+  G4double SS_top_box_x = 10*cm;
+  G4double SS_top_box_y = 10*cm;
+  G4double SS_top_box_z = 2.4*cm;
+
+  G4Box* SS_side1_box = new G4Box("SS_side1_box",0.5*SS_side_box_x,0.5*SS_side_box_y,0.5*SS_side_box_z);
+  G4Box* SS_side2_box = new G4Box("SS_side2_box",0.5*SS_side_box_x,0.5*SS_side_box_y,0.5*SS_side_box_z);
+
+  G4Box* SS_top_box = new G4Box("SS_top_box",0.5*SS_top_box_x,0.5*SS_top_box_y,0.5*SS_top_box_z);
+
+  G4LogicalVolume* SS_side1_box_log = new G4LogicalVolume(SS_side1_box, StainlessSteel, "SS_side1_box_log");
+  G4LogicalVolume* SS_side2_box_log = new G4LogicalVolume(SS_side2_box, StainlessSteel, "SS_side2_box_log");
+
+  G4LogicalVolume* SS_top_box_log = new G4LogicalVolume(SS_top_box, StainlessSteel, "SS_top_box_log");
+
+  G4VisAttributes* SS_side1_box_vis = new G4VisAttributes(brown);
+  SS_side1_box_vis->SetVisibility(true);
+  SS_side1_box_vis->SetForceSolid(false);
+  SS_side1_box_log->SetVisAttributes(SS_side1_box_vis);
+
+  G4VisAttributes* SS_side2_box_vis = new G4VisAttributes(brown);
+  SS_side2_box_vis->SetVisibility(true);
+  SS_side2_box_vis->SetForceSolid(false);
+  SS_side2_box_log->SetVisAttributes(SS_side2_box_vis);
+
+  G4VisAttributes* SS_top_box_vis = new G4VisAttributes(brown);
+  SS_top_box_vis->SetVisibility(true);
+  SS_top_box_vis->SetForceSolid(false);
+  SS_top_box_log->SetVisAttributes(SS_top_box_vis);
+
+  G4double SS_side1_box_Pos_x = -8.0*cm;
+  G4double SS_side1_box_Pos_y = 5.0*cm;
+  G4double SS_side1_box_Pos_z = (12.865/2-1.4325-6.)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  G4double SS_side2_box_Pos_x = 7.0*cm;
+  G4double SS_side2_box_Pos_y = 4.3*cm;
+  G4double SS_side2_box_Pos_z = (12.865/2-1.4325-9.5)*cm; //base is 1.0cm from bottom, decrease z to lower base
+  G4RotationMatrix rm;
+  rm.rotateZ(45*deg);
+
+  G4double SS_top_box_Pos_x = 0.0*cm;
+  G4double SS_top_box_Pos_y = 4.0*cm;
+  G4double SS_top_box_Pos_z = (12.865/2-1.4325+1.41)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  SS_side1_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(SS_side1_box_Pos_x,SS_side1_box_Pos_y,SS_side1_box_Pos_z),
+                         SS_side1_box_log,"SS_side1_box_phys",cavity1_log,false,0);
+
+  SS_side2_box_phys = 
+       new G4PVPlacement(G4Transform3D(rm,G4ThreeVector(SS_side2_box_Pos_x,SS_side2_box_Pos_y,SS_side2_box_Pos_z)),
+                         SS_side2_box_log,"SS_side2_box_phys",cavity1_log,false,0);
+
+  SS_top_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(SS_top_box_Pos_x,SS_top_box_Pos_y,SS_top_box_Pos_z),
+                         SS_top_box_log,"SS_top_box_phys",cavity1_log,false,0);
+
+

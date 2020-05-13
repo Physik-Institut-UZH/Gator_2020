@@ -1,0 +1,26 @@
+//--------------------------------------Polypropylene disk
+G4Material* Densimet = new G4Material(name="Densimet", density = 17.6*g/cm3, ncomponents = 3);
+Densimet->AddElement(W,fractionmass=0.925);
+Densimet->AddElement(Ni,fractionmass=0.05);
+Densimet->AddElement(Fe,fractionmass=0.025);
+
+G4double cylinder_ID   = 0 *mm;
+G4double cylinder_OD   = 72 *mm;
+G4double cylinder_height  = 63 *mm;
+
+G4Tubs *cylinder = new G4Tubs("cylinder", 0.5* cylinder_ID, 0.5* cylinder_OD, 0.5* cylinder_height, 0.0*deg, 360.0*deg);
+
+G4double cylinder_Pos_z = (12.865/2-1.4325+0.21+4.)*cm+0.5*cylinder_height;
+G4double cylinder_Pos_x  = 0.*cylinder_OD;
+G4double cylinder_Pos_y  = 0.*cylinder_OD;
+
+G4LogicalVolume *cylinder_log = new G4LogicalVolume(cylinder, Densimet, "cylinder_log");
+
+G4VisAttributes* cylinder_vis = new G4VisAttributes(brown);
+cylinder_vis->SetVisibility(true);
+cylinder_vis->SetForceSolid(false);
+cylinder_log->SetVisAttributes(cylinder_vis);
+
+cylinder_phys = 
+		new G4PVPlacement(0, G4ThreeVector(cylinder_Pos_x,  cylinder_Pos_y, cylinder_Pos_z), 
+							cylinder_log, "cylinder_phys", cavity1_log, false, 0);

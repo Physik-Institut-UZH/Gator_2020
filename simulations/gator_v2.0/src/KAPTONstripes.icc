@@ -1,0 +1,51 @@
+// Define the connection stripes as a mixture between kapton and Cu (the wires)
+G4double mfrac_H = 0.0137;
+G4double mfrac_C = 0.358;
+G4double mfrac_N = 0.0380;
+G4double mfrac_O = 0.108;
+G4double mfrac_Cu = 1 - (mfrac_H + mfrac_C + mfrac_N + mfrac_O);
+
+G4Material* KAPTstr_mat = new G4Material(name="KAPTstr_mat",density=2.74*g/cm3,ncomponents=5);
+KAPTstr_mat -> AddElement(H,mfrac_H);
+KAPTstr_mat -> AddElement(C,mfrac_C);
+KAPTstr_mat -> AddElement(N,mfrac_N);
+KAPTstr_mat -> AddElement(O,mfrac_O);
+KAPTstr_mat -> AddMaterial(Cu,mfrac_Cu); //In the main file is defined as a "material"
+
+
+
+// The stripes are coiled around the end cap ==> internal diam = external end-cap diam
+G4double KAPTstr_ID = endcapOD1 + 0.0005*cm; //Added a little gap to avoid surfaces contact
+G4double KAPTstr_OD = KAPTstr_ID + 0.46*cm; //Each coil add 1 mm to the diameter
+G4double KAPTstr_Height = 4.57*cm;
+
+
+// Geometry
+G4Tubs* KAPTstr = new G4Tubs("KAPTstr",0.5*KAPTstr_ID,0.5*KAPTstr_OD,0.5*KAPTstr_Height,0.*deg,360.*deg);
+
+
+// Logical volume
+G4LogicalVolume* KAPTstr_log = new G4LogicalVolume(KAPTstr,KAPTstr_mat,"KAPTstr_log");
+
+
+// Set visibility properties
+G4VisAttributes* KAPTstr_vis = new G4VisAttributes(red);
+KAPTstr_vis -> SetVisibility(true);
+KAPTstr_vis -> SetForceSolid(false);
+KAPTstr_log -> SetVisAttributes(KAPTstr_vis);
+
+
+// Shift coordinates
+G4double KAPTstrShift_x = 0;
+G4double KAPTstrShift_y = 0; 
+G4double KAPTstrShift_z = endcapPos_z + 0.5*(endcapHeight1 - KAPTstr_Height) - 1.5*cm; //The upper edge of the KAPTON is 1.5 cm below the top edge of the end-cap
+
+G4ThreeVector KAPTstr_Shift(KAPTstrShift_x,KAPTstrShift_y,KAPTstrShift_z);
+
+
+// Placement
+G4VPhysicalVolume* KAPTstr_phys = new G4PVPlacement(0,KAPTstr_Shift,KAPTstr_log,"KAPTstr_phys",cavity1_log,false,0);
+
+/*
+The z absolute coordinates of the KAPTstr should be (bottom, center, top): (14.04, 11.755, 9.47)cm 
+*/

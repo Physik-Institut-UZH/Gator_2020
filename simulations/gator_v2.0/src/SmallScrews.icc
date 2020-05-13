@@ -1,0 +1,36 @@
+//-------------------------------------- Small Screws -----------------------------------
+///////////////////////////////////////////////////////////////////////////////////////
+
+//------ Screws material---------------------------------------
+G4Material* StainlessSteel = new G4Material(name="StainlessSteel" , density=8.03*g/cm3, ncomponents=10);
+       StainlessSteel->AddElement(Fe, fractionmass=0.64505);
+       StainlessSteel->AddElement(C, fractionmass=0.008);
+       StainlessSteel->AddElement(Cr, fractionmass=0.1686);
+       StainlessSteel->AddElement(Ni, fractionmass=0.1186);
+       StainlessSteel->AddElement(Mn, fractionmass=0.02);
+       StainlessSteel->AddElement(Si, fractionmass=0.01);
+       StainlessSteel->AddElement(P, fractionmass=0.00045);
+       StainlessSteel->AddElement(S, fractionmass=0.0003);
+       StainlessSteel->AddElement(Mo, fractionmass=0.025);
+       StainlessSteel->AddElement(Ti, fractionmass=0.004);
+
+G4double box_width   = 41. *mm;
+G4double box_height  = 20. *mm;
+
+G4Box *Screws_box = new G4Box("Screws_box", 0.5* box_width, 0.5* box_width, 0.5* box_height);
+
+G4LogicalVolume* Screws_box_log = new G4LogicalVolume(Screws_box, StainlessSteel, "Screws_box_log");
+
+G4VisAttributes* Screws_box_vis = new G4VisAttributes(brown);
+Screws_box_vis->SetVisibility(true);
+Screws_box_vis->SetForceSolid(false);
+Screws_box_log->SetVisAttributes(Screws_box_vis);
+
+G4double Screws_box_Pos_x = 0.0*cm;
+G4double Screws_box_Pos_y = 0.0*cm;
+G4double Screws_box_Pos_z = (12.865/2-1.4325+1.41)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+Screws_box_phys = 
+	new G4PVPlacement(0,G4ThreeVector(Screws_box_Pos_x,Screws_box_Pos_y,Screws_box_Pos_z),
+		Screws_box_log,"Screws_box_phys",cavity1_log,false,0);
+

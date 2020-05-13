@@ -1,0 +1,23 @@
+//-------------------------------------- Polyethylene Box 
+  G4double poly_box_x = 18*cm;
+  G4double poly_box_y = 12*cm;
+  G4double poly_box_z = 10*cm;
+
+  G4Box* Poly_box = new G4Box("Poly_box",0.5*poly_box_x,0.5*poly_box_y,0.5*poly_box_z);
+
+  G4LogicalVolume* poly_box_log = new G4LogicalVolume(Poly_box, Polyethylene, "poly_box_log");
+
+  G4VisAttributes* poly_box_vis = new G4VisAttributes(brown);
+  poly_box_vis->SetVisibility(true);
+  poly_box_vis->SetForceSolid(false);
+  poly_box_log->SetVisAttributes(poly_box_vis);
+
+  G4double poly_box_Pos_x = 0.0*cm;
+  G4double poly_box_Pos_y = 0.0*cm;
+  G4double poly_box_Pos_z = (12.865/2-1.4325+5.1)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  poly_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(poly_box_Pos_x,poly_box_Pos_y,poly_box_Pos_z),
+                         poly_box_log,"poly_box_phys",cavity1_log,false,0);
+
+

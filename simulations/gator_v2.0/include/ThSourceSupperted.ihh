@@ -1,0 +1,23 @@
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   logical Volumes definitions
+
+	G4LogicalVolume* container_log;
+	G4LogicalVolume* container_bot_log;
+	G4LogicalVolume* container_top_log;
+	G4LogicalVolume* source_holder_log;
+	G4LogicalVolume* source_holder_top_log;
+	G4LogicalVolume* source_log;
+ 	
+
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   Physical Volumes definitions
+
+	G4VPhysicalVolume* container_phys;
+	G4VPhysicalVolume* container_bot_phys;
+	G4VPhysicalVolume* container_top_phys;
+	G4VPhysicalVolume* source_holder_phys;
+	G4VPhysicalVolume* source_holder_top_phys;
+	G4VPhysicalVolume* source_phys;
+	

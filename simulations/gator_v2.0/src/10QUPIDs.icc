@@ -1,0 +1,158 @@
+//-------------------------------------- 10 QUPIDs -----------------------------------
+///////////////////////////////////////////////////////////////////////////////////////
+
+// NO Cathode Material!
+
+// Quarz for QUPID window
+G4Material *quartz = new G4Material(name = "quartz", density = 2.22 * g / cm3, ncomponents = 2);
+quartz->AddElement(Si, 1);
+quartz->AddElement(O,  2);
+
+// Body of the QUPID: Hollow Cylinder
+G4double QUPID_ID   = 60 *mm;
+G4double QUPID_OD   = 65 *mm;
+G4double QUPID_height  = 40.0 *mm;
+
+// Bottom Hollow Cylinder where the APD is sitting on
+G4double QUPID_Inside_ID = 14.0*mm;
+G4double QUPID_Inside_OD = 18.0*mm;
+
+// Bottom End
+G4double QUPID_BotWin_ID = 0.0*mm;
+G4double QUPID_BotWin_OD = 63*mm;
+G4double QUPID_BotWin_height = 2.5*mm;
+
+// Top Window - Hollow emisphere
+G4double QUPID_TopWin_ID = 60.0*mm;
+G4double QUPID_TopWin_OD = 65*mm;
+
+G4RotationMatrix rotation;
+    rotation.rotateX(90*deg);
+
+G4Sphere *QUPID_TopWin = new G4Sphere("QUPID_TopWin",								// const G4String& pName,
+									0.5* QUPID_TopWin_ID, 0.5* QUPID_TopWin_OD, // G4double pRmin, G4double pRmax,
+									0*deg, 180*deg, 						// G4double pSPhi, G4double pDPhi,
+									0*deg, 180*deg);						// G4double pSTheta, G4double pDTheta);
+G4Tubs *QUPID_BotWin = new G4Tubs("QUPID_BotWin", 0.5* QUPID_BotWin_ID, 0.5* QUPID_BotWin_OD, 0.5* QUPID_BotWin_height, 0.0*deg, 360.0*deg);
+G4Tubs *QUPID_Inside = new G4Tubs("QUPID_Inside", 0.5* QUPID_Inside_ID, 0.5* QUPID_Inside_OD, 0.5* QUPID_height, 0.0*deg, 360.0*deg);
+G4Tubs *QUPID = new G4Tubs("QUPID", 0.5* QUPID_ID, 0.5* QUPID_OD, 0.5* QUPID_height, 0.0*deg, 360.0*deg);
+
+G4double hdist = 66 * mm; // horizontal displacement step of the QUPIDs
+G4double vdist = 80 * mm; // vertical displacement step of the QUPIDs
+G4double off_height = -54 * mm; // height offset
+
+const G4int Nrows = 3; // number of rows
+const G4int Ncols = 3; // number of columns
+
+char QUPID_matrix_l[100];
+char QUPID_matrix_log[100];
+char QUPID_matrix_p[100];
+char QUPID_matrix_phys[100];
+
+char TopWin_matrix_l[100];
+char TopWin_matrix_log[100];
+char TopWin_matrix_p[100];
+char TopWin_matrix_phys[100];
+
+char BotWin_matrix_l[100];
+char BotWin_matrix_log[100];
+char BotWin_matrix_p[100];
+char BotWin_matrix_phys[100];
+
+char Inside_matrix_l[100];
+char Inside_matrix_log[100];
+char Inside_matrix_p[100];
+char Inside_matrix_phys[100];
+
+G4double QUPID_Pos_x;
+G4double QUPID_Pos_y = 9.2*cm;
+G4double QUPID_Pos_z;
+G4double QUPID_TopWin_Pos_z;
+G4double QUPID_BotWin_Pos_z;
+G4double QUPID_Inside_Pos_z;
+
+for(G4int NSr = 0; NSr < Nrows; NSr++)
+{
+	for(G4int NSc = 0; NSc < Ncols; NSc++)
+	{
+		QUPID_Pos_x 		= -1*hdist + NSc * hdist ;
+		QUPID_Pos_z 		= off_height + NSr * vdist + 4*mm;
+		QUPID_Inside_Pos_z	= QUPID_Pos_z - 2*mm;
+		QUPID_TopWin_Pos_z	= QUPID_Pos_z + 0.5*QUPID_height + 0.5*mm; 
+		QUPID_BotWin_Pos_z	= QUPID_Pos_z - 0.5*QUPID_height - 3*mm;
+
+		sprintf(QUPID_matrix_l,    "QUPID_matrix%d_%d_log",  NSc, NSr);
+		sprintf(QUPID_matrix_log,  "QUPID_matrix%d_%d_log",  NSc, NSr);
+		sprintf(QUPID_matrix_p,    "QUPID_matrix%d_%d_phys", NSc, NSr);
+		sprintf(QUPID_matrix_phys, "QUPID_matrix%d_%d_phys", NSc, NSr);
+		
+		sprintf(TopWin_matrix_l,    "TopWin_matrix%d_%d_log",  NSc, NSr);
+		sprintf(TopWin_matrix_log,  "TopWin_matrix%d_%d_log",  NSc, NSr);
+		sprintf(TopWin_matrix_p,    "TopWin_matrix%d_%d_phys", NSc, NSr);
+		sprintf(TopWin_matrix_phys, "TopWin_matrix%d_%d_phys", NSc, NSr);
+	   
+		sprintf(Inside_matrix_l,    "Inside_matrix%d_%d_log",  NSc, NSr);
+		sprintf(Inside_matrix_log,  "Inside_matrix%d_%d_log",  NSc, NSr);
+		sprintf(Inside_matrix_p,    "Inside_matrix%d_%d_phys", NSc, NSr);
+		sprintf(Inside_matrix_phys, "Inside_matrix%d_%d_phys", NSc, NSr);
+		
+		sprintf(BotWin_matrix_l,    "BotWin_matrix%d_%d_log",  NSc, NSr);
+		sprintf(BotWin_matrix_log,  "BotWin_matrix%d_%d_log",  NSc, NSr);
+		sprintf(BotWin_matrix_p,    "BotWin_matrix%d_%d_phys", NSc, NSr);
+		sprintf(BotWin_matrix_phys, "BotWin_matrix%d_%d_phys", NSc, NSr);
+
+// ----------------------- place QUPIDs ----------------------------
+		G4LogicalVolume *QUPID_matrix_log = new G4LogicalVolume(QUPID, quartz, QUPID_matrix_l);
+		G4VPhysicalVolume *QUPID_matrix_phys;
+		QUPID_matrix_phys = new G4PVPlacement(0, G4ThreeVector(QUPID_Pos_x,  QUPID_Pos_y, QUPID_Pos_z), QUPID_matrix_log, QUPID_matrix_p, cavity1_log, false, 0);
+
+G4cout<<"QUPID_matrix_phys"<<G4endl;
+// ----------------------- place QUPID Top window above the QUPID tube -----------------------
+		G4LogicalVolume *TopWin_matrix_log = new G4LogicalVolume(QUPID_TopWin, quartz, TopWin_matrix_l);
+		G4VPhysicalVolume *TopWin_matrix_phys;
+		TopWin_matrix_phys = new G4PVPlacement(G4Transform3D(rotation, G4ThreeVector(QUPID_Pos_x, QUPID_Pos_y, QUPID_TopWin_Pos_z)), TopWin_matrix_log, TopWin_matrix_p, cavity1_log, false, 0);
+G4cout<<"TopWin_matrix_phys"<<G4endl;
+	   
+// ----------------------- place QUPID bottom window below the QUPID tube -----------------------
+		G4LogicalVolume *BotWin_matrix_log = new G4LogicalVolume(QUPID_BotWin, quartz, Inside_matrix_l);
+		G4VPhysicalVolume *BotWin_matrix_phys;
+		BotWin_matrix_phys = new G4PVPlacement(0, G4ThreeVector(QUPID_Pos_x, QUPID_Pos_y, QUPID_BotWin_Pos_z), BotWin_matrix_log, BotWin_matrix_p, cavity1_log, false, 0);
+G4cout<<"BotWin_matrix_phys"<<G4endl;
+	   
+// ----------------------- place QUPID bottom window below the QUPID tube -----------------------
+		G4LogicalVolume *Inside_matrix_log = new G4LogicalVolume(QUPID_Inside, quartz, BotWin_matrix_l);
+		G4VPhysicalVolume *Inside_matrix_phys;
+		Inside_matrix_phys = new G4PVPlacement(0, G4ThreeVector(QUPID_Pos_x, QUPID_Pos_y, QUPID_Inside_Pos_z), Inside_matrix_log, Inside_matrix_p, cavity1_log, false, 0);
+G4cout<<"Inside_matrix_phys"<<G4endl;
+	   
+	
+	// vis
+		G4VisAttributes* QUPID_vis = new G4VisAttributes(gray);
+		QUPID_vis->SetVisibility(true);
+		QUPID_vis->SetForceSolid(false);
+	
+		G4VisAttributes* BotWin_vis = new G4VisAttributes(yellow);
+		BotWin_vis->SetVisibility(true);
+		BotWin_vis->SetForceSolid(false);
+	
+		QUPID_matrix_log->SetVisAttributes(QUPID_vis);
+		QUPID_matrix_log->SetVisAttributes(QUPID_vis);
+	
+		BotWin_matrix_log->SetVisAttributes(BotWin_vis);
+		BotWin_matrix_log->SetVisAttributes(BotWin_vis);
+
+		G4VisAttributes* TopWin_vis = new G4VisAttributes(gray);
+		TopWin_vis->SetVisibility(true);
+		TopWin_vis->SetForceSolid(false);
+	
+		G4VisAttributes* Inside_vis = new G4VisAttributes(yellow);
+		Inside_vis->SetVisibility(true);
+		Inside_vis->SetForceSolid(false);
+	
+		TopWin_matrix_log->SetVisAttributes(TopWin_vis);
+		TopWin_matrix_log->SetVisAttributes(TopWin_vis);
+	
+		Inside_matrix_log->SetVisAttributes(Inside_vis);
+		Inside_matrix_log->SetVisAttributes(Inside_vis);
+	}
+}

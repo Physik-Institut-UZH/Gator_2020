@@ -1,0 +1,107 @@
+//Field shaping rings for XENONnT: 71.66 kg OFHC copper
+
+
+//Material definition to use the SetRNDMPos___() function
+
+G4Material* OFHC_Cu_mat = new G4Material(name="OFHC_Cu_mat",density=8.920*g/cm3,ncomponents=1);
+OFHC_Cu_mat -> AddMaterial(Cu,1.0); //It is common Cu material
+
+
+//////////////////////////////////////////////////
+// attempt to subtract endcap volume from copper (overlaps with cavity)
+// subtracting roughly volume of the crystal encasing; added clearance to OD and height
+//	G4double EndCapHeight = 19.55*cm + 0.5*cm;
+//	G4double EndCapOD = 12.7*cm + 1.0*cm;
+//	G4double BlockWidth = 6.1*cm;
+	
+// Coldstick height: cold_stick_cover4_Pos_z
+//	G4Tubs* DetCyl = new G4Tubs("DetCyl", 0.0, EndCapOD, 0.5*EndCapHeight, 0.0*deg, 360.0*deg);
+
+// filling the cavity to top of endcap
+//	G4double brick_A_x = 24.9*cm;
+//	G4double brick_A_y = 24.9*cm;
+
+//	G4Box* Cu_bot = new G4Box("Cu_bot",0.5*brick_A_x,0.5*brick_A_y,0.5*EndCapHeight);
+
+// subtract endcap and base
+//    G4SubtractionSolid* OFHC_Cu1 = new G4SubtractionSolid("OFHC_Cu1", Cu_bot, DetCyl);
+//////////////////////////////////////////////////
+
+	G4double EndCapHeight = 19.55*cm + 0.5*cm;
+	G4double BrickLength = 24.0*cm;
+	G4double BrickWidth = 4.8*cm;
+	G4double ColdStickOD = 10*cm;
+
+	G4Box* Cu_brick1 = new G4Box("Cu_brick1", 0.5*BrickWidth, 0.5*BrickLength, 0.5*EndCapHeight);  //red
+	G4Box* Cu_brick2 = new G4Box("Cu_brick2", 0.5*BrickLength-BrickWidth, 0.5*BrickWidth, 0.5*EndCapHeight);
+	G4Box* Cu_brick3 = new G4Box("Cu_brick3", 0.5*BrickLength-BrickWidth, 0.5*BrickWidth, 0.5*EndCapHeight);  //lblue?
+	G4Box* Cu_brick4 = new G4Box("Cu_brick4", 0.5*BrickWidth, 0.5*BrickLength, 0.5*EndCapHeight);
+    G4Box* ColdStick = new G4Box("Cold", 0.5*BrickWidth, 0.5*ColdStickOD, 0.5*ColdStickOD);
+
+
+// covering endcap (to reach 71.66 kg copper)
+	G4double Brick_Top_z = 2*cm;
+	G4Box* Cu_brick5 = new G4Box("OFHC_Cu2",0.5*BrickLength,0.5*BrickLength,0.5*Brick_Top_z);
+
+    G4ThreeVector  translation(0, 0, -0.5*EndCapHeight + 0.5*ColdStickOD);
+
+
+    G4SubtractionSolid* ColdSide = new G4SubtractionSolid("ColdSide", Cu_brick1, ColdStick, 0, translation);
+
+
+// create logical volumes
+
+	G4LogicalVolume* Cu_brick1_log = new G4LogicalVolume(ColdSide,OFHC_Cu_mat,"Cu_brick1_log"); //red
+	G4LogicalVolume* Cu_brick2_log = new G4LogicalVolume(Cu_brick2,OFHC_Cu_mat,"Cu_brick2_log");
+	G4LogicalVolume* Cu_brick3_log = new G4LogicalVolume(Cu_brick3,OFHC_Cu_mat,"Cu_brick3_log"); //purple
+	G4LogicalVolume* Cu_brick4_log = new G4LogicalVolume(Cu_brick4,OFHC_Cu_mat,"Cu_brick4_log");
+	G4LogicalVolume* Cu_Top_log = new G4LogicalVolume(Cu_brick5,OFHC_Cu_mat,"Cu_Top_log");
+
+	G4double CuMass1 = Cu_brick1_log->GetMass(true, false, OFHC_Cu_mat);
+	G4double CuMass2 = Cu_brick2_log->GetMass(true, false, OFHC_Cu_mat);
+	G4double CuMass3 = Cu_brick3_log->GetMass(true, false, OFHC_Cu_mat);
+	G4double CuMass4 = Cu_brick4_log->GetMass(true, false, OFHC_Cu_mat);
+	G4double CuMass5 = Cu_Top_log->GetMass(true, false, OFHC_Cu_mat);
+	G4cout <<"CuMass Bottom: " << (CuMass1 + CuMass2 + CuMass3 + CuMass4)/kg << G4endl;
+	G4cout <<"CuMass Top: " << CuMass5/kg << G4endl;
+	
+	G4VisAttributes* Cu_vis1 = new G4VisAttributes(red);
+	G4VisAttributes* Cu_vis2 = new G4VisAttributes(red);
+	G4VisAttributes* Cu_vis3 = new G4VisAttributes(red);
+	G4VisAttributes* Cu_vis4 = new G4VisAttributes(red);
+	Cu_vis1 -> SetVisibility(true);
+	Cu_vis2 -> SetVisibility(true);
+	Cu_vis3 -> SetVisibility(true);
+	Cu_vis4 -> SetVisibility(true);
+	Cu_vis1 -> SetForceSolid(false);
+	Cu_vis2 -> SetForceSolid(false);
+	Cu_vis3 -> SetForceSolid(false);
+	Cu_vis4 -> SetForceSolid(false);
+	Cu_brick1_log -> SetVisAttributes(Cu_vis1);
+	Cu_brick2_log -> SetVisAttributes(Cu_vis2);
+	Cu_brick3_log -> SetVisAttributes(Cu_vis3);
+	Cu_brick4_log -> SetVisAttributes(Cu_vis4);
+	Cu_Top_log -> SetVisAttributes(Cu_vis1);
+
+
+// Place the blocks
+    G4double CuTop_pos_z = (0.5*Brick_Top_z + -cavity1_z/2 + EndCapHeight + 0.01*mm);
+	G4double CuBot_pos_z = (-cavity1_z/2 + 0.5*EndCapHeight); 
+//	G4double CuBot1_pos_z = (-cavity1_z/2 + 0.5*(EndCapHeight - cold_stick_cover4_Pos_z) + cold_stick_cover4_Pos_z); 
+	G4double CuBot_LR = (-cavity1_x/2 + 0.5*BrickWidth);
+//	G4double CuBot_FB = (-cavity1_x/2 + BrickWidth/2);
+
+// Cu1 is over coldfinger
+	new G4PVPlacement(0, G4ThreeVector(CuBot_LR, 0, CuBot_pos_z), Cu_brick1_log, "OFHC_Cu1_phys", cavity1_log, false, 0, true);  //red
+	new G4PVPlacement(0, G4ThreeVector(0, CuBot_LR, CuBot_pos_z), Cu_brick2_log, "OFHC_Cu2_phys", cavity1_log, false, 0, true);
+	new G4PVPlacement(0, G4ThreeVector(0, -CuBot_LR, CuBot_pos_z), Cu_brick3_log, "OFHC_Cu3_phys", cavity1_log, false, 0, true);  //purple
+	new G4PVPlacement(0, G4ThreeVector(-CuBot_LR, 0, CuBot_pos_z), Cu_brick4_log, "OFHC_Cu4_phys", cavity1_log, false, 0, true);
+	new G4PVPlacement(0, G4ThreeVector(0, 0, CuTop_pos_z), Cu_Top_log, "OFHC_Cu5_phys", cavity1_log, false, 0, true);
+	
+	
+//	G4double Cu1_Vol = OFHC_Cu1_phys->GetVolume();
+//	G4double Cu2_Vol = OFHC_Cu2_phys->GetVolume();
+//	G4cout <<"CuVol1: " << Cu1_Vol << G4endl;
+//	G4cout <<"CuVol2: " << Cu2_Vol << G4endl;
+
+

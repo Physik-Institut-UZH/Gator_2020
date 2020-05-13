@@ -1,0 +1,19 @@
+#234mPa 1001 keV line direct simulation
+
+#/Xe/generateCE  0
+/tracking/verbose 0
+/run/verbose 0
+/control/verbose 0
+/Xe/gun/verbose 0
+
+/Xe/saveHits 1
+/Xe/printModulo 10000
+
+/Xe/gun/particle gamma
+
+/Xe/gun/energy 1001.026 keV
+
+/Xe/gun/type PointRandomPMTAl2O3
+
+/run/beamOn 1000000
+

@@ -1,0 +1,116 @@
+//--------------------------------------Polypropylene disk
+  G4double plastic_container_ID = 0.0*cm;
+  G4double plastic_container_OD = 9.2*cm;
+  G4double plastic_container_Height = 0.2*cm;
+
+  G4Tubs* plastic_disk = new G4Tubs("plastic_disk", 0.5*plastic_container_ID, 0.5*plastic_container_OD,
+				   0.5*plastic_container_Height, 0.0*deg, 360.0*deg);
+
+  G4LogicalVolume* plastic_container_log = new G4LogicalVolume(plastic_disk,Polystyrene,"plastic_container_log");
+
+  G4VisAttributes* plastic_container_vis = new G4VisAttributes(white);
+  plastic_container_vis->SetVisibility(true);
+  plastic_container_vis->SetForceSolid(false);
+  plastic_container_log->SetVisAttributes(plastic_container_vis);
+
+  G4double plastic_container_Pos_x = 0.0*cm; // 
+  G4double plastic_container_Pos_y = 0.0*cm;
+  G4double plastic_container_Pos_z = (12.865/2-1.4325+0.21)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  plastic_container_phys = 
+       new G4PVPlacement(0,G4ThreeVector(plastic_container_Pos_x,plastic_container_Pos_y,plastic_container_Pos_z),
+                         plastic_container_log,"plastic_container_phys",cavity1_log,false,0);
+
+//-------------------------------------- 6 stacks of PMT bases
+  G4double bases_stack_x = 2.54*cm;
+  G4double bases_stack_y = 2.54*cm;
+  G4double bases_stack_z = 5.04*cm;
+
+  G4Box* Stack = new G4Box("Stack",0.5*bases_stack_x,0.5*bases_stack_y,0.5*bases_stack_z);
+
+  G4LogicalVolume* bases_stack1_log = new G4LogicalVolume(Stack, Cirlex_sim, "bases_stack1_log");
+  G4LogicalVolume* bases_stack2_log = new G4LogicalVolume(Stack, Cirlex_sim, "bases_stack2_log");
+  G4LogicalVolume* bases_stack3_log = new G4LogicalVolume(Stack, Cirlex_sim, "bases_stack3_log");
+  G4LogicalVolume* bases_stack4_log = new G4LogicalVolume(Stack, Cirlex_sim, "bases_stack4_log");
+  G4LogicalVolume* bases_stack5_log = new G4LogicalVolume(Stack, Cirlex_sim, "bases_stack5_log");
+  G4LogicalVolume* bases_stack6_log = new G4LogicalVolume(Stack, Cirlex_sim, "bases_stack6_log");
+
+  G4VisAttributes* bases_stack1_vis = new G4VisAttributes(brown);
+  bases_stack1_vis->SetVisibility(true);
+  bases_stack1_vis->SetForceSolid(false);
+  bases_stack1_log->SetVisAttributes(bases_stack1_vis);
+
+  G4VisAttributes* bases_stack2_vis = new G4VisAttributes(brown);
+  bases_stack2_vis->SetVisibility(true);
+  bases_stack2_vis->SetForceSolid(false);
+  bases_stack2_log->SetVisAttributes(bases_stack2_vis);
+
+  G4VisAttributes* bases_stack3_vis = new G4VisAttributes(brown);
+  bases_stack3_vis->SetVisibility(true);
+  bases_stack3_vis->SetForceSolid(false);
+  bases_stack3_log->SetVisAttributes(bases_stack3_vis);
+
+  G4VisAttributes* bases_stack4_vis = new G4VisAttributes(brown);
+  bases_stack4_vis->SetVisibility(true);
+  bases_stack4_vis->SetForceSolid(false);
+  bases_stack4_log->SetVisAttributes(bases_stack4_vis);
+
+  G4VisAttributes* bases_stack5_vis = new G4VisAttributes(brown);
+  bases_stack5_vis->SetVisibility(true);
+  bases_stack5_vis->SetForceSolid(false);
+  bases_stack5_log->SetVisAttributes(bases_stack5_vis);
+
+  G4VisAttributes* bases_stack6_vis = new G4VisAttributes(brown);
+  bases_stack6_vis->SetVisibility(true);
+  bases_stack6_vis->SetForceSolid(false);
+  bases_stack6_log->SetVisAttributes(bases_stack6_vis);
+
+  G4double bases_stack1_Pos_x = 0.0*cm;
+  G4double bases_stack1_Pos_y = 0.0*cm;
+  G4double bases_stack1_Pos_z = (12.865/2-1.4325+2.53+0.41)*cm;
+
+  G4double bases_stack2_Pos_x = 0.0*cm;
+  G4double bases_stack2_Pos_y = 2.55*cm;
+  G4double bases_stack2_Pos_z = (12.865/2-1.4325+2.53+0.41)*cm;
+
+  G4double bases_stack3_Pos_x = -2.55*cm;
+  G4double bases_stack3_Pos_y = 0.0*cm;
+  G4double bases_stack3_Pos_z = (12.865/2-1.4325+2.53+0.41)*cm;
+
+  G4double bases_stack4_Pos_x = -1.28*cm;
+  G4double bases_stack4_Pos_y = -2.55*cm;
+  G4double bases_stack4_Pos_z = (12.865/2-1.4325+2.53+0.41)*cm;
+
+  G4double bases_stack5_Pos_x = 1.28*cm;
+  G4double bases_stack5_Pos_y = -2.55*cm;
+  G4double bases_stack5_Pos_z = (12.865/2-1.4325+2.53+0.41)*cm;
+
+  G4double bases_stack6_Pos_x = 2.55*cm;
+  G4double bases_stack6_Pos_y = 0.0*cm;
+  G4double bases_stack6_Pos_z = (12.865/2-1.4325+2.53+0.41)*cm;
+
+  bases_stack1_phys = 
+       new G4PVPlacement(0,G4ThreeVector(bases_stack1_Pos_x,bases_stack1_Pos_y,bases_stack1_Pos_z),
+                         bases_stack1_log,"bases_stack1_phys",cavity1_log,false,0);
+
+  bases_stack2_phys = 
+       new G4PVPlacement(0,G4ThreeVector(bases_stack2_Pos_x,bases_stack2_Pos_y,bases_stack2_Pos_z),
+                         bases_stack2_log,"bases_stack2_phys",cavity1_log,false,0);
+
+  bases_stack3_phys = 
+       new G4PVPlacement(0,G4ThreeVector(bases_stack3_Pos_x,bases_stack3_Pos_y,bases_stack3_Pos_z),
+                         bases_stack3_log,"bases_stack3_phys",cavity1_log,false,0);
+
+  bases_stack4_phys = 
+       new G4PVPlacement(0,G4ThreeVector(bases_stack4_Pos_x,bases_stack4_Pos_y,bases_stack4_Pos_z),
+                         bases_stack4_log,"bases_stack4_phys",cavity1_log,false,0);
+
+  bases_stack5_phys = 
+       new G4PVPlacement(0,G4ThreeVector(bases_stack5_Pos_x,bases_stack5_Pos_y,bases_stack5_Pos_z),
+                         bases_stack5_log,"bases_stack5_phys",cavity1_log,false,0);
+
+  bases_stack6_phys = 
+       new G4PVPlacement(0,G4ThreeVector(bases_stack6_Pos_x,bases_stack6_Pos_y,bases_stack6_Pos_z),
+                         bases_stack6_log,"bases_stack6_phys",cavity1_log,false,0);
+
+

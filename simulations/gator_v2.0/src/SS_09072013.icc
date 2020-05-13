@@ -1,0 +1,66 @@
+// 15 Plates of stinless steel 316L around the crystal in groups of 4 and 3 of them on top the endcap
+// The plates dimensions are (17.5x17.5x0.5)cm3
+// The coding is simplified. 2 kind of blocks will be used
+
+
+
+//Dimensions of the 3 "blocks" around the endcap
+G4double block1_width = 17.5*cm;
+G4double brick1_height = 17.5*cm;
+G4double brick1_thick = 4*0.5*cm;
+
+//Dimensions of the "block" on top the endap
+G4double block2_width = 17.5*cm;
+G4double brick2_height = 17.5*cm;
+G4double brick2_thick = 3*0.5*cm;
+
+G4Box* Block1 = new G4Box("Block1",0.5*brick1_thick,0.5*block1_width,0.5*brick1_height);
+G4Box* Block2 = new G4Box("Block2",0.5*brick2_height,0.5*block2_width,0.5*brick2_thick);
+
+G4LogicalVolume* Block1_log = new G4LogicalVolume(Block1,SS316L,"Block1_log");
+G4LogicalVolume* Block2_log = new G4LogicalVolume(Block2,SS316L,"Block2_log");
+
+
+//Shift coordinates for placement
+G4double block1_x = baseOD1/2. + brick1_thick/2.;
+G4double block1_y = 0;
+G4double block1_z = -(cavity1_z/2) + (brick1_height/2);
+
+
+G4double block2_x = block1_x - (brick1_thick+block1_width)/2.;
+G4double block2_y = baseOD1/2. + brick1_thick/2.;
+G4double block2_z = -(cavity1_z/2) + (brick1_height/2);
+
+
+G4double block3_x = block1_x - (brick1_thick+block1_width)/2.;
+G4double block3_y = -(baseOD1/2. + brick1_thick/2.);
+G4double block3_z = -(cavity1_z/2) + (brick1_height/2);
+
+
+G4double block4_x = 0;
+G4double block4_y = 0;
+G4double block4_z = endcapPos_z + (endcapHeight1+brick2_thick)/2.;
+
+
+G4ThreeVector block1_shift(block1_x,block1_y,block1_z);
+G4ThreeVector block2_shift(block2_x,block2_y,block2_z);
+G4ThreeVector block3_shift(block3_x,block3_y,block3_z);
+G4ThreeVector block4_shift(block4_x,block4_y,block4_z);
+
+G4RotationMatrix block_rot;
+block_rot.rotateZ(90*deg);
+
+
+//Placement of the volumes
+G4VPhysicalVolume* Block1_phys = new G4PVPlacement(0,block1_shift,Block1_log,"Block1_phys",cavity1_log,false,0);
+G4VPhysicalVolume* Block2_phys = new G4PVPlacement(G4Transform3D(block_rot,block2_shift),Block1_log,"Block2_phys",cavity1_log,false,0);
+G4VPhysicalVolume* Block3_phys = new G4PVPlacement(G4Transform3D(block_rot,block3_shift),Block1_log,"Block3_phys",cavity1_log,false,0);
+G4VPhysicalVolume* Block4_phys = new G4PVPlacement(0,block4_shift,Block2_log,"Block4_phys",cavity1_log,false,0);
+
+
+//Attributes
+G4VisAttributes* Block_vis = new G4VisAttributes(red);
+Block_vis -> SetVisibility(true);
+Block_vis -> SetForceSolid(false);
+Block1_log -> SetVisAttributes(Block_vis);
+Block2_log -> SetVisAttributes(Block_vis);

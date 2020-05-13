@@ -1,0 +1,23 @@
+//Each cirlex board is 24x24x1.5 mm =>try with 80 of them in 4 piles of 20
+//Code them as only 1 block
+G4double cirlexX = 48*mm;
+G4double cirlexY = 48*mm;
+G4double cirlexZ = 30*mm;
+
+G4Box* cirlex_sol = new G4Box("cirlex_sol",0.5*cirlexX,0.5*cirlexY,0.5*cirlexZ);
+
+G4LogicalVolume* cirlex_log = new G4LogicalVolume(cirlex_sol,Cirlex,"cirlex_log");
+
+G4VisAttributes* cirlex_vis = new G4VisAttributes(red);
+cirlex_vis -> SetVisibility(true);
+cirlex_vis -> SetForceSolid(false);
+cirlex_log -> SetVisAttributes(cirlex_vis);
+
+//Placement:
+G4double cirlex_posX = 0;
+G4double cirlex_posY = 0;
+G4double cirlex_posZ = endcapPos_z + 0.5*(endcapHeight1+cirlexZ);
+
+G4ThreeVector cirlex_offset(cirlex_posX,cirlex_posY,cirlex_posZ);
+
+G4VPhysicalVolume* cirlex_phys = new G4PVPlacement(0,cirlex_offset,cirlex_log,"cirlex_phys",cavity1_log,false,0);

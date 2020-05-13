@@ -1,0 +1,46 @@
+//1000x MMCX connctors couples Telegertner: the males and the females are in two separate bags.
+//They are arranged on top of the endcap as two boxes of dimension (102x102x30)mm^3
+//Total mass: 219g + 223g (male + fem)
+
+
+
+G4double MMCX_x = 102*mm;
+G4double MMCX_y = 102*mm;
+G4double MMCX_z = 30*mm;
+
+//Defining the material
+G4double MMCX_mass = 219.*g + 223.*g;
+density = MMCX_mass/(MMCX_x*MMCX_y*MMCX_z);
+
+G4double PbFracMass = 2.7e-2;
+G4double CuFracMass = 1.-PbFracMass;
+
+
+G4Material* MMCX_mat = new G4Material("MMCX_mat",density,ncomponents=2);
+  	MMCX_mat->AddElement(Cu_el,CuFracMass);
+  	MMCX_mat->AddElement(Pb_el,PbFracMass);
+  	
+
+// Geometry
+G4Box* MMCX_geom = new G4Box("MMCX_geom",0.5*MMCX_x,0.5*MMCX_y,0.5*MMCX_z);
+
+
+// Logical volume
+G4LogicalVolume* MMCX_log = new G4LogicalVolume(MMCX_geom,MMCX_mat,"MMCX_log");
+
+
+// Set visibility properties
+G4VisAttributes* MMCX_vis = new G4VisAttributes(red);
+MMCX_vis -> SetVisibility(true);
+MMCX_vis -> SetForceSolid(false);
+MMCX_log -> SetVisAttributes(MMCX_vis);
+
+
+// Offset coordinates
+G4ThreeVector MMCX_offset(0.,0.,endcapPos_z+0.5*(endcapHeight1+MMCX_z)+0.01*mm);
+
+
+// Placement
+G4VPhysicalVolume* MMCX_phys = new G4PVPlacement(0,MMCX_offset,MMCX_log,"MMCX_phys",cavity1_log,false,0);
+
+G4cout << "\nThe total mass of the 500 MMCX connectors couples is: " << (MMCX_log->GetMass())/g << " g\n" << G4endl;

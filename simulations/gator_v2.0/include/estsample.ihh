@@ -1,0 +1,5 @@
+//---------------   logical volumes definitions 
+ G4LogicalVolume* estsample_log;
+
+ //---------------   physical volumes definitions 
+ G4VPhysicalVolume* estsample_phys;

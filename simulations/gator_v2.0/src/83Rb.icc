@@ -1,0 +1,53 @@
+//--------------------------------------Polypropylene disk
+  G4Material* Polypropylene = new G4Material(name="Polypropylene", density = 0.87*g/cm3, ncomponents = 2);
+        Polypropylene->AddElement(C,3);
+        Polypropylene->AddElement(H,6);
+  G4double plastic_container_ID = 0.0*cm;
+  G4double plastic_container_OD = 20.*cm;
+  G4double plastic_container_Height = 0.2*cm;
+
+  G4Tubs* plastic_disk = new G4Tubs("plastic_disk", 0.5*plastic_container_ID, 0.5*plastic_container_OD,
+                                   0.5*plastic_container_Height, 0.0*deg, 360.0*deg);
+
+  G4LogicalVolume* plastic_container_log = new G4LogicalVolume(plastic_disk,Polypropylene,"plastic_container_log");
+
+  G4VisAttributes* plastic_container_vis = new G4VisAttributes(white);
+  plastic_container_vis->SetVisibility(true);
+  plastic_container_vis->SetForceSolid(false);
+  plastic_container_log->SetVisAttributes(plastic_container_vis);
+
+  G4double plastic_container_Pos_x = 0.0*cm; //
+  G4double plastic_container_Pos_y = 0.0*cm;
+  G4double plastic_container_Pos_z = (12.865/2-1.4325+0.21)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  plastic_container_phys =
+       new G4PVPlacement(0,G4ThreeVector(plastic_container_Pos_x,plastic_container_Pos_y,plastic_container_Pos_z),
+                         plastic_container_log,"plastic_container_phys",cavity1_log,false,0);
+
+
+//-------------------------------------- 83Rb source -----------------------------------
+///////////////////////////////////////////////////////////////////////////////////////
+
+	G4Material *source_mat = new G4Material(name = "source_mat", density = 1. * g / cm3, ncomponents = 1);
+	source_mat->AddElement(Fe, 1.);
+  G4double source_ID = 0.0*mm;
+  G4double source_OD = 7.*mm;
+  G4double source_Height = 10*mm;
+  
+	G4Tubs* source = new G4Tubs("source", 0.5*source_ID, 0.5*source_OD,
+                                   0.5*source_Height, 0.0*deg, 360.0*deg);
+
+  G4LogicalVolume* source_log = new G4LogicalVolume(source,source_mat,"source_log");
+
+  G4VisAttributes* source_vis = new G4VisAttributes(white);
+  source_vis->SetVisibility(true);
+  source_vis->SetForceSolid(false);
+  source_log->SetVisAttributes(source_vis);
+
+  G4double source_Pos_x = 0.0*cm; //
+  G4double source_Pos_y = 0.0*cm;
+  G4double source_Pos_z = (12.865/2-1.4325+0.5)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  source_phys =
+       new G4PVPlacement(0,G4ThreeVector(source_Pos_x,source_Pos_y,source_Pos_z),
+                         source_log,"source_phys",cavity1_log,false,0);

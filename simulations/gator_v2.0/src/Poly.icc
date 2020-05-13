@@ -1,0 +1,33 @@
+//-------------------------------------- Polyethylene Box 
+  G4double poly_cube1_x = 24*cm;
+  G4double poly_cube1_y = 24*cm;
+  G4double poly_cube1_z = 21*cm;
+
+  G4double poly_cube2_x = 14*cm;
+  G4double poly_cube2_y = 14*cm;
+  G4double poly_cube2_z = 32*cm;
+
+  G4ThreeVector cube2_translation(0*cm,0*cm,-0.5*poly_cube1_z);
+
+  G4Box* Poly_Cube1 = new G4Box("Poly_Cube1",0.5*poly_cube1_x,0.5*poly_cube1_y,0.5*poly_cube1_z);
+  G4Box* Poly_Cube2 = new G4Box("Poly_Cube2",0.5*poly_cube2_x,0.5*poly_cube2_y,0.5*poly_cube2_z);
+
+  G4SubtractionSolid* Poly_Box = new G4SubtractionSolid("Poly_Box",Poly_Cube1,
+         					      Poly_Cube2,0,cube2_translation);
+
+  G4LogicalVolume* poly_box_log = new G4LogicalVolume(Poly_Box, Polyethylene, "poly_box_log");
+
+  G4VisAttributes* poly_box_vis = new G4VisAttributes(brown);
+  poly_box_vis->SetVisibility(true);
+  poly_box_vis->SetForceSolid(false);
+  poly_box_log->SetVisAttributes(poly_box_vis);
+
+  G4double poly_box_Pos_x = 0.0*cm;
+  G4double poly_box_Pos_y = 0.0*cm;
+  G4double poly_box_Pos_z = 0.5*cm;
+
+  poly_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(poly_box_Pos_x,poly_box_Pos_y,poly_box_Pos_z),
+                         poly_box_log,"poly_box_phys",cavity1_log,false,0);
+
+

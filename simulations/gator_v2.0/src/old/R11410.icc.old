@@ -1,0 +1,190 @@
+m_hGeometryParameters["PMTAlHolderOuterDiameter"] = 15 * mm;
+        m_hGeometryParameters["PMTAlHolderHeight"] = 50 * mm;
+        m_hGeometryParameters["PMTPTFEHolderOuterDiameter"] = 10 * mm;
+        m_hGeometryParameters["PMTPTFEHolderInnerDiameter"] = 5 * mm;
+        m_hGeometryParameters["PMTPTFEHolderHeight"] = 20 * mm;
+        m_hGeometryParameters["PMTPEHolderOuterDiameter"] = 65 * mm;
+        m_hGeometryParameters["PMTPEHolderInnerDiameter"] = 54 * mm;
+        m_hGeometryParameters["PMTPEHolderHeight"] = 20 * mm;
+        m_hGeometryParameters["PMTTopBodyDiameter"] = 53 * mm;
+        m_hGeometryParameters["PMTTopBodyHeight"] = 100 * mm;
+        m_hGeometryParameters["PMTBottomBodyDiameter"] = 76 * mm;
+        m_hGeometryParameters["PMTBottomBodyHeight"] = 37 * mm;
+        m_hGeometryParameters["PMTBodyThickness"] = 2 * mm;
+        m_hGeometryParameters["PMTWindowThickness"] = 5 * mm;
+ 
+//*************************//
+// HERE WE DEFINE THE PMTs //
+//*************************//
+const G4double gar_h = GetGeometryParameter("TopGasArgonHeight");
+const G4double lar_h = GetGeometryParameter("LiquidArgonHeight");
+G4double lar_z_offset = -1*gar_h/2.;
+const G4double al_th = GetGeometryParameter("AluminumVesselCellThickness");
+const G4double al_top_th = GetGeometryParameter("AluminumVesselTopThickness");
+const G4double al_max_od = GetGeometryParameter("AluminumVesselMaximumDiameter");
+const G4double tetra_th = GetGeometryParameter("TetratexThickness");
+const G4double lar_cell_h = GetGeometryParameter("LiquidArgonCellHeight");
+const G4double lar_cell_od = GetGeometryParameter("LiquidArgonCellDiameter");
+const G4double lar_cell_bot_dist = GetGeometryParameter("LArCellBottomToBottom");
+const G4double lar_cell_top_dist = GetGeometryParameter("LArCellTopToTopFlange");
+
+const G4double al_hold_od = 15*mm;
+const G4double al_hold_h = 50 * mm;
+const G4double ptfe_hold_od = 10 * mm;
+const G4double ptfe_hold_id = 5 * mm;
+const G4double ptfe_hold_h = 20 * mm;
+const G4double pet_od = 10 * mm;
+const G4double pet_id = 5 * mm;
+const G4double pet_h = 20 * mm;
+const G4double top_pmt_od = 53 * mm;
+const G4double top_pmt_h = 100 * mm;
+const G4double bot_pmt_od = 76 * mm;
+const G4double bot_pmt_h = 37 * mm;
+const G4double pmt_th = 2 * mm;
+const G4double pmt_win_th = 5 * mm;
+const G4double pmt_rounded_part = 17*mm;
+
+// -------------------------//
+// Top 3" PMT               //
+// -------------------------//
+// The top PMT is split into two parts: 1. in Gas and 2. in Liquid to avoid volume overlap //
+//Define the cylinder to place in the GAr
+G4double top_pmt_gar_tot_h = top_pmt_h + bot_pmt_h - (lar_cell_top_dist - gar_h);
+G4Tubs* top_pmt_gar_tube = new G4Tubs("top_pmt_gar_tube", 0, top_pmt_od/2., top_pmt_gar_tot_h/2., starAng2, spanAng2);
+
+//Define the position of the Top PMT in the GAr 
+G4double top_pmt_gar_x_offset = 0.*cm;
+G4double top_pmt_gar_y_offset = 0.*cm;
+G4double top_pmt_gar_z_offset = lar_z_offset + lar_h/2. + top_pmt_gar_tot_h/2.;
+G4ThreeVector top_pmt_gar_position = G4ThreeVector(top_pmt_gar_x_offset, top_pmt_gar_y_offset, top_pmt_gar_z_offset);
+
+// Logical volume
+top_pmt_gar_logical = new G4LogicalVolume(top_pmt_gar_tube, BorosilicateGlass, "top_pmt_gar_logical", 0, 0, 0);
+
+// Physical Volume
+top_pmt_gar_physical = new G4PVPlacement(0, top_pmt_gar_position, top_pmt_gar_logical, "top_pmt_gar_physical", gas_argon_logical, false, 0);
+
+// Defiine visualization attributes
+G4VisAttributes* PMTVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)); //
+
+//Define the polycone to place in the LAr
+        
+G4double top_pmt_lar_tot_h      = lar_cell_top_dist - gar_h;
+        
+G4double top_pmt_lar_h1         = top_pmt_lar_tot_h - bot_pmt_h;
+        
+G4double top_pmt_lar_h2         = top_pmt_lar_h1 + pmt_rounded_part;
+        
+G4double rInner_top_lar[]               = {0,0,0,0};
+        
+G4double rOuter_top_lar[]               = {top_pmt_od/2., top_pmt_od/2., bot_pmt_od/2.,bot_pmt_od/2.};
+        
+G4double zPlane_top_lar[]               = {0, top_pmt_lar_h1, top_pmt_lar_h2, top_pmt_lar_tot_h};
+        
+G4Polycone* top_pmt_polycone = new G4Polycone("top_pmt_polycone", 0, 360*deg, 4, zPlane_top_lar, rInner_top_lar, rOuter_top_lar);
+
+        
+
+//Define a position on respect to the mother volume "liquid_argon_logical"
+        
+G4double top_pmt_lar_x_offset           = 0.*cm;
+        
+G4double top_pmt_lar_y_offset           = 0.*cm;
+        
+G4double top_pmt_lar_z_offset           = lar_h/2.;
+        
+
+//Rotate the top pmt upsidedown
+        
+G4RotationMatrix *rotate180x    = new G4RotationMatrix();
+        
+rotate180x->rotateX(180.*deg);
+        
+G4cout<<"top pmt offset in the LAr: "<<top_pmt_lar_z_offset<<G4endl;
+        
+G4ThreeVector top_pmt_lar_position  = G4ThreeVector(top_pmt_lar_x_offset, top_pmt_lar_y_offset, top_pmt_lar_z_offset);
+        
+
+// Logical volume
+        
+top_pmt_lar_logical = new G4LogicalVolume(top_pmt_polycone, BorosilicateGlass, "top_pmt_lar_logical", 0, 0, 0);
+        
+
+// Physical Volume
+        
+top_pmt_lar_physical = new G4PVPlacement(rotate180x, top_pmt_lar_position, top_pmt_lar_logical, "top_pmt_lar_physical", liquid_argon_logical, false, 0);
+        
+
+// Defiine visualization attributes
+        
+top_pmt_lar_logical ->SetVisAttributes(PMTVisAtt);
+
+
+
+
+
+
+
+
+
+
+
+// ---------- //
+        
+// PMT VACUUM //
+        
+// ---------- //
+        
+//Define the vacuum cylinder to place inside the PMT
+        
+G4double top_pmt_gar_vac_h      = top_pmt_h + bot_pmt_h - (lar_cell_top_dist - gar_h) - pmt_th;
+        
+G4Tubs* top_pmt_gar_vac_tube    = new G4Tubs("top_pmt_gar_vac_tube", 0, top_pmt_od/2. - pmt_th, top_pmt_gar_vac_h/2., starAng2, spanAng2);
+        
+
+//Define the position of the Vacuum of the Top PMT in the GAr 
+        
+
+G4double top_pmt_gar_vac_x_offset = 0.*cm;
+        
+G4double top_pmt_gar_vac_y_offset = 0.*cm;
+        
+G4double top_pmt_gar_vac_z_offset = - pmt_th/2.;
+
+G4ThreeVector top_pmt_gar_vac_position  = G4ThreeVector(top_pmt_gar_vac_x_offset, top_pmt_gar_vac_y_offset, top_pmt_gar_vac_z_offset);
+        
+// Logical volume
+top_pmt_gar_vac_logical = new G4LogicalVolume(top_pmt_gar_vac_tube, Vacuum, "top_pmt_gar_vac_logical", 0, 0, 0);
+
+// Physical Volume
+top_pmt_gar_vac_physical = new G4PVPlacement(0, top_pmt_gar_vac_position, top_pmt_gar_vac_logical, "top_pmt_gar_vac_physical", top_pmt_gar_logical, false, 0);
+        
+// Defiine visualization attributes
+G4VisAttributes* PMTVacVisAtt = new G4VisAttributes(G4Colour(0., 0., 0.)); // 
+top_pmt_gar_vac_logical ->SetVisAttributes(PMTVacVisAtt);
+
+//Define the top polycone vacuum in the PMT
+G4double top_pmt_lar_vac_tot_h  = lar_cell_top_dist - gar_h - pmt_win_th;
+G4double top_pmt_lar_vac_h1 = top_pmt_lar_tot_h - bot_pmt_h - 0.5*pmt_th;
+G4double top_pmt_lar_vac_h2 = top_pmt_lar_h1 + pmt_rounded_part - 0.5*pmt_th;
+G4double rInner_top_lar_vac[] = {0,0,0,0};
+G4double rOuter_top_lar_vac[] = {top_pmt_od/2. - pmt_th, top_pmt_od/2.-pmt_th, bot_pmt_od/2. - pmt_th, bot_pmt_od/2. - pmt_th};
+G4double zPlane_top_lar_vac[] = {0, top_pmt_lar_vac_h1, top_pmt_lar_vac_h2, top_pmt_lar_vac_tot_h};
+G4Polycone* top_pmt_vac_polycone = new G4Polycone("top_pmt_vac_polycone", 0, 360*deg, 4, zPlane_top_lar_vac, rInner_top_lar_vac, rOuter_top_lar_vac);
+
+//Define a position on respect to the mother volume "top_pmt_lar_logical"
+G4double top_pmt_lar_vac_x_offset               = 0.*cm;
+G4double top_pmt_lar_vac_y_offset               = 0.*cm;
+G4double top_pmt_lar_vac_z_offset               = 0.*cm;
+//Rotate the top pmt upsidedown
+G4cout<<"top pmt offset in the LAr: "<<top_pmt_lar_z_offset<<G4endl;
+G4ThreeVector top_pmt_lar_vac_position  = G4ThreeVector(top_pmt_lar_vac_x_offset, top_pmt_lar_vac_y_offset, top_pmt_lar_vac_z_offset);
+
+// Logical volume
+top_pmt_lar_vac_logical = new G4LogicalVolume(top_pmt_vac_polycone, Vacuum, "top_pmt_lar_vac_logical", 0, 0, 0);
+
+// Physical Volume
+top_pmt_lar_vac_physical = new G4PVPlacement(0, top_pmt_lar_vac_position, top_pmt_lar_vac_logical, "top_pmt_lar_vac_physical", top_pmt_lar_logical, false, 0);
+
+// Defiine visualization attributes
+top_pmt_lar_vac_logical ->SetVisAttributes(PMTVacVisAtt);

@@ -1,0 +1,56 @@
+G4double ARATHANE1_ID = 0.0*cm;
+G4double ARATHANE1_OD = 6.14*cm;
+G4double ARATHANE1_Height = 6.74*cm;
+
+G4Tubs* ARATHANE1_solid = new G4Tubs("ARATHANE1_geom",0.5*ARATHANE1_ID,0.5*ARATHANE1_OD,0.5*ARATHANE1_Height,0.*deg,360.*deg);
+
+
+G4double ARATHANE2_ID = 0.0*cm;
+G4double ARATHANE2_OD = 6.99*cm;
+G4double ARATHANE2_Height = 7.72*cm;
+
+
+G4Tubs* ARATHANE2_solid = new G4Tubs("ARATHANE2_geom",0.5*ARATHANE2_ID,0.5*ARATHANE2_OD,0.5*ARATHANE2_Height,0.*deg,360.*deg);
+
+
+G4Material* ARATHANE = new G4Material(name="ARATHANE",density=1.39*g/cm3,ncomponents=4);
+ARATHANE -> AddElement(H,1);
+ARATHANE -> AddElement(C,1);
+ARATHANE -> AddElement(O,1);
+ARATHANE -> AddElement(N,1);
+
+
+G4LogicalVolume* ARATHANE1_log = new G4LogicalVolume(ARATHANE1_solid,ARATHANE,"ARATHANE1_log");
+
+G4VisAttributes* ARATHANE1_vis = new G4VisAttributes(blue);
+ARATHANE1_vis -> SetVisibility(true);
+ARATHANE1_vis -> SetForceSolid(false);
+ARATHANE1_log -> SetVisAttributes(ARATHANE1_vis);
+
+
+G4LogicalVolume* ARATHANE2_log = new G4LogicalVolume(ARATHANE2_solid,ARATHANE,"ARATHANE2_log");
+
+G4VisAttributes* ARATHANE2_vis = new G4VisAttributes(blue);
+ARATHANE2_vis -> SetVisibility(true);
+ARATHANE2_vis -> SetForceSolid(false);
+ARATHANE2_log -> SetVisAttributes(ARATHANE2_vis);
+
+
+G4double ARATHANE1_pos_x = -0.5*ARATHANE1_OD-(0.005*cm); //Added a little offset to avoid the 2 cylinders are in touch
+G4double ARATHANE1_pos_y = 0;
+G4double ARATHANE1_pos_z = endcapPos_z + 0.5*(endcapHeight1+ARATHANE1_Height) + (0.005*cm);
+
+
+G4double ARATHANE2_pos_x = 0.5*ARATHANE2_OD+(0.005*cm); //Added a little offset to avoid the 2 cylinders are in touch
+G4double ARATHANE2_pos_y = 0;
+G4double ARATHANE2_pos_z = endcapPos_z + 0.5*(endcapHeight1+ARATHANE2_Height) + (0.005*cm);
+
+
+G4ThreeVector ARATHANE1_Shift(ARATHANE1_pos_x,ARATHANE1_pos_y,ARATHANE1_pos_z);
+
+G4ThreeVector ARATHANE2_Shift(ARATHANE2_pos_x,ARATHANE2_pos_y,ARATHANE2_pos_z);
+
+
+G4VPhysicalVolume* ARATHANE1_phys = new G4PVPlacement(0,ARATHANE1_Shift,ARATHANE1_log,"ARATHANE1_phys",cavity1_log,false,0);
+
+G4VPhysicalVolume* ARATHANE2_phys = new G4PVPlacement(0,ARATHANE2_Shift,ARATHANE2_log,"ARATHANE2_phys",cavity1_log,false,0);

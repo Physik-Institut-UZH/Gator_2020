@@ -1,0 +1,25 @@
+#ifndef __GEEVENTACTION_H__
+#define __GEEVENTACTION_H__
+
+#include <G4UserEventAction.hh>
+
+#include "GeAnalysisManager.hh"
+
+class G4Event;
+
+class GeEventAction : public G4UserEventAction
+{
+public:
+	GeEventAction(GeAnalysisManager *pAnalysisManager = 0);
+	~GeEventAction();
+
+public:
+	void BeginOfEventAction(const G4Event *pEvent);
+	void EndOfEventAction(const G4Event *pEvent);
+
+private:
+	GeAnalysisManager *m_pAnalysisManager;
+};
+
+#endif // __GEEVENTACTION_H__
+

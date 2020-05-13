@@ -1,0 +1,17 @@
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   logical Volumes definitions
+
+	G4LogicalVolume* plastic_container_log;
+	G4LogicalVolume* plastic_bot_log;
+	G4LogicalVolume* Soil_disk_log; 
+ 	
+
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   Physical Volumes definitions
+
+	G4VPhysicalVolume* plastic_container_phys;
+	G4VPhysicalVolume* plastic_bot_phys;
+	G4VPhysicalVolume* Soil_disk_phys; 
+	

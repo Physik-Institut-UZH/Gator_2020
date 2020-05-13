@@ -1,0 +1,41 @@
+void GeParticleSource::SetRandomPosInMaterial_R11410(){
+	//G4cout << "Point Random Detector function called" << G4endl;
+	
+	G4double posX = 0., posY = 0., posZ = 0.;
+
+	G4VPhysicalVolume *theVolume;
+	
+	G4String selvolume1 = "PMT_envel_log";
+	G4String selvolume2 = "PMT_window_log";
+	G4String selvolume3 = "PMT_ceram_log";
+	G4String selvolume4 = "PMT_internal_log";
+	
+	G4String rndvol = "";
+	
+	while(true){
+		
+		G4double theRandX = CLHEP::RandFlat::shoot(-12.5,12.5);
+		G4double theRandY = CLHEP::RandFlat::shoot(-12.5,12.5);
+		G4double theRandZ = CLHEP::RandFlat::shoot(-3.5,29.5);
+		
+		posX = theRandX*cm;
+		posY = theRandY*cm;
+		posZ = theRandZ*cm;
+		
+		theVolume = gNavigator->LocateGlobalPointAndSetup(G4ThreeVector(posX,posY,posZ));
+		
+		rndvol = theVolume->GetLogicalVolume()->GetName();
+		
+		if((rndvol==selvolume1)||(rndvol==selvolume2)||(rndvol==selvolume3)||(rndvol==selvolume4)){
+			//G4cout << "Particle generated in logical volume: <" << theVolume->GetLogicalVolume()->GetName() << ">" << G4endl;
+			//G4cout << "with coordinates: X = " << posX << "\tY = " << posY << "\tZ = " << posZ << "\n\n" << G4endl;
+			particle_position.setX(posX);
+        	particle_position.setY(posY);
+        	particle_position.setZ(posZ);
+			break;
+		}
+		
+	}
+	
+}
+

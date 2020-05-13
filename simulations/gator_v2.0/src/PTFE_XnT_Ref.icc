@@ -1,0 +1,51 @@
+// PTFE for XENONnT reflectors, screened June-July 2017
+// ID is "PTFE_Ref1"
+// blocks are placed on the 2 sides that are parallel to the coldfinger (filling x-dim, shifted in y)
+
+  G4double PTFE_box1_y = 4.67*cm;
+  G4double PTFE_box2_y = 4.09*cm;
+  G4double PTFE_box_x = 25.0*cm;
+  G4double PTFE_box_z = 30.0*cm;
+
+  G4Box* PTFE_box1 = new G4Box("PTFE_box",0.5*PTFE_box_x,0.5*PTFE_box1_y,0.5*PTFE_box_z);
+  G4Box* PTFE_box2 = new G4Box("PTFE_box",0.5*PTFE_box_x,0.5*PTFE_box2_y,0.5*PTFE_box_z);
+
+  G4LogicalVolume* PTFE_1_box_log = new G4LogicalVolume(PTFE_box1, Teflon2, "PTFE_1_box_log");
+  G4LogicalVolume* PTFE_2_box_log = new G4LogicalVolume(PTFE_box2, Teflon2, "PTFE_2_box_log");
+  
+  
+  G4double PTFEMass1 = PTFE_1_box_log->GetMass(true, false, Teflon2);
+  G4double PTFEMass2 = PTFE_2_box_log->GetMass(true, false, Teflon2);
+  G4cout <<"PTFEMass1: " << PTFEMass1/kg << G4endl;
+  G4cout <<"PTFEMass2: " << PTFEMass2/kg << G4endl;
+	
+
+  G4VisAttributes* PTFE_1_box_vis = new G4VisAttributes(blue);
+  PTFE_1_box_vis->SetVisibility(true);
+  PTFE_1_box_vis->SetForceSolid(false);
+  PTFE_1_box_log->SetVisAttributes(PTFE_1_box_vis);
+
+  G4VisAttributes* PTFE_2_box_vis = new G4VisAttributes(blue);
+  PTFE_2_box_vis->SetVisibility(true);
+  PTFE_2_box_vis->SetForceSolid(false);
+  PTFE_2_box_log->SetVisAttributes(PTFE_2_box_vis);
+
+
+  G4double PTFE_1_box_Pos_x = 0.0*cm;
+  G4double PTFE_1_box_Pos_y = -(cavity1_y/2) + (PTFE_box1_y/2);
+  G4double PTFE_1_box_Pos_z = -(cavity1_z/2) + (PTFE_box_z/2);
+
+  G4double PTFE_2_box_Pos_x = 0.*cm;
+  G4double PTFE_2_box_Pos_y = (cavity1_y/2) - (PTFE_box2_y/2);
+  G4double PTFE_2_box_Pos_z = (cavity1_z/2) - (PTFE_box_z/2);
+
+  PTFE_1_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(PTFE_1_box_Pos_x,PTFE_1_box_Pos_y,PTFE_1_box_Pos_z),
+                         PTFE_1_box_log,"PTFE_1_box_phys",cavity1_log,false,0, true);
+
+  PTFE_2_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(PTFE_2_box_Pos_x,PTFE_2_box_Pos_y,PTFE_2_box_Pos_z),
+                         PTFE_2_box_log,"PTFE_2_box_phys",cavity1_log,false,0, true);
+
+
+

@@ -1,0 +1,56 @@
+// Screening April 2016
+//MPPC components from Hamamatsu: silicon chips (in plastic bag).
+//Total mass: 106.15 g - 2.09 g (mass of bag) = 104.06 g
+//Density Si: 2330 kg m‑3 = 2.330 g cm-3
+// volume should be 44.66 cm^3 of Si
+// appx vol of bag 60 cm^3
+// therefore, volume of air calculated to be 15.33 cm^3
+//Air density=1.290*mg/cm3 -> mass=0.0198g
+// errors when compiling with Air
+
+
+G4double SiChips_x = 100.0*mm;
+G4double SiChips_y = 40.0*mm;
+G4double SiChips_z = 11.165*mm;
+
+//Defining the material
+G4double SiChips_mass = 104.06*g;
+density = (SiChips_mass)/(SiChips_x*SiChips_y*SiChips_z);
+
+//G4double Air_mass = 0.0198*g;
+//density = (SiChips_mass + Air_mass)/(SiChips_x*SiChips_y*SiChips_z);
+
+//G4double SiFracMass = 1;
+//G4double AirFracMass = 1.9e-4;
+
+//G4Material* SiChips_mat = new G4Material("SiChips_mat",density,ncomponents=3);
+//  	SiChips_mat->AddElement(Si,SiFracMass);
+//  	SiChips_mat->AddElement(Air,AirFracMass);
+  	
+G4Material* SiChips_mat = new G4Material("SiChips_mat",density,ncomponents=1);
+  	SiChips_mat->AddElement(Si,1);
+
+
+// Geometry
+G4Box* SiChips_geom = new G4Box("SiChips_geom",0.5*SiChips_x,0.5*SiChips_y,0.5*SiChips_z);
+
+
+// Logical volume
+G4LogicalVolume* SiChips_log = new G4LogicalVolume(SiChips_geom,SiChips_mat,"SiChips_log");
+
+
+// Set visibility properties
+G4VisAttributes* SiChips_vis = new G4VisAttributes(red);
+SiChips_vis -> SetVisibility(true);
+SiChips_vis -> SetForceSolid(false);
+SiChips_log -> SetVisAttributes(SiChips_vis);
+
+
+// Offset coordinates
+G4ThreeVector SiChips_offset(0.,0.,endcapPos_z+0.5*(endcapHeight1+SiChips_z)+0.01*mm);
+
+
+// Placement
+G4VPhysicalVolume* SiChips_phys = new G4PVPlacement(0,SiChips_offset,SiChips_log,"SiChips_phys",cavity1_log,false,0, true);
+
+G4cout << "\nThe total mass of the MPPC silicon chip sample is: " << (SiChips_log->GetMass())/g << " g\n" << G4endl;

@@ -1,0 +1,85 @@
+//Materials definition
+G4Material* PMTceram_mat = new G4Material("PMTceram_mat",density=2.811*g/cm3,2);
+PMTceram_mat -> AddElement(Al,2);
+PMTceram_mat -> AddElement(O,3);
+
+G4Material *Kovar = new G4Material("Kovar", 8.33*g/cm3, 6, kStateSolid);
+Kovar->AddElement(Fe,0.5358);
+Kovar->AddElement(Ni,0.29);
+Kovar->AddElement(Co,0.17);
+Kovar->AddElement(C,0.0002);
+Kovar->AddElement(Si,0.001);
+Kovar->AddElement(Mn,0.003);
+
+
+//Dimension of each cilinder
+G4double dPMTFlangeRadius = 26.65*mm;
+G4double dPMTFlangeHoleDiam = 6.*mm;
+
+G4double dPMTKovarWindowDiam = 38.90*mm;
+G4double dPMTKovarHeight = 5.0*mm;
+
+G4double dPMTCeramicRadius = dPMTFlangeRadius-0.5*mm;
+G4double dPMTCeramicThickness = 4.0*mm;
+
+
+//Definition of the geometry
+G4Tubs* pPMTMother = new G4Tubs("MotherFlange", dPMTFlangeHoleDiam/2.0, dPMTFlangeRadius, dPMTKovarHeight/2.0, 0.*deg, 360.*deg);
+G4Tubs* pPMTCeramic = new G4Tubs("PMTFlangeCeramic", (dPMTFlangeHoleDiam-1.*mm)/2.0, dPMTCeramicRadius, dPMTCeramicThickness/2.0, 0.*deg, 360.*deg);
+
+G4Tubs* pPMTKovar_A = new G4Tubs("PMTFlangeKovar_A", dPMTKovarWindowDiam/2.0, dPMTFlangeRadius, dPMTKovarHeight/2.0, 0.*deg, 360.*deg);
+G4Tubs* pPMTKovar_B = new G4Tubs("PMTFlangeKovar_B", 0., dPMTCeramicRadius, dPMTKovarHeight/2.0, 0.*deg, 360.*deg);
+G4SubtractionSolid*  pPMTKovar = new G4SubtractionSolid("PMTFlangeKovar",pPMTKovar_A,pPMTKovar_B,0,G4ThreeVector(0.0,0.0,0.5*mm));
+
+
+//Contruction of logical volume
+G4LogicalVolume* pPMTFlangeMother_log = new G4LogicalVolume(pPMTMother,Air,"PMTFlangeMother_log");
+G4LogicalVolume* pPMTFlangeCeramic_log = new G4LogicalVolume(pPMTCeramic,PMTceram_mat,"PMTFlangeCeramic_log");
+G4LogicalVolume* pPMTFlangeKovar_log = new G4LogicalVolume(pPMTKovar,Kovar,"PMTFlangeKovar_log");
+
+
+//Offset coordinates of the different parts
+G4double dCeramicZoffset = -(dPMTKovarHeight-dPMTCeramicThickness)/2.0 + 0.5*mm; //Respect to the mother volume
+G4double dKovarZoffset = 0.0*mm; //Respect to the mother volume
+
+G4double dFlangeZoffset = endcapPos_z + 0.5*(endcapHeight1+dPMTKovarHeight) + 0.1*mm; //This is the same for each piece
+G4double dFlangeRadiusOffset = dPMTFlangeRadius + endcapOD1/2.;
+
+
+//Placement of the volumes
+std::vector<G4VPhysicalVolume*>* Flange_vec = new std::vector<G4VPhysicalVolume*>();
+G4ThreeVector Flange_pos;
+std::stringstream FlangeVolName;
+
+G4cout << G4endl << G4endl;
+
+for(int i=0; i<6; i++){
+	FlangeVolName.str("");
+	FlangeVolName << "Flange" << (i+1) << "_phys";
+	G4double ang = TMath::Pi()*i/3;
+	Flange_pos = G4ThreeVector(dFlangeRadiusOffset*cos(ang),dFlangeRadiusOffset*sin(ang),dFlangeZoffset);
+	
+	G4cout << "Flange " << (i+1) << ": " << Flange_pos << G4endl;
+	
+	Flange_vec->push_back(new G4PVPlacement(0,Flange_pos,pPMTFlangeMother_log,FlangeVolName.str().c_str(),cavity1_log,false,0));
+	
+}
+
+
+G4VPhysicalVolume* FlangeKovar_phys = new G4PVPlacement(0,G4ThreeVector(0.,0.,dKovarZoffset),pPMTFlangeKovar_log,"FlangeKovar_phys",pPMTFlangeMother_log,false,0);
+
+G4VPhysicalVolume* FlangeCeramic_phys = new G4PVPlacement(0,G4ThreeVector(0.,0.,dCeramicZoffset),pPMTFlangeCeramic_log,"FlangeCeramic_phys",pPMTFlangeMother_log,false,0);
+
+
+// Set visibility properties
+G4VisAttributes* FlangeCeram_vis = new G4VisAttributes(red);
+FlangeCeram_vis -> SetVisibility(true);
+FlangeCeram_vis -> SetForceSolid(false);
+pPMTFlangeCeramic_log -> SetVisAttributes(FlangeCeram_vis);
+
+G4VisAttributes* FlangeKovar_vis = new G4VisAttributes(blue);
+FlangeKovar_vis -> SetVisibility(true);
+FlangeKovar_vis -> SetForceSolid(false);
+pPMTFlangeKovar_log -> SetVisAttributes(FlangeKovar_vis);
+
+pPMTFlangeMother_log->SetVisAttributes(G4VisAttributes::Invisible);

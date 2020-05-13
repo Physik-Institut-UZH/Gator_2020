@@ -1,0 +1,27 @@
+void GeParticleSource::SetRandomPosInMaterial_OFCH_Cu()
+{
+	G4double posX = 0., posY = 0., posZ = 0.;
+
+	G4VPhysicalVolume *theVolume;
+
+	do{
+		G4double theRandX = CLHEP::RandFlat::shoot(-8.0,8.0);
+		G4double theRandY = CLHEP::RandFlat::shoot(-8.0,8.0);
+		G4double theRandZ = CLHEP::RandFlat::shoot(-3.0,36.0);
+		
+		posX = theRandX*cm;
+		posY = theRandY*cm;
+		posZ = theRandZ*cm;
+		
+		theVolume =
+			gNavigator->LocateGlobalPointAndSetup(G4ThreeVector(posX,posY,posZ));
+//		G4cout<<"posX = "<<posX<<"  posY = "<<posY<<"  posZ = "<<posZ<<G4endl;
+
+	}while(theVolume->GetLogicalVolume()->GetMaterial()->GetName()!="OFHC_Cu_mat");
+
+        particle_position.setX(posX);
+        particle_position.setY(posY);
+        particle_position.setZ(posZ);
+
+}
+

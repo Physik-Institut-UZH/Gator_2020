@@ -1,0 +1,248 @@
+
+#include "GeEventAction.hh"
+
+// pass parameters for messengers:
+#include "GeRunAction.hh"
+#include "GePrimaryGeneratorAction.hh"
+
+// note XePmtHit.hh and XeScintHit.hh are included in XeEventAction.hh
+
+#include "GeEventActionMessenger.hh"
+
+
+#ifdef G4ANALYSIS_USE
+#include "GeAnalysisManager.hh"
+#endif
+
+
+#include "GeMyTree.hh"
+
+#include "G4Event.hh"
+#include "G4EventManager.hh"
+#include "G4HCofThisEvent.hh"
+#include "G4VHitsCollection.hh"
+#include "G4TrajectoryContainer.hh"
+#include "G4Trajectory.hh"
+#include "G4VVisManager.hh"
+#include "G4SDManager.hh"
+#include "G4UImanager.hh"
+#include "G4UnitsTable.hh"
+#include "G4ios.hh"
+
+
+#include <fstream>
+#include <iomanip>
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+
+#include "globals.hh"
+
+// //CERN ROOT
+#include "TNtuple.h"
+#include "TTree.h"
+#include "TBranch.h"
+#include "Rtypes.h"
+
+
+
+
+
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+GeEventAction::GeEventAction(G4int *num, TTree *ntpl,  MyTree *arbol, GeRunAction* GeRun, GePrimaryGeneratorAction* GeGenerator):runAct(GeRun),genAction(GeGenerator),t1(ntpl){
+
+  G4cout << "Start of EventAction" << G4endl;
+  // create messenger
+  eventMessenger = new GeEventActionMessenger(this);
+
+  // defaults for messenger
+  drawColsFlag = "standard";
+  drawTrksFlag = "all";
+  drawHitsFlag = 1;
+  saveHitsFlag = 1;
+
+  tree=arbol;
+  evt_num = num;
+  n_pmt = 0;
+
+  printModulo = 10000;
+
+  // hits collections
+  scintillatorCollID = -1;
+
+  energy_pri=0;
+  seeds=NULL;
+
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+GeEventAction::~GeEventAction() {
+
+  delete eventMessenger;
+}
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+void GeEventAction::BeginOfEventAction(const G4Event* evt) {
+
+   // grab seeds
+   seeds = genAction->GetEventSeeds();
+
+   // grab energy of primary
+   energy_pri = genAction->GetEnergyPrimary();
+
+  // grab event ID
+  event_id = evt->GetEventID();
+  int event_number=event_id+1;//
+  // print this information event by event (modulo n)  	
+  if (event_number%printModulo == 0){
+      //G4cout << "---> Begin of event: " << event_id  << G4endl;
+      G4cout << "--->Event number:" << event_number  << G4endl;
+      G4cout << "     Primary Energy: " << G4BestUnit(energy_pri,"Energy") << G4endl;
+      //      HepRandom::showEngineStatus(); 
+    }
+
+
+  // get ID for scintillator hits collection
+  if (scintillatorCollID==-1){
+    G4SDManager *SDman = G4SDManager::GetSDMpointer();
+    scintillatorCollID = SDman->GetCollectionID("scintillatorCollection");
+    
+    //    G4cout << "BoEA --> scintillatorCollID: " << scintillatorCollID << G4endl;
+  }
+
+}
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+void GeEventAction::EndOfEventAction(const G4Event* evt) {
+
+  // check that both hits collections have been defined
+  if(scintillatorCollID<0) return;
+
+  // address hits collections
+  GeScintHitsCollection* SHC = NULL;
+
+
+  G4HCofThisEvent* HCE = evt->GetHCofThisEvent();
+  if(HCE) {
+    SHC = (GeScintHitsCollection*)(HCE->GetHC(scintillatorCollID));
+        //G4cout << "EoEA --> HCEntries: " << SHC->entries() << G4endl;
+  }
+
+
+  // event summary
+  totEnergy         = 0.;
+  totEnergyGammas   = 0.;
+  totEnergyNeutrons = 0.;
+  firstParticleE    = 0.;
+  particleEnergy    = 0.;
+  firstLUFXeHitTime   = 0.;
+
+  firstParticleName = "";
+  particleName      = "";
+
+
+// particle flags
+//  gamma_ev          = false;
+//  neutron_ev        = false;
+//  positron_ev       = false;
+//  electron_ev       = false;
+//  proton_ev         = false;
+//  other_ev          = false;
+//  start_gamma       = false;
+//  start_neutron     = false;
+
+
+  // scintillator hits
+  if(SHC ) {
+    S_hits = SHC->entries();
+  }
+
+  
+  // write out event summary
+  if(saveHitsFlag) 
+    writeScintHitsToFile(SHC);
+
+}
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+void GeEventAction::writeScintHitsToFile(const GeScintHitsCollection* hits) {
+
+  G4double KinE;
+  G4String tmp;
+
+  KinE = 0.;
+  totEnergy = 0.;
+  for (G4int i=0; i<S_hits; i++){
+	KinE = (*hits)[i]->GetEdep()/keV;
+	totEnergy += KinE;
+
+	//G4cout << "No. ScintHits: " << S_hits << " in Event: " << event_id << G4endl;
+
+    	tree->eventid = event_id;
+	tree->GeEhit = KinE;
+	tree->xp = ((*hits)[i]->GetPos()).x()/mm;
+	tree->yp = ((*hits)[i]->GetPos()).y()/mm;
+	tree->zp = ((*hits)[i]->GetPos()).z()/mm;
+	tree->te = (*hits)[i]->GetTime()/nanosecond;
+	
+	if (i!=(S_hits-1)){
+		tree->GeEtot = 0.;
+		tree->NoHits = 0;
+	}else{
+		tree->GeEtot = totEnergy;
+		tree->NoHits = S_hits;
+	}
+	
+	t1->Fill();
+  }
+    //t1->AutoSave();
+
+  // print this event by event (modulo n)  	
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+void GeEventAction::drawTracks(const G4Event* evt) {
+
+//   if(G4VVisManager::GetConcreteInstance()) {
+//     G4UImanager::GetUIpointer()->ApplyCommand("/vis/scene/notifyHandlers");    
+//     G4TrajectoryContainer* trajContainer = evt->GetTrajectoryContainer();
+//     G4int n_trajectories = 0;
+
+//     if(trajContainer) n_trajectories = trajContainer->entries();
+//     for (G4int i=0; i<n_trajectories; i++) {
+//       G4Trajectory* trj = (G4Trajectory*)(*trajContainer)[i];
+//       if (drawTrksFlag == "all") 
+// 	trj->DrawTrajectory();
+//       else if ((drawTrksFlag == "charged") && (trj->GetCharge() != 0.))
+// 	trj->DrawTrajectory();
+//       else if ((drawTrksFlag == "noscint") 
+// 	       && (trj->GetParticleName() != "opticalphoton"))
+// 	trj->DrawTrajectory();
+//     }
+    
+    // G4UImanager::GetUIpointer()->ApplyCommand("/vis/viewer/update");    
+  //  } 
+
+}

@@ -1,0 +1,128 @@
+//-------------------------------------- Copper Plates 
+  G4double Cu_box_y = .36*cm;
+  G4double Cu_box_x = 21*cm;
+  G4double Cu_box_z = 21*cm;
+
+  G4Box* Cu_box = new G4Box("Cu_box",0.5*Cu_box_x,0.5*Cu_box_y,0.5*Cu_box_z);
+
+  G4double Cu_top_box_z = 2.5*cm;
+  G4double Cu_top_box_y = 21*cm;
+  G4double Cu_top_box_x = 21*cm;
+
+  G4Box* Cu_top_box = new G4Box("Cu_top_box",0.5*Cu_top_box_x,0.5*Cu_top_box_y,0.5*Cu_top_box_z);
+
+  G4double Cu_half_box_z = 1.5*cm;
+  G4double Cu_half_box_y = 15*cm;
+  G4double Cu_half_box_x = 15*cm;
+
+  G4Box* Cu_half_box = new G4Box("Cu_half_box",0.5*Cu_half_box_x,0.5*Cu_half_box_y,0.5*Cu_half_box_z);
+  
+  G4double Cu_half_cylinder_IR = 0.*cm;
+  G4double Cu_half_cylinder_OR = 12*cm;
+  G4double Cu_half_cylinder_z = 5*cm;
+
+  G4RotationMatrix rotSubtraction;
+	rotSubtraction.rotateY(90*deg);
+
+  G4RotationMatrix rotSubtraction2;
+	rotSubtraction2.rotateX(90*deg);
+
+  G4Tubs* Cu_half_cylinder = new G4Tubs("Cu_half_cylinder",Cu_half_cylinder_IR,
+							Cu_half_cylinder_OR,Cu_half_cylinder_z, 0.0*deg, 90*deg);
+
+  G4ThreeVector cylinder_translation(-Cu_half_box_x/2.-0.1*cm,-Cu_half_box_y/2-0.1*cm,0.*cm);
+
+  G4SubtractionSolid* Cu_cut_box = new G4SubtractionSolid("Cu_cut_box",Cu_half_box,
+         					      Cu_half_cylinder,0,cylinder_translation);
+
+  G4LogicalVolume* Cu_left_box_log = new G4LogicalVolume(Cu_box, Cu2, "Cu_left_box_log");
+  G4LogicalVolume* Cu_left2_box_log = new G4LogicalVolume(Cu_box, Cu2, "Cu_left2_box_log");
+  G4LogicalVolume* Cu_right_box_log = new G4LogicalVolume(Cu_box, Cu2, "Cu_right_box_log");
+  G4LogicalVolume* Cu_top_box_log = new G4LogicalVolume(Cu_top_box, Cu2, "Cu_top_box_log");
+  G4LogicalVolume* Cu_cut_box1_log = new G4LogicalVolume(Cu_cut_box, Cu2, "Cu_cut_box1_log");
+  G4LogicalVolume* Cu_cut_box2_log = new G4LogicalVolume(Cu_cut_box, Cu2, "Cu_cut_box2_log");
+  G4LogicalVolume* Cu_cut_box3_log = new G4LogicalVolume(Cu_cut_box, Cu2, "Cu_cut_box3_log");
+
+  G4VisAttributes* Cu_left_box_vis = new G4VisAttributes(brown);
+  Cu_left_box_vis->SetVisibility(true);
+  Cu_left_box_vis->SetForceSolid(false);
+  Cu_left_box_log->SetVisAttributes(Cu_left_box_vis);
+
+  G4VisAttributes* Cu_left2_box_vis = new G4VisAttributes(brown);
+  Cu_left2_box_vis->SetVisibility(true);
+  Cu_left2_box_vis->SetForceSolid(false);
+  Cu_left2_box_log->SetVisAttributes(Cu_left2_box_vis);
+
+  G4VisAttributes* Cu_right_box_vis = new G4VisAttributes(brown);
+  Cu_right_box_vis->SetVisibility(true);
+  Cu_right_box_vis->SetForceSolid(false);
+  Cu_right_box_log->SetVisAttributes(Cu_right_box_vis);
+
+  G4VisAttributes* Cu_top_box_vis = new G4VisAttributes(brown);
+  Cu_top_box_vis->SetVisibility(true);
+  Cu_top_box_vis->SetForceSolid(false);
+  Cu_top_box_log->SetVisAttributes(Cu_top_box_vis);
+
+  G4VisAttributes* Cu_cut_box1_vis = new G4VisAttributes(brown);
+  Cu_cut_box1_vis->SetVisibility(true);
+  Cu_cut_box1_vis->SetForceSolid(false);
+  Cu_cut_box1_log->SetVisAttributes(Cu_cut_box1_vis);
+
+  G4VisAttributes* Cu_cut_box2_vis = new G4VisAttributes(brown);
+  Cu_cut_box2_vis->SetVisibility(true);
+  Cu_cut_box2_vis->SetForceSolid(false);
+  Cu_cut_box2_log->SetVisAttributes(Cu_cut_box2_vis);
+
+  G4VisAttributes* Cu_cut_box3_vis = new G4VisAttributes(brown);
+  Cu_cut_box3_vis->SetVisibility(true);
+  Cu_cut_box3_vis->SetForceSolid(false);
+  Cu_cut_box3_log->SetVisAttributes(Cu_cut_box3_vis);
+
+  G4double Cu_left_box_Pos_y =10.5*cm;
+  G4double Cu_left_box_Pos_x = 0.0*cm;
+  G4double Cu_left_box_Pos_z = (12.865/2-1.4325-10.)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  G4double Cu_left2_box_Pos_y =10.*cm;
+  G4double Cu_left2_box_Pos_x = 0.0*cm;
+  G4double Cu_left2_box_Pos_z = (12.865/2-1.4325-10.)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  G4double Cu_right_box_Pos_y = -8.5*cm;
+  G4double Cu_right_box_Pos_x = 0.0*cm;
+  G4double Cu_right_box_Pos_z = (12.865/2-1.4325-10.)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  G4double Cu_top_box_Pos_x = 0.0*cm;
+  G4double Cu_top_box_Pos_y = 0.0*cm;
+  G4double Cu_top_box_Pos_z = (7.2)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  G4double Cu_cut_box_Pos_x = 8.6*cm;
+  G4double Cu_cut_box_Pos_y = 0.0*cm;
+  G4double Cu_cut_box_Pos_z = (12.865/2.-8.4325)*cm; //base is 1.0cm from bottom, decrease z to lower base
+
+  Cu_left_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(Cu_left_box_Pos_x,Cu_left_box_Pos_y,Cu_left_box_Pos_z),
+                         Cu_left_box_log,"Cu_left_box_phys",cavity1_log,false,0);
+
+  Cu_left2_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(Cu_left2_box_Pos_x,Cu_left2_box_Pos_y,Cu_left2_box_Pos_z),
+                         Cu_left2_box_log,"Cu_left2_box_phys",cavity1_log,false,0);
+
+  Cu_right_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(Cu_right_box_Pos_x,Cu_right_box_Pos_y,Cu_right_box_Pos_z),
+                         Cu_right_box_log,"Cu_right_box_phys",cavity1_log,false,0);
+
+  Cu_top_box_phys = 
+       new G4PVPlacement(0,G4ThreeVector(Cu_top_box_Pos_x,Cu_top_box_Pos_y,Cu_top_box_Pos_z),
+                         Cu_top_box_log,"Cu_top_box_phys",cavity1_log,false,0);
+
+  Cu_cut_box1_phys = 
+       new G4PVPlacement(G4Transform3D(rotSubtraction,G4ThreeVector(Cu_cut_box_Pos_x,Cu_cut_box_Pos_y,Cu_cut_box_Pos_z)),
+                         Cu_cut_box1_log,"Cu_cut_box1_phys",cavity1_log,false,0);
+
+  Cu_cut_box2_phys = 
+       new G4PVPlacement(G4Transform3D(rotSubtraction2,G4ThreeVector(Cu_cut_box_Pos_y,Cu_cut_box_Pos_x,Cu_cut_box_Pos_z)),
+                         Cu_cut_box2_log,"Cu_cut_box2_phys",cavity1_log,false,0);
+
+  Cu_cut_box3_phys = 
+       new G4PVPlacement(G4Transform3D(rotSubtraction,G4ThreeVector(-Cu_cut_box_Pos_x,Cu_cut_box_Pos_y,Cu_cut_box_Pos_z)),
+                         Cu_cut_box3_log,"Cu_cut_box3_phys",cavity1_log,false,0);
+

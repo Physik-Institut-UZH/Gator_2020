@@ -1,0 +1,20 @@
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   logical Volumes definitions
+
+	G4LogicalVolume* PMT_envel_log;
+        G4LogicalVolume* PMT_window_log;
+        G4LogicalVolume* PMT_vacuum_log;
+        G4LogicalVolume* PMT_envel_log_2;
+
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   Physical Volumes definitions
+
+	G4VPhysicalVolume* PMT_envel_phys;
+        G4VPhysicalVolume* PMT_window_phys;
+        G4VPhysicalVolume* PMT_vacuum_phys;
+        G4VPhysicalVolume* PMT_envel_phys_2;
+        G4VPhysicalVolume* PMT_window_phys_2;
+        G4VPhysicalVolume* PMT_vacuum_phys_2;
+

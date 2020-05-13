@@ -1,0 +1,31 @@
+//Dimension of sample in box 
+G4double PMTkovar_x = 100.*mm;
+G4double PMTkovar_y = 50.*mm;
+G4double PMTkovar_z = 12.5*mm;
+
+
+//Definition of the geometry
+G4Box* PMTkovar = new G4Box("PMTkovar",0.5*PMTkovar_x,0.5*PMTkovar_y,0.5*PMTkovar_z);
+
+
+//Contruction of logical volume
+G4LogicalVolume* PMTkovar_log = new G4LogicalVolume(PMTkovar,PMTkovar_mat,"PMTkovar_log");
+
+
+// Set visibility properties
+G4VisAttributes* PMTkovar_vis = new G4VisAttributes(red);
+PMTkovar_vis -> SetVisibility(true);
+PMTkovar_vis -> SetForceSolid(false);
+PMTkovar_log -> SetVisAttributes(PMTkovar_vis);
+
+
+// Shift coordinates for the sample placement
+G4double PMTkovarShift_z = endcapPos_z + 0.5*(endcapHeight1+PMTkovar_z) + 0.01*mm; //This is the same for each cilinder
+G4double PMTkovarShift_x = 0;
+G4double PMTkovarShift_y = 0;
+
+
+G4ThreeVector ShiftPMTkovar(PMTkovarShift_x,PMTkovarShift_y,PMTkovarShift_z);
+
+
+G4VPhysicalVolume* PMTkovar_phys = new G4PVPlacement(0,ShiftPMTkovar,PMTkovar_log,"PMTkovar_phys",cavity1_log,false,0);

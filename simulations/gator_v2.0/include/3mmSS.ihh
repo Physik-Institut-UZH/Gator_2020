@@ -1,0 +1,17 @@
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   logical Volumes definitions
+
+	G4LogicalVolume* SS_side1_box_log;
+	G4LogicalVolume* SS_side2_box_log;
+	G4LogicalVolume* SS_top_box_log;
+ 	
+
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   Physical Volumes definitions
+
+	G4VPhysicalVolume* SS_side1_box_phys;
+	G4VPhysicalVolume* SS_side2_box_phys;
+	G4VPhysicalVolume* SS_top_box_phys;
+	

@@ -1,0 +1,15 @@
+
+/Xe/printModulo 1000
+
+/xe/gun/particle gamma
+/xe/gun/energy 609.312 keV
+
+/xe/gun/type Volume
+/xe/gun/shape Cylinder
+/xe/gun/radius 80 mm
+/xe/gun/halfz 30 mm
+/xe/gun/center 0 0 171.9 mm
+/xe/gun/confine PMTsteel*
+
+/run/beamOn 1000000
+

@@ -1,0 +1,8 @@
+/vis/open HepRepFile
+/vis/drawVolume cavity1_phys
+/vis/viewer/set/style wireframe
+/vis/viewer/set/hiddenEdge 1 
+
+/vis/viewer/flush
+exit
+

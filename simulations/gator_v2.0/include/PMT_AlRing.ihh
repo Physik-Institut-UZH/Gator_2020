@@ -1,0 +1,15 @@
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   logical Volumes definitions
+
+	G4LogicalVolume* AlPlateLS_log;
+	G4LogicalVolume* AlPlateC_log;
+	G4LogicalVolume* AlPlateRS_log;
+
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   Physical Volumes definitions
+
+	G4VPhysicalVolume* AlPlateLS_phys;
+	G4VPhysicalVolume* AlPlateC_phys;
+	G4VPhysicalVolume* AlPlateRS_phys;

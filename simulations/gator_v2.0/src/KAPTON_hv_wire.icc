@@ -1,0 +1,40 @@
+//Here is the mass model of the AWG30 HV single wire. It is coiled in a cylindrical shape ==> I consider a mesh in the cylinder respecting the mass model.
+G4double mfrac_Cu = 0.6640;
+G4double mfrac_Kap = 1 -mfrac_Cu;
+
+G4Material* KapHVwire_mat = new G4Material(name="KapHVwire_mat",density=3.9*g/cm3,ncomponents=2);
+KapHVwire_mat -> AddMaterial(Cu,mfrac_Cu);
+KapHVwire_mat -> AddMaterial(kapton_F,mfrac_Kap);
+
+
+// The stripes are coiled around the end cap ==> internal diam = external end-cap diam
+G4double KapHVwire_OD = 9.0*cm; //Added a little gap to avoid surfaces contact
+G4double KapHVwire_ID = 7.0*cm; //Each coil add 1 mm to the diameter
+G4double KapHVwire_H = 2.5*cm;
+
+
+// Geometry
+G4Tubs* KapHVwire = new G4Tubs("KapHVwire",0.5*KapHVwire_ID,0.5*KapHVwire_OD,0.5*KapHVwire_H,0.*deg,360.*deg);
+
+
+// Logical volume
+G4LogicalVolume* KapHVwire_log = new G4LogicalVolume(KapHVwire,KapHVwire_mat,"KapHVwire_log");
+
+
+// Set visibility properties
+G4VisAttributes* KapHVwire_vis = new G4VisAttributes(red);
+KapHVwire_vis -> SetVisibility(true);
+KapHVwire_vis -> SetForceSolid(false);
+KapHVwire_log -> SetVisAttributes(KapHVwire_vis);
+
+
+// Shift coordinates
+G4double KapHVwireShift_x = 0;
+G4double KapHVwireShift_y = 0; 
+G4double KapHVwireShift_z = endcapPos_z + 0.5*(endcapHeight1 + KapHVwire_H) + 0.01*mm;
+
+G4ThreeVector KapHVwire_Shift(KapHVwireShift_x,KapHVwireShift_y,KapHVwireShift_z);
+
+
+// Placement
+G4VPhysicalVolume* KapHVwire_phys = new G4PVPlacement(0,KapHVwire_Shift,KapHVwire_log,"KapHVwire_phys",cavity1_log,false,0);

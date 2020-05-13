@@ -1,0 +1,165 @@
+/*
+#include "globals.hh"
+
+#include "GeConstruction.hh"
+#include "GeScintSD.hh"
+
+#include "G4Material.hh"
+#include "G4NistManager.hh"
+#include "G4Box.hh"
+#include "G4Tubs.hh"
+#include "G4Torus.hh"
+#include "G4Sphere.hh"
+#include "G4EllipticalTube.hh"
+#include "G4Polycone.hh"
+
+#include "G4LogicalVolume.hh"
+#include "G4ThreeVector.hh"
+#include "G4PVPlacement.hh"
+#include "G4VisAttributes.hh"
+#include "G4Colour.hh"
+#include "G4Cons.hh"
+#include "G4UnionSolid.hh"
+#include "G4SubtractionSolid.hh"
+#include "G4RotationMatrix.hh"
+#include "G4OpBoundaryProcess.hh"
+#include "G4SDManager.hh"
+#include "G4Transform3D.hh"
+
+#include <math.h>
+#include <string.h>
+#include <stdio.h>
+
+#include <TMath.h>
+*/
+
+	
+//Colors for visualization properties
+//G4Colour red (1.0, 0.0, 0.0);
+//G4Colour blue (0.0, 0.0, 1.0);
+//G4Colour yellow (1.0, 1.0, 0.0);
+//G4Colour orange (0.75, 0.55, 0.0);
+//G4Colour lblue (0.0, 0.0, 0.55);
+	
+//Elements and materials usefull
+//G4Element* O = G4Element::GetElement("Oxygen");
+//G4Element* Si = G4Element::GetElement("Silicon");
+//G4Element* Al = G4Element::GetElement("Aluminum");
+//G4Element* Ni = G4Element::GetElement("Nickel");
+	
+//G4Material* Steel_304 = G4Material::GetMaterial("Steel_304");	
+G4Material *kovar = G4Material::GetMaterial("PMTkovar_mat");
+
+//Define the pmt envelope as a box
+const G4double PMT_length = 52 * mm;
+const G4double PMT_width = 52 * mm;
+const G4double PMT_depth = 16.4 * mm;
+	
+G4Box* PMT_envel = new G4Box("PMT_envel",0.5*PMT_length,0.5*PMT_width,0.5*PMT_depth);
+
+//Envelope material definition (SS)
+G4Material* PMT_steel = new G4Material("PMT_steel",8.03*g/cm3,1);
+PMT_steel -> AddMaterial(Steel_304,1.0); //Just a trick to change the name of the steel ==> I can use the routine to generate the random points in the proper material
+
+//Envelope Logical volume
+G4LogicalVolume* PMT_envel_log = new G4LogicalVolume(PMT_envel, kovar, "PMT_envel_log", 0, 0, 0);
+G4LogicalVolume* PMT_envel_log_2 = new G4LogicalVolume(PMT_envel, kovar, "PMT_envel_log", 0, 0, 0);
+	
+G4VisAttributes* PMT_envel_vis = new G4VisAttributes(red);
+PMT_envel_vis -> SetVisibility(true);
+PMT_envel_vis -> SetForceSolid(false);
+PMT_envel_log -> SetVisAttributes(PMT_envel_vis);
+
+G4ThreeVector KarlPMT_pos(0.,0.,endcapPos_z+0.5*(endcapHeight1+PMT_depth)+0.01*mm);
+G4VPhysicalVolume* PMT_envel_phys = new G4PVPlacement(0,KarlPMT_pos,PMT_envel_log,"PMT_envel_phys", cavity1_log, false, 0,true);
+G4ThreeVector KarlPMT_pos_2(0.,0.,endcapPos_z+0.5*(endcapHeight1+PMT_depth)+PMT_depth+0.01*mm);
+G4VPhysicalVolume* PMT_envel_phys_2 = new G4PVPlacement(0,KarlPMT_pos_2,PMT_envel_log_2,"PMT_envel_phys_2", cavity1_log, false, 0,true);
+
+
+/******************************** Definition of the plastic base inside the PMTs *************************************/
+
+const G4double PMT_thickness = 0.5*(52.0-48.5) * mm; //Outer PMT dimensions minus the effective PC dimension
+/*
+//Material definition for plastic base
+G4Material* Polypropylene = new G4Material(name="Polypropylene", density = 0.87*g/cm3, ncomponents = 2);
+Polypropylene->AddElement(C,3);
+Polypropylene->AddElement(H,6);
+
+G4double PMTbase_length = 52. * mm - PMT_thickness;
+G4double PMTbase_width = 52. * mm - PMT_thickness;
+G4double PMTbase_depth = 0 * mm;
+
+//Definition of the geometry
+G4Box* PMT_base = new G4Box("PMT_base",0.5*PMTbase_length,0.5*PMTbase_width,0.5*PMTbase_depth);
+
+//Construction of logical volume
+G4LogicalVolume* PMT_base_log = new G4LogicalVolume(PMT_base,Polypropylene,"PMT_base_log");
+
+G4VisAttributes* PMT_base_vis = new G4VisAttributes(red);
+PMT_base_vis -> SetVisibility(true);
+PMT_base_vis -> SetForceSolid(false);
+PMT_base_log -> SetVisAttributes(PMT_base_vis);
+
+//Placement of the base logical volume inside the PMT envelope volume
+G4ThreeVector PMT_base_pos(0.,0.,0.5*(PMT_depth - PMTbase_depth));
+
+G4VPhysicalVolume* PMT_base_phys = new G4PVPlacement(0,PMT_base_pos,PMT_base_log,"PMT_base_phys", PMT_envel_log, false, 0,true);
+*/
+
+/********************* Definition of the quartz window as a flat box **************************** ********************/
+
+//Material definition for the ceramic inside the pmt
+G4Material* PMT_quartz_mat = new G4Material("PMT_quartz_mat",2.648*g/cm3,2);
+PMT_quartz_mat -> AddElement(Si,1);
+PMT_quartz_mat -> AddElement(O,2);
+
+//Dimensions
+G4double PMTwindow_length = 52. * mm;
+G4double PMTwindow_width = 52. * mm;
+G4double PMTwindow_depth = 1.5 * mm;
+
+//Definition of the geometry
+G4Box* PMT_window = new G4Box("PMT_window",0.5*PMTwindow_length,0.5*PMTwindow_width,0.5*PMTwindow_depth);
+
+//Construction of logical volume
+G4LogicalVolume* PMT_window_log = new G4LogicalVolume(PMT_window,PMT_quartz_mat,"PMT_window_log");
+
+//Set visibility properties
+G4VisAttributes* PMT_window_vis = new G4VisAttributes(red);
+PMT_window_vis -> SetVisibility(true);
+PMT_window_vis -> SetForceSolid(false);
+PMT_window_log -> SetVisAttributes(PMT_window_vis);
+
+//Put the window in the PMT_envelop logical volume
+G4ThreeVector PMT_window_pos(0.,0.,0.5*(-PMT_depth + PMTwindow_depth));
+
+G4VPhysicalVolume* PMT_window_phys = new G4PVPlacement(0,PMT_window_pos,PMT_window_log,"PMT_window_phys",PMT_envel_log,false,0,true);
+G4VPhysicalVolume* PMT_window_phys_2 = new G4PVPlacement(0,PMT_window_pos,PMT_window_log,"PMT_window_phys_2",PMT_envel_log_2,false,0,true);
+
+
+/******************************** Definition of the vacuum inside the PMTs *************************************/
+
+const G4double PMT_vac_length = PMT_length - 2*PMT_thickness;
+const G4double PMT_vac_width = PMT_width - 2*PMT_thickness;
+const G4double PMT_vac_depth = PMT_depth - PMTwindow_depth - PMT_thickness;
+
+G4Box* PMT_vacuum = new G4Box("PMT_vacuum",0.5*PMT_vac_length,0.5*PMT_vac_width,0.5*PMT_vac_depth);
+	
+//Material definition for the vacuum inside the PMT
+G4Material* PMT_vacuum_mat = new G4Material("vacuum_PMT_mat",1.,1.*g/mole,1.e-20*g/cm3,kStateGas,0.1*kelvin,1.e-20*bar);
+	
+//Vacuum Logical volume
+G4LogicalVolume* PMT_vacuum_log = new G4LogicalVolume(PMT_vacuum, PMT_vacuum_mat, "vacuum_PMT_log", 0, 0, 0);
+	
+G4VisAttributes* PMT_vacuum_vis = new G4VisAttributes(red);
+PMT_vacuum_vis -> SetVisibility(true);
+PMT_vacuum_vis -> SetForceSolid(false);
+PMT_vacuum_log -> SetVisAttributes(G4VisAttributes::Invisible);
+
+//Placement of the vacuum logical volume inside the PMT envelope volume
+//G4ThreeVector PMT_vacuum_pos(0.,0.,0.5*(PMTwindow_depth-PMTbase_depth));
+G4ThreeVector PMT_vacuum_pos(0.,0.,0.5*(PMTwindow_depth-PMT_thickness));
+
+G4VPhysicalVolume* PMT_vacuum_phys = new G4PVPlacement(0,PMT_vacuum_pos,PMT_vacuum_log,"PMT_vacuum_phys", PMT_envel_log, false, 0,true);
+G4VPhysicalVolume* PMT_vacuum_phys_2 = new G4PVPlacement(0,PMT_vacuum_pos,PMT_vacuum_log,"PMT_vacuum_phys_2", PMT_envel_log_2, false, 0,true);
+

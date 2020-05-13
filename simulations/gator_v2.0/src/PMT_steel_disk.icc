@@ -1,0 +1,37 @@
+//Material definition
+G4Material* PMTsteel_mat = new G4Material("PMTsteel_mat",density=8.03*g/cm3,1);
+PMTsteel_mat -> AddMaterial(Steel_304,1.0);
+
+
+
+//Dimension of sample in box 
+G4double PMTsteel_x = 100.*mm;
+G4double PMTsteel_y = 50.*mm;
+G4double PMTsteel_z = 14.*mm;
+
+
+//Definition of the geometry
+G4Box* PMTsteel = new G4Box("PMTsteel",0.5*PMTsteel_x,0.5*PMTsteel_y,0.5*PMTsteel_z);
+
+
+//Contruction of logical volume
+G4LogicalVolume* PMTsteel_log = new G4LogicalVolume(PMTsteel,PMTsteel_mat,"PMTsteel_log");
+
+
+// Set visibility properties
+G4VisAttributes* PMTsteel_vis = new G4VisAttributes(red);
+PMTsteel_vis -> SetVisibility(true);
+PMTsteel_vis -> SetForceSolid(false);
+PMTsteel_log -> SetVisAttributes(PMTsteel_vis);
+
+
+// Shift coordinates for the sample placement
+G4double PMTsteelShift_z = endcapPos_z + 0.5*(endcapHeight1+PMTsteel_z) + 0.01*mm; //This is the same for each cilinder
+G4double PMTsteelShift_x = 0;
+G4double PMTsteelShift_y = 0;
+
+
+G4ThreeVector ShiftPMTsteel(PMTsteelShift_x,PMTsteelShift_y,PMTsteelShift_z);
+
+
+G4VPhysicalVolume* PMTsteel_phys = new G4PVPlacement(0,ShiftPMTsteel,PMTsteel_log,"PMTsteel_phys",cavity1_log,false,0);

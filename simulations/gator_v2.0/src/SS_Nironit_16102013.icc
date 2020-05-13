@@ -1,0 +1,66 @@
+// 8 Plates of Nironit stainless steel 316L (18x18x0.5)cm^3.
+// Placed all around the crystal in groups of 2 plates
+// The plates weight is 1.29kg each
+// The coding is simplified. 4 kind of blocks will be used
+
+
+
+//Dimensions of the 4 "blocks" around the endcap
+G4double block_width = 18.0*cm;
+G4double block_height = 18.0*cm;
+G4double block_thick = 2*0.5*cm;
+
+
+G4Box* Block1 = new G4Box("Block1",0.5*block_width,0.5*block_thick,0.5*block_height);	//Parallel to the cold finger
+G4Box* Block2 = new G4Box("Block2",0.5*block_thick,0.5*block_width,0.5*block_height); //Normal to the cold finger
+
+
+G4LogicalVolume* Block1_log = new G4LogicalVolume(Block1,SS316L,"Block1_log");//Parallel to the cold finger
+G4LogicalVolume* Block2_log = new G4LogicalVolume(Block2,SS316L,"Block2_log");//Normal to the cold finger
+
+
+//Shift coordinates for placement
+
+//This is parallel to the cold finger
+G4double block1_x = -(cavity1_x/2.) + block_thick + (block_width/2.);
+G4double block1_y = (baseOD1/2.) + (block_thick/2.);
+G4double block1_z = -(cavity1_z/2) + (block_height/2);
+
+//This is parallel to the cold finger
+G4double block2_x = -(cavity1_x/2.) + block_thick + (block_width/2.);
+G4double block2_y = -(baseOD1/2.) - (block_thick/2.);
+G4double block2_z = -(cavity1_z/2) + (block_height/2);
+
+//This on the other side respect to the cold finger and also normal to its direction
+G4double block3_x = -(cavity1_x/2.) + block_thick + block_width + (block_thick/2);
+G4double block3_y = 0.0;
+G4double block3_z = -(cavity1_z/2) + (block_height/2);
+
+//This on top of the cold finger and also normal to its direction
+G4double block4_x = -(cavity1_x/2.) + (block_thick/2.);
+G4double block4_y = 0;
+G4double block4_z = cold_stick_cover4_Pos_z + (cold_stick_cover4_OD/2) + (block_height/2);
+
+
+G4ThreeVector block1_shift(block1_x,block1_y,block1_z);
+G4ThreeVector block2_shift(block2_x,block2_y,block2_z);
+G4ThreeVector block3_shift(block3_x,block3_y,block3_z);
+G4ThreeVector block4_shift(block4_x,block4_y,block4_z);
+
+G4RotationMatrix block_rot;
+block_rot.rotateZ(90*deg);
+
+
+//Placement of the volumes
+G4VPhysicalVolume* Block1_phys = new G4PVPlacement(0,block1_shift,Block1_log,"Block1_phys",cavity1_log,false,0);
+G4VPhysicalVolume* Block2_phys = new G4PVPlacement(0,block2_shift,Block1_log,"Block2_phys",cavity1_log,false,0);
+G4VPhysicalVolume* Block3_phys = new G4PVPlacement(0,block3_shift,Block2_log,"Block3_phys",cavity1_log,false,0);
+G4VPhysicalVolume* Block4_phys = new G4PVPlacement(0,block4_shift,Block2_log,"Block4_phys",cavity1_log,false,0);
+
+
+//Attributes
+G4VisAttributes* Block_vis = new G4VisAttributes(red);
+Block_vis -> SetVisibility(true);
+Block_vis -> SetForceSolid(false);
+Block1_log -> SetVisAttributes(Block_vis);
+Block2_log -> SetVisAttributes(Block_vis);

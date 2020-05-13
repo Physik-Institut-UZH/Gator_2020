@@ -1,0 +1,27 @@
+void
+GeParticleSource::SetRandomPosInMaterial_Conc()
+{
+	G4String VolName;
+	G4double posX = 0., posY = 0., posZ = 0.;
+
+	G4VPhysicalVolume *theVolume;
+
+	do{
+		G4double theRandX = CLHEP::RandFlat::shoot(-3.,3.);
+		G4double theRandY = CLHEP::RandFlat::shoot(-1.02,1.02);
+		G4double theRandZ = CLHEP::RandFlat::shoot(19.,20.5);
+		posX = theRandX*cm;
+		posY = theRandY*cm;
+		posZ = theRandZ*cm;
+		theVolume =
+			gNavigator->LocateGlobalPointAndSetup(G4ThreeVector(posX,posY,posZ));
+//		G4cout<<"posX = "<<posX<<"  posY = "<<posY<<"  posZ = "<<posZ<<G4endl;
+
+	}while(theVolume->GetLogicalVolume()->GetMaterial()->GetName()!="Concrete");
+
+        particle_position.setX(posX);
+        particle_position.setY(posY);
+        particle_position.setZ(posZ);
+
+}
+

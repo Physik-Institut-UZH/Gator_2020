@@ -1,0 +1,20 @@
+#46Sc radioisotope
+
+#/Xe/generateCE  0
+/tracking/verbose 0
+/run/verbose 0
+/control/verbose 0
+/Xe/gun/verbose 0
+
+/Xe/saveHits 1
+/Xe/printModulo 10000
+
+/Xe/gun/particle ion
+/Xe/gun/ion 21 46 0 0
+
+/Xe/gun/energy 0 keV
+
+/Xe/gun/type PointRandomPMTAl2O3
+
+/run/beamOn 1000000
+

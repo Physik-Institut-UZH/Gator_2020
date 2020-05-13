@@ -1,0 +1,5 @@
+//---------------   logical volumes definitions 
+ G4LogicalVolume* TTX_trial_log;
+
+ //---------------   physical volumes definitions 
+ G4VPhysicalVolume* TTX_trial_phys;

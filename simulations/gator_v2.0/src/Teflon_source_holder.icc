@@ -1,0 +1,43 @@
+//-------------------------------------------------piston 1
+G4double pistonID1 = 10.6*cm;
+G4double pistonOD1 = 12.40*cm;
+G4double pistonHeight1 = 13.50*cm;
+
+G4Tubs* piston_main = new G4Tubs("piston_main", 0.5*pistonID1, 0.5*pistonOD1,
+				   0.5*pistonHeight1, 0.0*deg, 360.0*deg);
+G4LogicalVolume* piston_log = new G4LogicalVolume(piston_main,Teflon,"piston_log");
+
+G4VisAttributes* piston_vis = new G4VisAttributes(blue);
+piston_vis->SetVisibility(true);
+piston_vis->SetForceSolid(false);
+piston_log->SetVisAttributes(piston_vis);
+
+G4double pistonPos_x = 0.0*cm; 
+G4double pistonPos_y = 0.0*cm;
+G4double pistonPos_z = 10.5*cm; 
+piston_phys = 
+       new G4PVPlacement(0,G4ThreeVector(pistonPos_x,pistonPos_y,pistonPos_z),
+                         piston_log,"piston_phys",cavity1_log,false,0);
+
+//-------------------------------------------------piston 2
+G4double piston2ID1 =  1.4*cm;
+G4double piston2OD1 = 10.20*cm;
+G4double piston2Height1 = 6.00*mm;
+
+G4Tubs* piston2_main = new G4Tubs("piston2_main", 0.5*piston2ID1, 0.5*piston2OD1,
+				   0.5*piston2Height1, 0.0*deg, 360.0*deg);
+G4LogicalVolume* piston2_log = new G4LogicalVolume(piston2_main,Teflon,"piston2_log");
+
+G4VisAttributes* piston2_vis = new G4VisAttributes(blue);
+piston2_vis->SetVisibility(true);
+piston2_vis->SetForceSolid(false);
+piston2_log->SetVisAttributes(piston2_vis);
+
+G4double piston2Pos_x = 0.0*cm; 
+G4double piston2Pos_y = 0.0*cm;
+G4double piston2Pos_z = 6.5*cm; 
+ 
+piston_phys = 
+       new G4PVPlacement(0,G4ThreeVector(piston2Pos_x,piston2Pos_y,piston2Pos_z),
+                         piston2_log,"piston_phys",cavity1_log,false,0);
+

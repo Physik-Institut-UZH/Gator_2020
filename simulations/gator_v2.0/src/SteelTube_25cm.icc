@@ -1,0 +1,94 @@
+//This is a 2mm thick Stainless Steel tube with 25 cm of diameter 28 cm high.
+//It was cut in 12 equal parts (6 slices for each floor) for a total weight of 4.9 kg
+//Only 11 slices fit in the cavity ==> The weight must be adjusted for this
+//6 slices of the total amount are "standing" on the side of the endcap in groups of 3; 2 slices are standing on the opposite part of the cold finger (positive x coordinate); 3 are lying on top of the endcap
+
+
+G4double TubeSlice_OD = 250.*mm;
+G4double TubeSlice_thick = 2.*mm;
+G4double TubeSlice_ID = TubeSlice_OD - 2.*TubeSlice_thick;
+G4double TubeSlice_H = 140*mm; //The height of the slice along the tube axis direction
+
+//Some geometrical values that might be useful later
+G4double TubeSlice_IntChord = 2.*(TubeSlice_ID/2.)*sin(TMath::Pi()/6.);
+G4double TubeSlice_OutChord = 2.*(TubeSlice_OD/2.)*sin(TMath::Pi()/6.);
+G4double TubeSlice_IntChordH = (TubeSlice_ID/2.)*(1. - cos(TMath::Pi()/6.));
+G4double TubeSlice_OutChordH = TubeSlice_IntChordH + TubeSlice_thick;
+
+
+G4Tubs *TubeSlice_geom = new G4Tubs("TubeSlice_geom", TubeSlice_ID/2., TubeSlice_OD/2., TubeSlice_H/2., 0., (360./6)*deg );
+
+G4LogicalVolume *TubeSlice_log = new G4LogicalVolume(TubeSlice_geom, SS316L, "TubeSlice_log");
+
+
+//Minimal separation of the slices in radial direction (avoid to overlap the volumes of consecutive pieces)
+G4double sep = 0.05*mm + sqrt( pow(TubeSlice_OD/2.,2) - pow( (TubeSlice_ID/2.)*sin(TMath::Pi()/6.),2) ) - (TubeSlice_ID/2.)*cos(TMath::Pi()/6.); //Added also a bit of arbitrary shift
+
+
+//Building of an array of coordinates in order to place the slices of the tube
+
+//Defining the common rotation for the four blocks
+G4RotationMatrix TubeSlice_rot1, TubeSlice_rot2, TubeSlice_rot3, TubeSlice_rot4;
+
+//Block1 - the plates at the "back" of the cryostat
+TubeSlice_rot1.rotateZ(-(180/6)*deg);
+TubeSlice_rot1.rotateX(90.*deg);
+
+//Block2 and Block3 - the plates at the sides of the cryostat
+TubeSlice_rot2.rotateZ(-(180/6)*deg);
+TubeSlice_rot2.rotateX(90.*deg);
+TubeSlice_rot2.rotateZ(-90.*deg); //For the negative coordinates
+
+TubeSlice_rot3.rotateZ(-(180/6)*deg);
+TubeSlice_rot3.rotateX(90.*deg);
+TubeSlice_rot3.rotateZ(90.*deg); //For the positive coordinates
+
+//Block4 - the plates on top the cryostat
+TubeSlice_rot4.rotateZ(-(180/6)*deg);
+TubeSlice_rot4.rotateY(-90.*deg);
+
+
+//Defining the base offsets for the four blocks. Then I will add their relative shifts at the moment of the placement
+G4ThreeVector TubeSlice_offset1((TubeSlice_H-TubeSlice_OD)/2.+TubeSlice_OutChordH+0.01*mm, 0.*mm, 0.01*mm+(TubeSlice_OutChord-cavity1_z)/2.);
+
+G4ThreeVector TubeSlice_offset2(0.*mm, -((baseOD1-TubeSlice_OD)/2.+TubeSlice_OutChordH+0.01*mm), 0.01*mm+(TubeSlice_OutChord-cavity1_z)/2.);
+
+G4ThreeVector TubeSlice_offset3(0.*mm, ((baseOD1-TubeSlice_OD)/2.+TubeSlice_OutChordH+0.01*mm), 0.01*mm+(TubeSlice_OutChord-cavity1_z)/2.);
+
+G4ThreeVector TubeSlice_offset4(0.*mm, 0.*mm, endcapPos_z+endcapHeight1/2.+(TubeSlice_OutChordH-TubeSlice_OD/2.));
+
+
+//Placement of the volumes
+std::vector<G4VPhysicalVolume*>* TubeSlice_vec = new std::vector<G4VPhysicalVolume*>();
+std::stringstream VolNames;
+
+for(G4int iVol=1; iVol<13; iVol++){
+	
+	G4ThreeVector SlicePos;
+	VolNames.str("");
+	VolNames << "TubeSlice"<<iVol<<"_phys";
+	
+	if(iVol<=2){
+		
+		SlicePos = TubeSlice_offset1 + G4ThreeVector(-sep*(iVol-2), 0., 0.);
+		TubeSlice_vec -> push_back( new G4PVPlacement(G4Transform3D(TubeSlice_rot1,SlicePos), TubeSlice_log, VolNames.str(), cavity1_log, false, 0) );
+		
+	}else if(iVol>=3 && iVol<=5){
+		
+		SlicePos = TubeSlice_offset2 + G4ThreeVector(0., -sep*(iVol-3), 0.);
+		TubeSlice_vec -> push_back( new G4PVPlacement(G4Transform3D(TubeSlice_rot2,SlicePos), TubeSlice_log, VolNames.str(), cavity1_log, false, 0) );
+		
+	}else if(iVol>=6 && iVol<=8){
+		
+		SlicePos = TubeSlice_offset3 + G4ThreeVector(0., sep*(iVol-6), 0.);
+		TubeSlice_vec -> push_back( new G4PVPlacement(G4Transform3D(TubeSlice_rot3,SlicePos), TubeSlice_log, VolNames.str(), cavity1_log, false, 0) );
+		
+	}else if(iVol>=9 && iVol<=11){
+		
+		SlicePos = TubeSlice_offset4 + G4ThreeVector(0., 0., sep*(iVol-9));
+		TubeSlice_vec -> push_back( new G4PVPlacement(G4Transform3D(TubeSlice_rot4,SlicePos), TubeSlice_log, VolNames.str(), cavity1_log, false, 0) );
+		
+	}
+}
+
+G4cout << "\nThe total mass of 11 stainless steel tube slices is: " << 11.*(TubeSlice_log->GetMass())/kg << " kg\n" << G4endl;

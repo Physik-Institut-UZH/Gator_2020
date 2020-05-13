@@ -1,0 +1,22 @@
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   logical Volumes definitions
+
+	G4LogicalVolume* Cu_brick1_log;
+	G4LogicalVolume* Cu_brick2_log;
+	G4LogicalVolume* Cu_brick3_log;
+	G4LogicalVolume* Cu_brick4_log;
+	G4LogicalVolume* Cu_Top_log;
+
+
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   Physical Volumes definitions
+
+	G4VPhysicalVolume* OFHC_Cu1_phys;
+	G4VPhysicalVolume* OFHC_Cu2_phys;
+	G4VPhysicalVolume* OFHC_Cu3_phys;
+	G4VPhysicalVolume* OFHC_Cu4_phys;
+	G4VPhysicalVolume* OFHC_Cu5_phys;
+
+
