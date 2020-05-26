@@ -496,4 +496,4 @@
  /app/cern/geant_4.9.3.2/include/geant4/G4ThreeVector.hh \
  include/GeConstruction.hh \
  /app/cern/geant_4.9.3.2/include/geant4/G4VUserDetectorConstruction.hh \
- include/includesample.hh include/Tetratex_LEGEND.ihh
+ include/includesample.hh include/newmaytest.ihh

@@ -1,0 +1,6 @@
+
+// ---------- volume newmaytest ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* newmaytest_log;
+ G4VPhysicalVolume* newmaytest_phys;

@@ -1,0 +1,29 @@
+// Set visibility properties for all the samples 
+G4VisAttributes* sample_vis = new G4VisAttributes(red);
+sample_vis -> SetVisibility(true); 
+sample_vis -> SetForceSolid(false);
+
+//---------- volume newmaytest ---------- 
+
+//Dimensions of the sample in box and definition of the geometry
+ G4double box_newmaytest_x= 20*mm;
+ G4double box_newmaytest_y= 20*mm;
+ G4double box_newmaytest_z= 20*mm;
+ G4Box* newmaytest= new G4Box("newmaytest",0.5*box_newmaytest_x,0.5*box_newmaytest_y,0.5*box_newmaytest_z);
+
+//Construct the logical volume 
+ G4LogicalVolume* newmaytest_log = new G4LogicalVolume(newmaytest,Tetratex_mat,"newmaytest_log");
+
+// Set visibility for the sample (all are set to the same color, change it if necessary) 
+newmaytest_log -> SetVisAttributes(sample_vis);
+
+// Set coordinates for the position of the sample at the top of the detector
+G4double newmaytest_Pos_x =0*mm;
+G4double newmaytest_Pos_y =0*mm;
+G4double newmaytest_Pos_z= endcapPos_z+0.5*endcapHeight1+0.5*box_newmaytest_z+0.01*mm;
+
+// Define the position vector 
+G4ThreeVector newmaytest_Pos(newmaytest_Pos_x,newmaytest_Pos_y,newmaytest_Pos_z); 
+
+// Define the physical volume 
+G4VPhysicalVolume* newmaytest_phys = new  G4PVPlacement(0,newmaytest_Pos,newmaytest_log,"newmaytest_phys",cavity1_log,false,0,true);

@@ -51,23 +51,15 @@ effdir = datadir + "/" + sample + "/" + "effic"
 
 # for multiple isotopes
 #totevents=int(1e8)
-#totevents=int(1e7)
-#eventsxjob_str = "1e6"
-#eventsxjob_suffix = "_1e6"
 
-# for single isotope
-#totevents=int(1e4)
-#eventsxjob_str = "1e3"
-eventsxjob_suffix = "_" + eventsxjob_str
-
-eventsxjob=int(float(eventsxjob_str))
-totjobs=totevents/eventsxjob
+eventsxjob_suffix= "_" + str(n_beamOn)
+totjobs=totevents/n_beamOn
 
 joboffset = 0 #To submit more series of jobs (number of nodes already submitted)
 counter = 0 #when it reaches maxnodes no more jobs are submitted
 
 print ("Total events per isotope: " + str(totevents))
-print ("Total events per job: " + str(eventsxjob))
+print ("Total events per job: " + str(n_beamOn))
 print ("Total num of jobs per isotope: " + str(totjobs))
 
 ####################################################################################
