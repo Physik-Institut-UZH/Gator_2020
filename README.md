@@ -1,6 +1,6 @@
 Gator_2020
 
-This is the new version of the gator directory, which uses the easygator.C script to run simulations and analysis for the samples screneed at the Gator facility.
+This is the new version of the gator directory, which uses the easygator.C script to run simulations and analysis for the samples screneed at the Gator low-background counting facility  [1].
 
 ////////////////////////////////////////////////////////////////////
 
@@ -29,3 +29,6 @@ iv) .bashrc: here the environments and library paths are set. In case a version 
 v) BAT: if the installation of BAT changes, the paths have to be changed in .bashrc as well
 
 ///////////////////////////////////////////////////////////////////
+
+References:
+[1] L. Baudis et al. "Gator: a low-background counting facility at the Gran Sasso Underground Laboratory"  https://arxiv.org/pdf/1103.2125v2.pdf
