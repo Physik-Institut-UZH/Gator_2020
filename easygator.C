@@ -6,19 +6,21 @@
 #include <fstream>
 #include <sys/stat.h>
 #include <experimental/filesystem>
+//#include "functions.hh"
+#include "test.cpp"
 
 namespace fs = std::experimental::filesystem;
 using namespace std;
 
 // written by G. R. Araujo
 //
-// Last update by ... in ...
+// Last update by ... in May 2020
 // Check how to run and more info about the script in the README file in the same folder
 
 void check_matlist(string sim_dir);
 int build_geo(string samplename,string sim_dir);
 bool itExists(string dirName_in);
-int analysis();
+int analysis(string s_dir, string samplename);
 
 int main()
 {
@@ -30,7 +32,7 @@ int main()
  string slurmlog_dir=GATORDIR+"/slurmlog";
  string bashrcfile=GATORDIR+"/.bashrc";
 //--------------------------------------------------------------------------------
-
+ 
  cout<<"*****************************************" <<endl;
  cout<<"*                                       *" <<endl;
  cout<<"*              EASY GATOR               *" <<endl;
@@ -40,7 +42,8 @@ int main()
  cout<<"*****************************************" <<endl;
 
  // parameters used in a standard simulation
- int queue=2, nodes=50, n_beamOn=1000000, n_totevents=1e+5, n_isot_std=8, n_isot_full=16;//These numbers are organized in such a way that the a queue of 2 and 50 nodes are enough for 10+6 events per macro (n_beamOn). if the total number of events change, then the number of jobs will change !!! Make sure that the number of jobs do not exceed the limit.. standard number of events: (currently e6 x 100 files).
+ int queue=2, nodes=50, n_beamOn=10000, n_totevents=1e+5, n_isot_std=8, n_isot_full=16;//These numbers are organized in such a way that the a queue of 2 and 50 nodes are enough for 10+6 events per macro (n_beamOn). if the total number of events change, then the number of jobs will change !!! Make sure that the number of jobs do not exceed the limit.. standard number of events: (currently e6 x 100 files).
+ if (n_beamOn<10000) cout<<" min n_beamOn=10000"<<endl; //this is because of the output in the log files that are later read to check whether the sim ran properly
 
  string std_isotopes[n_isot_std]={"238U","232Th","40K","60Co","137Cs","226Ra","235U","228Th"};
  string full_isotopes[n_isot_full]= {"238U","232Th","40K","60Co","137Cs", "226Ra","235U", "228Th", "110mAg", "207Bi", "54Mn", "58Co", "56Co", "57Co","134Cs", "46Sc"};
@@ -67,13 +70,13 @@ int main()
  char cont_sim='g';
  if (itExists(s_dir)) // in case it exists and you want to run a simulation, show message
  {
-	if(an_sim!='a' && an_sim!='A') {cout<<" \n The simulation directory of this sample already exists. Type G to build a new geometry for this sample or S to directly run the simulation."; cin>>cont_sim;}
+	if(an_sim!='a' && an_sim!='A') {cout<<" \n The simulation directory of this sample already exists. Type G to build a new geometry for this sample or S to directly run the simulation.\n"; cin>>cont_sim;}
  }
  else if(!itExists(s_dir) && (an_sim=='a' || an_sim=='A'))
  {
 	cout<<" \n The simulation directory of this sample does not exist. Type G to build a new geometry for this sample or S to run the simulation."; cin>>cont_sim; //to do: but here I need to check that the included geometry files are indeed from this sample
  }
- if (an_sim=='a' || an_sim=='A') break_anal=analysis();
+ if (an_sim=='a' || an_sim=='A') break_anal=analysis(s_dir, samplename);
  if (break_anal!=0) return 0;
  if (cont_sim!='s' && cont_sim!='S')//it does not build the geometry, if you only want to re-run a simulation
  { 
@@ -92,7 +95,7 @@ int main()
 	 incl_ihh.close();
 
 	 // Now the geometry is made, the overlap check is run, previous wrl files are deleted and a new is created.
-	 string comm_makegeo="bash --rcfile "+GATORDIR+"/.bashrc -ci 'cd "+sim_dir+"; make clean -f GlobGeom_makefile; make -f GlobGeom_makefile; make clean; make; touch g4_trash.wrl; rm g4_*.wrl; cp bin/Linux-g++/gator_1.2 .; ./gator_1.2;'";  //here a bash interactive shell is open which loads a specific rc file, then the commands are run.
+	 string comm_makegeo="bash --rcfile "+bashrcfile+" -ci 'cd "+sim_dir+"; make clean -f GlobGeom_makefile; make -f GlobGeom_makefile; make clean; make; touch g4_trash.wrl; rm g4_*.wrl; cp bin/Linux-g++/gator_1.2 .; ./gator_1.2;'";  //here a bash interactive shell is open which loads a specific rc file, then the commands are run.
 	 system(comm_makegeo.c_str());
 
 	//now we check wheter the new wrl file was created, if not, this indicates that the previous commands did not run as expected: show warning and break.
@@ -101,7 +104,7 @@ int main()
 	 
 	 // Now the the wrl file is open with freewrl 
 	 string s_echo="\n Opening .wrl file... \n\n *** Check wheter the geometry and position of the sample are right *** \n Then close the freewrl window to continue \n\n";
-	 string comm_openwrl="bash --rcfile "+GATORDIR+"/.bashrc -ci 'cd "+sim_dir+"; echo \""+s_echo+"\"; freewrl g4_*.wrl'"; 
+	 string comm_openwrl="bash --rcfile "+bashrcfile+" -ci 'cd "+sim_dir+"; echo \""+s_echo+"\"; freewrl g4_*.wrl'"; 
 	 system(comm_openwrl.c_str());
  }//geometry part is finished
 
@@ -110,7 +113,7 @@ char c_inp;
 int n_isot;
 string isotopes[100];
 cout<<"\n *************************************** \n\n ";
-cout<<" To run the standard analysis (number of events: :"<<n_totevents<<" and standard list of isotopes: "; for (int i=0; i<n_isot_std; ++i){cout<<std_isotopes[i]<<" ";} cout<<"), type S. To see the full list of isotopes, type L. To modify parameters and isotopes, type M \n"<<endl;
+cout<<" To run the standard analysis (number of events: "<<n_totevents<<" and standard list of isotopes: "; for (int i=0; i<n_isot_std; ++i){cout<<std_isotopes[i]<<" ";} cout<<"), type S. To see the full list of isotopes, type L. To modify parameters and isotopes, type M \n"<<endl;
  cin>>c_inp;
  switch(c_inp)
  {
@@ -151,7 +154,7 @@ cout<<" To run the standard analysis (number of events: :"<<n_totevents<<" and s
  system(comm_mkdirs_mv.c_str());
 
 // now the macros of the isotopes are open and confine volume and number of events is written
-string s_isolist="[";
+string s_isolist="[ ";//ps: keep this space character here
 string s_confinemorevolumes;
 
 string sconfine;
@@ -184,9 +187,9 @@ for (int i=0; i<n_isot; i++)
  py_input<<"binary=\""<<sim_dir<<"/bin/Linux-g++/gator_1.2\""<<endl;
  py_input<<"datadir=\""<<out_dir.c_str()<<"\""<<endl;
  py_input<<"sample=\""<<samplename.c_str()<<"\""<<endl;
- py_input<<"queue=\""<<queue<<":00:00\"\nmaxnodes ="<<nodes<<endl;
- py_input<<"totevents="<<n_totevents<<endl;
- py_input<<"eventsxjob_str = \""<<n_beamOn<<"\""<<endl;
+ py_input<<"queue=\""<<queue<<":00:00\"\nmaxnodes="<<nodes<<endl;
+ py_input<<"totevents= "<<n_totevents<<endl;//space is important here to read integer later
+ py_input<<"n_beamOn= "<<n_beamOn<<endl;
  py_input<<"isotope_list="<<s_isolist<<endl;
 
  py_input.close();
@@ -198,18 +201,126 @@ for (int i=0; i<n_isot; i++)
  system(("mv "+slurmlog_dir+"/* "+slurmlog_dir+"_archive/").c_str());
 
  //Now the jobs to run the simulation will be submitted 
- string s_submit="cd "+sim_dir+" && screen  -S easygator_screen -dm bash -c 'python GatorSims.py;'"; // exec sh to keep the screen
+ string s_submit="cd "+sim_dir+" && cp sim_input.py "+s_dir+"/ && screen  -S easygator_screen -dm bash -c 'python GatorSims.py;'"; // exec sh to keep the screen
+ 
  //ps: GatorSims.py is only a script to manage the jobs which are submitted using sbatch to pass parameter to the GatorSims.slurm script. This script runs the binary $binary "$macro" $gatordir/slurm_tmpfiles/$SLURM_JOB_ID/"$outfilename" > "$logfilename"
+
  system(s_submit.c_str());
- cout<<" ------------------------------------------- \n The jobs are being submitted in the easygator_screen. Type 'screen -r easygator_screen' if you want to check the screen. \n (ps: The screen is terminated once all jobs were submitted) \n\n use 'qstat -u username' to check status of the jobs and 'scancel -u username' to cancel the jobs. \n\n Check the log files in the slurmlog directory and in the logs folder in the sample directory.\n";
+ cout<<" ------------------------------------------- \n The jobs are being submitted in the easygator_screen. Type 'screen -r easygator_screen' if you want to check the screen. \n (ps: The screen is terminated once all jobs were submitted) \n\n Use 'qstat -u username' to check status of the jobs: make sure that they are running (check slurm log if they get immediately canceled). Use 'scancel -u username' to cancel the jobs if needed. \n\n Job submission errors are output in the log files in the slurmlog directory and script errors in the logs folder in the sample directory.\n";
 
 }
 
-int analysis()
+int analysis(string s_dir, string samplename)
 {
-	cout<<" Analysis Mode "<<endl;
+	int totevents, n_beamOn, sim_events, n_isot=0;
+// TO DO: Check whether the analysis has already been run before 
+
+// Before starting the analysis, we check whether the simulation worked as it should by comparing the input file of the simulation to the total of simulated events, scanning for errors in the log files, verifying the size of the root files and checking whether they merged properly
+
+	string readinput, line, readline, isotopes[100];
+	string readinput_file=s_dir+"/sim_input.py";
+	cout<<"\n *** Reading the inputs of the simulation for the analysis ***  "<<endl;
+	ifstream readsim_input(readinput_file.c_str()); system("sleep 2.4");
+	if(!readsim_input.is_open()) cout<<" error in reading the simulation input file: "<<s_dir+"sim_input.py"<<" \n If there was no sim_input.py file for this simulation, please make one in order to run the analysis or re-run the simulation. "<<endl;
+	//char sep[3]='","';
+	while (readsim_input>>readinput) 
+	{
+		//cout<<readinput<<endl;
+		if (readinput=="totevents=") {readsim_input>>totevents; cout<<"totevents="<<totevents<<endl;}
+		if (readinput=="n_beamOn=") {readsim_input>>n_beamOn; cout<<"n_beamOn="<<n_beamOn<<endl;}
+		if (readinput=="isotope_list=[")
+		{
+			cout<<"isotope_list=";
+			readsim_input>>line;
+			istringstream iline(line);
+			getline(iline, readline, '\"');
+			while (readline!="]")
+			{
+				getline(iline, readline, '\"');
+				if (readline!="," && readline!="]") 
+				{
+					isotopes[n_isot]=readline;
+					cout<<isotopes[n_isot]<<",";
+					n_isot++;
+				}
+
+			}
+			//cout<<"\n";
+		} 
+
+
+	}
+
+	int totjobs=totevents/n_beamOn, n_errors=0;
+	string logdir=s_dir+"/logs/";
+
+
+	// Now we read the log files for each isotope and job
+	system("sleep 2.4"); cout<<" \n\n *** Opening log files to check simulated events and errors *** \n Note: this is a simple \"grep\" error scan. If something seems to be wrong check the log files anyway. "<<endl;  system("sleep 2.8");
+	for (int t=0; t<n_isot; t++) 
+	{
+		for (int j=1; j<=totjobs; j++)
+		{
+			stringstream s_nbeam, sjob; s_nbeam<<n_beamOn;
+			sjob<<j;
+			string logfile=logdir+samplename+"_"+isotopes[t]+"_"+s_nbeam.str()+"_"+sjob.str()+".log";
+
+			ifstream readlogfile(logfile.c_str(),ios::ate);
+			if (!readlogfile.is_open()) cout<<"Error: logfile was not open: "<<logfile<<endl;// else cout<<logfile<<endl;
+			//sim_events=0;
+			for (int i=90; i<200; i++)//positioning the cursor at the end of the file
+			{ 
+				//it goes through the file (starting at the end, until if finds n_beamOn 
+				readlogfile.seekg(-i, ios::end); 
+				readlogfile>>sim_events;
+				//cout<<sim_events<<endl;
+				if (sim_events==n_beamOn) break;	
+
+			}
+			if (sim_events!=n_beamOn){ n_errors++; cout<<"Error: there was a problem with log file " <<logfile<<": the number of simulated events read from the log ("<<sim_events<<") does not seem to match n_beamOn ("<<n_beamOn<<"). Check the file for errors"<<endl;}
+		}
+	}
+	system(("cd "+logdir+" && grep -iRl \"rror\" * > errors.log").c_str());
+	ifstream errorlog(logdir+"errors.log"); if (!errorlog.is_open()) cout<<"error log file did not open: "+logdir+"errors.log"<<endl; 
+	//while (!errorlog.eof()) {n_errors++; cout<<n_errors<<endl;}
+	cout<<"   ---> Logfile check was completed. *** "<<n_errors<<" errors were found  ***"<<endl; system("sleep 2.4");
+	if (n_errors>0) {cout<<" \n Do you want to continue the analysis despite the errors? if yes, type C, if not, ctrl+C. The list of files that contain error messages is in "+logdir+"errors.log. Also check the messages above in case logfiles were not open. This indicates the simulation maybe crashed before it finished. If no log files were produced, maybe there was an error in submitting the jobs, so check for errors in the slurmlog directory in this folder. \n"; char cont; cin>>cont;}
+
+	//Now log file checks were done, so we check the sizes of root files and merge them. Note: the merge dir is recreated in case it existed before.
+	// function s_dir, isotopes, n_isot
+	string merge_dir=s_dir+"/merged"; system(("rm -rf "+merge_dir+" && mkdir "+merge_dir).c_str()); 
+	cout<<"\n *** Merging root files for each isotope *** \n merge logs are in the merged directory and are scanned for errors, as well as file sizes are checked \n"; system("sleep 2.5");
+	for (int t=0; t<n_isot; t++) 
+	{
+		//for (int j=1; j<=totjobs; j++)
+		//{stringstream s_nbeam, sjob; s_nbeam<<n_beamOn;sjob<<j;
+		string rootdir=s_dir+"/"+isotopes[t];
+		string mergedroot=merge_dir+"/"+isotopes[t]+".root";
+		string mergelog=merge_dir+"/merge_"+isotopes[t]+".log";
+		string checkfilesizes="cd "+rootdir+" && min=$(ls -l | gawk '{sum += $5; n++;} END {printf \"%i\", sum/(n-1)*.85;}') && max=$(ls -l | gawk '{sum += $5; n++;} END {printf \"%i\", sum/(n-1)*1.15;}') && nfiles=$(find . -type f -size +\"$min\"c -size -\"$max\"c | wc -l) && nfilestot=$(ls | wc -l) && if [ $nfiles -eq $nfilestot ]; then echo \"GOOD :-) all root files in the "+isotopes[t]+" folder are roughly the same size, files will be therefore merged\" && sleep 2.4; else echo \"*** ERROR: one or more root files have a significantly different size, check it below\" && ls -l && sleep 2.4 && echo \"press C to continue anyway or S to stop the script and check further what happened\" && read var && echo \"$var\" > ../tmpfile; fi"; char cont='C';
+		system (checkfilesizes.c_str()); ifstream var((s_dir+"/tmpfile").c_str()); 
+		if(var.good()) {var>>cont; system(("rm "+s_dir+"/tmpfile").c_str());}
+		if (cont!='C' && cont!='c') {cout<<"script stopped by the user \n"; return -1;}
+		system(("hadd "+mergedroot+" "+rootdir+"/*.root &> "+mergelog+"; cd "+merge_dir+" && grep -iRl \"error\" * > mergelog.err").c_str()); //hadd and then grep errors in the hadd log 
+		ifstream checklog((merge_dir+"/mergelog.err").c_str()); checklog.seekg(0, ios::end);  
+		if (checklog.tellg()!=0) // if it is not empty
+		{
+			cout<<"*** MERGER ERRORS were found in these merge: \n\n";
+			system(("tail "+merge_dir+"/mergelog.err && echo \"press C to continue or S to stop the script and check further what happened\" && read var && echo \"$var\" > "+s_dir+"/tmpfile").c_str());
+			ifstream var((s_dir+"/tmpfile").c_str()); var>>cont; 
+			system(("rm "+s_dir+"/tmpfile").c_str());
+			if (cont!='C' && cont!='c') {cout<<"script stopped by the user \n"; return -1;}
+		} else { cout<<"No merge errors were found, but check the merge log "+mergelog+" in case something weird happens \n"<<endl;} 
+	}
+
+		
+
+
+
 	return 1;
 }
+
+
 int build_geo(string samplename, string sim_dir) 
 {
 
