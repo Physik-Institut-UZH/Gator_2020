@@ -3,9 +3,38 @@ import sys
 import os
 import glob
 import string
+#import re
 import time
-from sim_input import * # sim_input is the simulation input for a given sample
+from sim_input import *
 from subprocess import *
+
+
+
+
+# isotopes
+#isotope_list=["238U","232Th","186keV","1001keV","40K","137Cs"]
+#isotope_list=["40K","56Co","58Co","60Co","54Mn","46Sc"]
+#isotope_list=["235U"]
+# "57Co" //122 and 136 keV (can add to EffCalc, but at the edge of sensitivity from poor SNR)
+
+#isotope_list=["134Cs"]
+#isotope_list=["186keV", "46Sc", "570keV", "137Cs", "207Bi","226Ra", "228Th"]
+#isotope_list=["1001keV", "110mAg", "605keV", "658keV"]
+
+#isotope_list=["796keV", "885keV", "937keV", "1064keV"] 
+# errors on PMT_9 for isotopes below
+#isotope_list=["1001keV", "210Pb", "7Be","207Bi"]
+
+#isotope_list=["228Th"]
+#isotope_list=["54Mn", "137Cs"]
+
+
+#shortlist
+#isotope_list=["238U","232Th","40K","60Co", "1001keV", "110mAg", "137Cs", "207Bi", "54Mn", "58Co", "56Co", "57Co", "605keV", "186keV"]
+# full list for PMTs
+#isotope_list=["238U","232Th","40K","60Co", "1001keV", "110mAg", "137Cs", "207Bi", "54Mn", "58Co", "56Co", "57Co", "605keV", "658keV", "885keV", "1064keV", "134Cs", "186keV", "46Sc", "570keV", "796keV", "937keV"]
+#isotope_list=["232Th"]
+#isotope_list=["235U"]
 
 
 ####################################################################################
@@ -18,6 +47,10 @@ effdir = datadir + "/" + sample + "/" + "effic"
 
 ####################################################################################
 # number of sim events
+
+
+# for multiple isotopes
+#totevents=int(1e8)
 
 eventsxjob_suffix= "_" + str(n_beamOn)
 totjobs=totevents/n_beamOn

@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 #include <experimental/filesystem>
 //#include "functions.hh"
-#include "test.cpp"
+
 
 namespace fs = std::experimental::filesystem;
 using namespace std;
@@ -20,7 +20,7 @@ using namespace std;
 void check_matlist(string sim_dir);
 int build_geo(string samplename,string sim_dir);
 bool itExists(string dirName_in);
-int analysis(string s_dir, string samplename);
+int analysis(string s_dir, string ana_dir, string samplename, string bashrcfile);
 
 int main()
 {
@@ -28,6 +28,7 @@ int main()
 //--------------------------------------------------------------------------------
  string GATORDIR="/disk/bulk_atp/gator"; //main directory for gator
  string sim_dir=GATORDIR+"/simulations/gator_v2.0"; // simulation directory, version 2.0
+ string ana_dir=GATORDIR+"/analysis"; // analysis directory
  string out_dir=GATORDIR+"/Simulation_Results"; // Results directory
  string slurmlog_dir=GATORDIR+"/slurmlog";
  string bashrcfile=GATORDIR+"/.bashrc";
@@ -76,7 +77,7 @@ int main()
  {
 	cout<<" \n The simulation directory of this sample does not exist. Type G to build a new geometry for this sample or S to run the simulation."; cin>>cont_sim; //to do: but here I need to check that the included geometry files are indeed from this sample
  }
- if (an_sim=='a' || an_sim=='A') break_anal=analysis(s_dir, samplename);
+ if (an_sim=='a' || an_sim=='A') break_anal=analysis(s_dir, ana_dir, samplename, bashrcfile);
  if (break_anal!=0) return 0;
  if (cont_sim!='s' && cont_sim!='S')//it does not build the geometry, if you only want to re-run a simulation
  { 
@@ -210,19 +211,20 @@ for (int i=0; i<n_isot; i++)
 
 }
 
-int analysis(string s_dir, string samplename)
+int analysis(string s_dir, string ana_dir, string samplename, string bashrcfile)
 {
 	int totevents, n_beamOn, sim_events, n_isot=0;
-// TO DO: Check whether the analysis has already been run before 
+
+	// TO DO: Check whether the analysis has already been run before 
 
 // Before starting the analysis, we check whether the simulation worked as it should by comparing the input file of the simulation to the total of simulated events, scanning for errors in the log files, verifying the size of the root files and checking whether they merged properly
 
 	string readinput, line, readline, isotopes[100];
 	string readinput_file=s_dir+"/sim_input.py";
 	cout<<"\n *** Reading the inputs of the simulation for the analysis ***  "<<endl;
-	ifstream readsim_input(readinput_file.c_str()); system("sleep 2.4");
+	ifstream readsim_input(readinput_file.c_str()); 
 	if(!readsim_input.is_open()) cout<<" error in reading the simulation input file: "<<s_dir+"sim_input.py"<<" \n If there was no sim_input.py file for this simulation, please make one in order to run the analysis or re-run the simulation. "<<endl;
-	//char sep[3]='","';
+
 	while (readsim_input>>readinput) 
 	{
 		//cout<<readinput<<endl;
@@ -252,11 +254,14 @@ int analysis(string s_dir, string samplename)
 	}
 
 	int totjobs=totevents/n_beamOn, n_errors=0;
-	string logdir=s_dir+"/logs/";
+	stringstream stotev; stotev<<totevents;
+	string logdir=s_dir+"/logs/"; 
+	string effscript=ana_dir+"/EffCalcAll.cpp"; // This script calculates the prob. of a gamma from the sample to reach the det.
+ 	string isotvarh=ana_dir+"/isotopes.h", isotvarcpp=ana_dir+"/isotopes.cpp";// in this file we save a list of isotopes as variables to be read by EffcalcAll.cpp
 
 
 	// Now we read the log files for each isotope and job
-	system("sleep 2.4"); cout<<" \n\n *** Opening log files to check simulated events and errors *** \n Note: this is a simple \"grep\" error scan. If something seems to be wrong check the log files anyway. "<<endl;  system("sleep 2.8");
+	system("sleep 3.4"); cout<<" \n\n *** Opening log files to check simulated events and errors *** \n Note: this is a simple \"grep\" error scan. If something seems to be wrong check the log files anyway. "<<endl;  system("sleep 2.8");
 	for (int t=0; t<n_isot; t++) 
 	{
 		for (int j=1; j<=totjobs; j++)
@@ -313,9 +318,7 @@ int analysis(string s_dir, string samplename)
 		} else { cout<<"No merge errors were found, but check the merge log "+mergelog+" in case something weird happens \n"<<endl;} 
 	}
 
-		
-
-
+	system(("bash --rcfile "+bashrcfile+" -ci 'root -b -l <<EOF\n.L "+isotvarcpp+"++\n.x "+effscript+"(\"/disk/bulk_atp/gator/Simulation_Results/newmaytest\",100000)\n.q\nEOF'").c_str()); // -b (no graphics)
 
 	return 1;
 }

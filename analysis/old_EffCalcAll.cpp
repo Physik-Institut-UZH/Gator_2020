@@ -1,28 +1,57 @@
-#include "isotopes.h"
- 
-int EffCalcAll(Char_t s_dir[1000], Int_t NumInEvt)//("pathsimulateddata", total_N_simulated_evts)
 {
-	
 
-	//gROOT->Reset(); -> this line was here, but it has a problem now: it does not let the variables from isotopes.h to be read (update 05.2020 by Gabriela)
+// todo: write sample/events paramters.  Change the bunch of bool into a loop through the isotopes
+	
+	gROOT->Reset();
 	gStyle->SetPalette(1);
 	gStyle->SetFuncColor(2);
   
-
+//Here are the setup and initialization stuff to be changed manually
+	Char_t* file = "newmaytest";
+// below is events per job (eventsxjob_str)
+	Char_t* events = "1000000";
 	Char_t DataPath[1000];
-	sprintf(DataPath,"%s/merged/",s_dir);
+// below is total number of simulated events (totevents = number per file (typically 10^6) x number of files) 	
+	Int_t NumInEvt = 100000000; //currently e6 x 100 files
+
+	sprintf(DataPath,"/disk/bulk_atp/gator/Simulation_Results/newmaytest/merged/");
 	
-	string string_dir(s_dir); 
-	string workdir= string_dir+"/effic/";
+	string workdir = "/disk/bulk_atp/gator/Simulation_Results/newmaytest/effic/";
 
 	string outfilename = "lines.list";
 	outfilename = workdir + outfilename;
 	
 	Char_t description[1000];
-  	Char_t FullFN1[1000], description1[1000];
-  	Char_t tmpchar[1000], title[1000];
+  
+	Char_t FullFN1[1000], description1[1000];
+  
+	Char_t tmpchar[1000], title[1000];
+	
 
-	//Switches are now in the header files (which should be rewritten for each sample, as done by easygator)	
+	//Switches
+	Bool_t U238 = true; //If the 238U chain is simulated
+	Bool_t Th232 = true; //If the 232Th chain is simulated
+	Bool_t U235 = true; //If want or not the 235U info
+	Bool_t K40 = true;
+	Bool_t Co60 = true;
+	Bool_t Cs137 = true;
+	Bool_t Ra226 = true;
+
+	Bool_t U186 = false; //To calculate the 186 keV BRxEff from direct gamma simulation and not from the 235U decay
+	Bool_t Sc46 = false; //If 46Sc is simulated
+	Bool_t Pa1001 = false; //To calculate the 1001 keV BRxEff from direct gamma simulation and not from the 238U decay chain
+	Bool_t Pa = false; //If want or not the 234mPa info
+	Bool_t Mn54 = false; //If I want Mn54 info
+	Bool_t Be7 = false; //added Aug 2017
+	Bool_t Pb210 = false; //added Aug 2017
+// Use EffCalcLine.cpp for other individual isotopes (e.g. 110mAg)
+	Bool_t Ag658 = false; //One of three 110mAg lines
+	Bool_t Ag885 = false; //Two of three 110mAg lines
+	Bool_t Ag937 = false; //Three of three 110mAg lines
+// cobalt from activated copper
+	Bool_t Co58 = false;
+//	Bool_t Co57 = false; //not coded yet
+	Bool_t Co56 = false;
 	
 	Bool_t writetxt = true;
 	
@@ -58,7 +87,6 @@ int EffCalcAll(Char_t s_dir[1000], Int_t NumInEvt)//("pathsimulateddata", total_
 	Float_t BR1120s = 0.99987;  // 1120 keV of 46Sc
 	Float_t BR662 = 0.8499;  // 662 keV of 137Cs
 	Float_t BR811 = 0.99;  // 811 keV of 58Co
-
 // Use EffCalcLine.cpp for other individual isotopes (e.g. 110mAg)
 //	Float_t BR658 = 0.940;  // 658 keV of 110mAg
 //	Float_t BR885 = 0.722;  // 885 keV of 110mAg		
@@ -77,8 +105,8 @@ if(Th232){
   
 	TLegend* leg = new TLegend(0.6,0.7,0.9,0.9);
     
-	sprintf(FullFN1,"%s232Th.root",DataPath);
-	sprintf(description1," ^{232}Th Simulation");
+	sprintf(FullFN1,"%s%s_232Th_%s.root",DataPath,file,events);
+	sprintf(description1,"%s ^{232}Th Simulation",file);
 	cout<<FullFN1<<endl;
     
 	TChain* t1 = new TChain("t1");
@@ -191,7 +219,7 @@ if(Th232){
 	g_effic -> SetPointError(point,0.0,0.1*RealEff2615);
 	point++;
 
-	sprintf(title,"%s232Th.C",workdir.c_str());
+	sprintf(title,"%s%s_232Th.C",workdir.c_str(),file);
 	c1->SaveAs(title);
 
 	t1->Delete();//Finished with 232Th chain
@@ -208,8 +236,8 @@ if(U238){
 	TCanvas *c2 = new TCanvas("c2","Simulated Spectra",870,500);
 	c2->SetLogy();
 
-	sprintf(FullFN1,"%s238U.root",DataPath);
-	sprintf(description1," ^{238}U Simulation");
+	sprintf(FullFN1,"%s%s_238U_%s.root",DataPath,file,events);
+	sprintf(description1,"%s ^{238}U Simulation",file);
 	cout<<FullFN1<<endl;
 
   
@@ -359,7 +387,7 @@ if(U238){
 	g_effic -> SetPointError(point,0.0,0.1*RealEff1765);
 	point++;
 	
-	sprintf(title,"%s238U.C",workdir.c_str());
+	sprintf(title,"%s%s_238U.C",workdir.c_str(),file);
 	c2->SaveAs(title);
 
 	t1->Delete();//Finisched with 238U chain
@@ -375,8 +403,8 @@ if(Pb210){
 	TCanvas *c210 = new TCanvas("c210","Simulated Spectra",870,500);
 	c210->SetLogy();
 
-	sprintf(FullFN1,"%s210Pb.root",DataPath);
-	sprintf(description1," ^{210}Pb Simulation");
+	sprintf(FullFN1,"%s%s_210Pb_%s.root",DataPath,file,events);
+	sprintf(description1,"%s ^{210}Pb Simulation",file);
 	cout<<FullFN1<<endl;
 
   
@@ -429,7 +457,7 @@ if(Pb210){
 	g_effic -> SetPointError(point,0.0,0.1*RealEff803);
 	point++;
 		
-	sprintf(title,"%s210Pb.C",workdir.c_str());
+	sprintf(title,"%s%s_210Pb.C",workdir.c_str(),file);
 	c210->SaveAs(title);
 
 	t1->Delete();//Finished with 210Pb chain
@@ -443,8 +471,8 @@ if(K40){
 
 	TCanvas* c3 = new TCanvas("c3","Simulated Spectra",870,500);
 	c3->SetLogy();
-	sprintf(FullFN1,"%s40K.root",DataPath);
-	sprintf(description1," ^{40}K Simulation");
+	sprintf(FullFN1,"%s%s_40K_%s.root",DataPath,file,events);
+	sprintf(description1,"%s ^{40}K Simulation",file);
 	cout<<FullFN1<<endl;
 
 	TChain *t1 = new TChain("t1");
@@ -476,7 +504,7 @@ if(K40){
 	g_effic -> SetPointError(point,0.0,0.1*RealEff1460);
 	point++;
 	
-	sprintf(title,"%s40K.C",workdir.c_str());
+	sprintf(title,"%s%s_40K.C",workdir.c_str(),file);
 	c3->SaveAs(title);
 	
 	
@@ -490,8 +518,8 @@ if(Be7){
 
 	TCanvas* c7Be = new TCanvas("c3","Simulated Spectra",870,500);
 	c7Be->SetLogy();
-	sprintf(FullFN1,"%s7Be.root",DataPath);
-	sprintf(description1," ^{7}Be Simulation");
+	sprintf(FullFN1,"%s%s_7Be_%s.root",DataPath,file,events);
+	sprintf(description1,"%s ^{7}Be Simulation",file);
 	cout<<FullFN1<<endl;
 
 	TChain *t1 = new TChain("t1");
@@ -522,7 +550,7 @@ if(Be7){
 	g_effic -> SetPointError(point,0.0,0.1*RealEff478);
 	point++;
 	
-	sprintf(title,"%s7Be.C",workdir.c_str());
+	sprintf(title,"%s%s_7Be.C",workdir.c_str(),file);
 	c7Be->SaveAs(title);
 	
 	
@@ -536,8 +564,8 @@ if(Be7){
 //------ Starting with the 60Co --------------//
 if(Co60){
 
-	sprintf(FullFN1,"%s60Co.root",DataPath);
-	sprintf(description1," ^{60}Co Simulation");
+	sprintf(FullFN1,"%s%s_60Co_%s.root",DataPath,file,events);
+	sprintf(description1,"%s ^{60}Co Simulation",file);
 	cout<<FullFN1<<endl;
 
 	Int_t NumInEvtCo = NumInEvt;
@@ -592,7 +620,7 @@ if(Co60){
 	g_effic -> SetPointError(point,0.0,0.1*RealEff1332);
 	point++;
 	
-	sprintf(title,"%s60Co.C",workdir.c_str());
+	sprintf(title,"%s%s_60Co.C",workdir.c_str(),file);
 	c4->SaveAs(title);
 	
 
@@ -606,8 +634,8 @@ if(Co60){
 //------ Starting with the 58Co --------------//
 if(Co58){
 
-	sprintf(FullFN1,"%s58Co.root",DataPath);
-	sprintf(description1," ^{58}Co Simulation");
+	sprintf(FullFN1,"%s%s_58Co_%s.root",DataPath,file,events);
+	sprintf(description1,"%s ^{58}Co Simulation",file);
 	cout<<FullFN1<<endl;
 
 	Int_t NumInEvtCo58 = NumInEvt;
@@ -642,7 +670,7 @@ if(Co58){
 	g_effic -> SetPointError(point,0.0,0.1*RealEff811);
 	point++;
 	
-	sprintf(title,"%s58Co.C",workdir.c_str());
+	sprintf(title,"%s%s_58Co.C",workdir.c_str(),file);
 	c58->SaveAs(title);
 	
 	t1->Delete(); //Finished with 58Co element
@@ -658,8 +686,8 @@ if(Co58){
 //------ Starting with the 56Co --------------//
 if(Co56){
 
-	sprintf(FullFN1,"%s56Co.root",DataPath);
-	sprintf(description1," ^{56}Co Simulation");
+	sprintf(FullFN1,"%s%s_56Co_%s.root",DataPath,file,events);
+	sprintf(description1,"%s ^{56}Co Simulation",file);
 	cout<<FullFN1<<endl;
 
 	Int_t NumInEvtCo56 = NumInEvt;
@@ -712,7 +740,7 @@ if(Co56){
 	g_effic -> SetPointError(point,0.0,0.1*RealEff1238);
 	point++;
 	
-	sprintf(title,"%s56Co.C",workdir.c_str());
+	sprintf(title,"%s%s_56Co.C",workdir.c_str(),file);
 	c56->SaveAs(title);
 	
 
@@ -727,8 +755,8 @@ if(Co56){
 	
 if(Sc46){
 	
-	sprintf(FullFN1,"%s46Sc.root",DataPath);
-	sprintf(description1," ^{46}Sc Simulation");
+	sprintf(FullFN1,"%s%s_46Sc_%s.root",DataPath,file,events);
+	sprintf(description1,"%s ^{46}Sc Simulation",file);
 	cout<<FullFN1<<endl;
 
 	Int_t NumInEvtSc = NumInEvt;
@@ -785,7 +813,7 @@ if(Sc46){
 	g_effic -> SetPointError(point,0.0,0.1*RealEff1120s);
 	point++;
 	
-	sprintf(title,"%s46Sc.C",workdir.c_str());
+	sprintf(title,"%s%s_46Sc.C",workdir.c_str(),file);
 	c5->SaveAs(title);
   
 	t1->Delete(); //Finished with 46Sc element
@@ -802,8 +830,8 @@ if(Sc46){
 //------ Starting with the 137Cs --------------//
 if(Cs137){
 
-	sprintf(FullFN1,"%s137Cs.root",DataPath);
-	sprintf(description1," ^{137}Cs Simulation");
+	sprintf(FullFN1,"%s%s_137Cs_%s.root",DataPath,file,events);
+	sprintf(description1,"%s ^{137}Cs Simulation",file);
 	cout<<FullFN1<<endl;
 	
 	TChain* t1 = new TChain("t1");
@@ -842,7 +870,7 @@ if(Cs137){
 	g_effic -> SetPointError(point,0.0,0.1*RealEff662);
 	point++;
 	
-	sprintf(title,"%s137Cs.C",workdir.c_str());
+	sprintf(title,"%s%s_137Cs.C",workdir.c_str(),file);
 	c6->SaveAs(title);
 	
 	t1->Delete(); //Finished with 137Cs element
@@ -859,8 +887,8 @@ if(Cs137){
 //------ Starting with the 235U (interested only to the 186 keV line)--------------//
 if((!U186)&&U235){
 	
-	sprintf(FullFN1,"%s235U.root",DataPath);
-	sprintf(description1," ^{235}U Simulation");
+	sprintf(FullFN1,"%s%s_235U_%s.root",DataPath,file,events);
+	sprintf(description1,"%s ^{235}U Simulation",file);
 	cout<<FullFN1<<endl;
 	
 	
@@ -900,7 +928,7 @@ if((!U186)&&U235){
 	g_effic -> SetPointError(point,0.0,0.1*RealEff186);
 	point++;
 	
-	sprintf(title,"%s235U.C",workdir.c_str());
+	sprintf(title,"%s%s_235U.C",workdir.c_str(),file);
 	c8->SaveAs(title);
 	
 	t1->Delete(); //Finished with 235U element
@@ -916,8 +944,8 @@ if(Pa1001&&Pa){
 //--------- Starting with the 1001 KeV 234m fainty line --------------//
 //This is simulated only if and when it is necessary other wise from the 238U Chain it be taken
 	
-	sprintf(FullFN1,"%s1001keV.root",DataPath);
-	sprintf(description1," 1001 KeV ^{234m}Pa Simulation");
+	sprintf(FullFN1,"%s%s_1001keV_%s.root",DataPath,file,events);
+	sprintf(description1,"%s 1001 KeV ^{234m}Pa Simulation",file);
 	cout<<FullFN1<<endl;
 	
 	
@@ -952,7 +980,7 @@ if(Pa1001&&Pa){
 	g_effic -> SetPointError(point,0.0,0.1*RealEff1001);
 	point++;
 	
-	sprintf(title,"%s1001keV.C",workdir.c_str());
+	sprintf(title,"%s%s_1001keV.C",workdir.c_str(),file);
 	c7->SaveAs(title);
 	
 	t1->Delete(); //Finished with 1001 KeV line from 234mPa
@@ -970,8 +998,8 @@ if(U186&&U235){
 //------------ Starting with the 186 KeV 235U -------------------//
 //This is simulated only if and when it is necessary, otherwise it can be used the 235U isotope decay simulation
 	
-	sprintf(FullFN1,"%s186keV.root",DataPath);
-	sprintf(description1," 186 KeV ^{235}U Simulation");
+	sprintf(FullFN1,"%s%s_186keV_%s.root",DataPath,file,events);
+	sprintf(description1,"%s 186 KeV ^{235}U Simulation",file);
 	cout<<FullFN1<<endl;
 	
 	
@@ -1006,7 +1034,7 @@ if(U186&&U235){
 	g_effic -> SetPointError(point,0.0,0.1*RealEff186);
 	point++;
 	
-	sprintf(title,"%s186keV.C",workdir.c_str());
+	sprintf(title,"%s%s_186keV.C",workdir.c_str(),file);
 	c8->SaveAs(title);
 	
 	t1->Delete(); //Finished with 186 KeV line from 235U
@@ -1020,8 +1048,8 @@ if(Mn54){
 	
 	TCanvas* c9 = new TCanvas("c9","Simulated Spectra",870,500);
 	c9->SetLogy();
-	sprintf(FullFN1,"%s54Mn.root",DataPath);
-	sprintf(description1," ^{54}Mn Simulation");
+	sprintf(FullFN1,"%s%s_54Mn_%s.root",DataPath,file,events);
+	sprintf(description1,"%s ^{54}Mn Simulation",file);
 	cout<<FullFN1<<endl;
 
 	TChain *t1 = new TChain("t1");
@@ -1050,7 +1078,7 @@ if(Mn54){
 	g_effic -> SetPointError(point,0.0,0.1*RealEff835);
 	point++;
 	
-	sprintf(title,"%s54Mn.C",workdir.c_str());
+	sprintf(title,"%s%s_54Mn.C",workdir.c_str(),file);
 	c9->SaveAs(title);
 	
 	
@@ -1062,7 +1090,7 @@ TCanvas* effCanv = new TCanvas("effCanv","",870,500);
 effCanv -> SetLogy();
 g_effic -> SetMarkerStyle(20);
 g_effic -> Draw("AP");
-sprintf(title,"%sefficplot.root",workdir.c_str());
+sprintf(title,"%s%s_efficplot.root",workdir.c_str(),file);
 effCanv->SaveAs(title);
 
 
@@ -1107,5 +1135,5 @@ if(writetxt){
     }
 	
 }
- return 0;  
+   
 }
