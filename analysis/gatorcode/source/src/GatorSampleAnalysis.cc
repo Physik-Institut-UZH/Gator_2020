@@ -27,11 +27,11 @@ GatorSampleAnalysis::GatorSampleAnalysis(string workdir){
 	
 	m_workdir = workdir;
 	
-	m_logfilename = m_workdir+string("SampleAnalysis.log");
+	m_logfilename = m_workdir+string("/SampleAnalysis.log");
 	
 	md_quant = 0;
 	
-	m_unit = string("kg");
+	m_unit = string("(kg or unit)");
 	
 	mp_sampleEnSpect = NULL;
 	mp_backgroundEnSpect = NULL;
@@ -212,15 +212,28 @@ void GatorSampleAnalysis::WriteEffTable(string txtfilename){
 	int nLines = GetNLines();
 	
 	ofstream efftabfile(txtfilename.c_str());
-	
+
+	efftabfile<<"\\begin{center}"<<endl;
+	efftabfile<<"\\setlength{\\tabcolsep}{2pt}"<<endl;
+	efftabfile<<"\\begin{table}"<<endl;
+	efftabfile<<"\\begin{tabular}{||c c c c c ||}"<<endl;
+	efftabfile<<"\\hline"<<endl;
+	efftabfile<<"Isotope & Energy (keV) & Line BR & Effic & BRxEffic \\\\"<<endl;
+	efftabfile<<"\\hline"<<endl;	
 	for(int iLine=0; iLine<nLines; iLine++){
 		LineStruct *line = GetLine(iLine);
 		
-		efftabfile << "|  <sup>" << line->mass << "</sup>" << line->element << "  |  " << line->Energy << "  |  " << line->BR << "  |  ";
-		efftabfile << formatdigits2(line->Effic) << "  |  ";
-		efftabfile << formatdigits2(line->BRxEffic) << "  |  |" << endl;
+		efftabfile << "$^{"<< line->mass <<"}$" << line->element << "  &  " << line->Energy << "  &  "<< line->BR << "  &  ";
+		
+		efftabfile << formatdigits2(line->Effic) << "  &  ";
+		efftabfile << formatdigits2(line->BRxEffic) << "  \\\\" << endl;
 		
 	}
+	efftabfile<<"\\hline"<<endl;
+	efftabfile<<"\\end{tabular}"<<endl;
+	efftabfile<<"\\caption{Efficiency Table, as calculated by the simulation.}"<<endl;
+	efftabfile<<"\\end{table}"<<endl;
+	efftabfile<<"\\end{center}"<<endl;
 	
 	efftabfile.close();
 	
@@ -243,45 +256,56 @@ void GatorSampleAnalysis::WriteOutputTable(string outfilename){
 	ofstream outfile(outfilename.c_str());
 	
 	string tmpstr;
-	
+	outfile<<"\\begin{table}"<<endl;
+	outfile<<"\\oddsidemargin=0.pt"<<endl;
+	outfile<<"\\setlength{\\tabcolsep}{1.pt}"<<endl;
+	outfile<<"\\begin{tabular}{||c c c c c c c c c||}"<<endl;
+	outfile<<"\\hline"<<endl;
+	outfile<<"Isotope & E(keV) & PeakCnts & CompCnts & BkCnts & LineCnts & LdCnts & LdActiv & Activity (mBq/u.) \\\\"<<endl;
+	outfile<<"\\hline"<<endl;
 	for(int iLine=0; iLine<nLines; iLine++){
 		LineStruct *line = GetLine(iLine);
 		
-		outfile << "|  <sup>" << line->mass << "</sup>" << line->element << "  |  " << line->Energy << "  |  ";
+		outfile << "$^{"<< line->mass <<"}$" << line->element << "  &  " << line->Energy << "  &  ";
 		
 		tmpstr = formatdigits1(line->PeakCnts,line->PeakCnts_err);
-		outfile << tmpstr << "  |  ";
+		outfile << tmpstr << "  &  ";
 		
 		tmpstr = formatdigits1(line->CompCnts,line->CompCnts_err);
-		outfile << tmpstr << "  |  ";
+		outfile << tmpstr << "  &  ";
 		
 		if(mb_BGflag){
 			tmpstr = formatdigits1((md_aqtime/md_Bgtime)*line->BgLineCnts,(md_aqtime/md_Bgtime)*line->BgLineCnts_err);
-			outfile << tmpstr << "  |  ";
+			outfile << tmpstr << "  &  ";
 		}
 		
 		tmpstr = formatdigits1(line->LineCnts,line->LineCnts_err);
-		outfile << tmpstr << "  |  ";
+		outfile << tmpstr << "  &  ";
 		
 		tmpstr = formatdigits2(line->LdCnts);
-		outfile << tmpstr << "  |  ";
+		outfile << tmpstr << "  &  ";
 		
 		tmpstr = formatdigits2(line->LdActiv);
-		outfile << tmpstr << "  |  ";
+		outfile << tmpstr << "  &  ";
 		
 		if(line->Detected){
 			tmpstr = formatdigits1(line->Activ,line->Activ_err);
-			outfile << tmpstr << "  |" << endl;
+			outfile << tmpstr << "  \\\\" << endl;
 		}else{
 			if(line->Activ<=0){
 				tmpstr = formatdigits2(line->LdActiv);
-				outfile << "< " << tmpstr << "  |" << endl;
+				outfile << "< " << tmpstr << "  \\\\" << endl;
 			}else{
 				tmpstr = formatdigits2(line->LdActiv + line->Activ);
-				outfile << "< " << tmpstr << "  |" << endl;
+				outfile << "< " << tmpstr << "  \\\\" << endl;
 			}
 		}
+
 	}
+	outfile<<"\\hline"<<endl;
+	outfile<<"\\end{tabular}"<<endl;
+	outfile<<"\\caption{Activity Table, as calculated by the analysis code and given per unit, as indicated in the analysis input.}"<<endl;
+	outfile<<"\\end{table}"<<endl;
 	
 	outfile.close();
 	
@@ -631,6 +655,7 @@ void GatorSampleAnalysis::DrawActivityPlots(TPad* pad){
 	if(gr_ULActiv->GetN()>0)gr_ULActiv->Draw("P");
 	
 	TLegend* leg2 = new TLegend(0.60,0.90,0.90,0.80);
+	leg2 ->SetHeader("   Activity");
 	leg2 -> AddEntry(gr_DetActiv,"Detected","P");
 	leg2 -> AddEntry(gr_ULActiv,"Upper Limits","P");
 	leg2 -> Draw();

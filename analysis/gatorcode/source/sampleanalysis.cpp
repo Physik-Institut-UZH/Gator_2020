@@ -6,32 +6,19 @@
 #include <TSystem.h>
 #include <TStyle.h>
 #include <TFile.h>
-//#include <TTree.h>
 #include <TH1F.h>
 #include <TH2F.h>
 #include <TH1D.h>
 #include <TH2D.h>
 #include <TF1.h>
 #include <TLegend.h>
-//#include <TCut.h>
 #include <TAxis.h>
 #include <TCanvas.h>
 #include <TGraph.h>
 #include <TGraphErrors.h>
-//#include <TIterator.h>
-//#include <TList.h>
-//#include <TMultiGraph.h>
 #include <TMath.h>
 #include <TApplication.h>
-//#include <TSQLServer.h>
-//#include <TSQLResult.h>
-//#include <TSQLRow.h>
-//#include <TLatex.h>
-//#include <TTimeStamp.h>
 #include <TLine.h>
-//#include <TVirtualFitter.h>
-//#include <TGaxis.h>
-//#include <TMarker.h>
 #include <TFitResult.h>
 
 #include "GatorStructs.h"
@@ -45,7 +32,9 @@ using namespace std;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void sampleanalysis();
+void sampleanalysis(string workdir, string backgroundSPEdir, string calibdir, double quantity);
+// To run: ./sampleanalysis /disk/bulk_atp/gator/Sample_Sim_and_Analysis_Results/newmaytest /disk/bulk_atp/gator/background/bkg_2019_10 /disk/bulk_atp/gator/Calibrations/2015.08.07 1.06
+
 void wait();
 
 TCanvas* c1;
@@ -53,11 +42,20 @@ TCanvas* c1;
 extern TApplication* theApp=NULL;
 TApplication *myApp;
 
-int main(){
-		
+int main(int argc, char *argv[]){
+
+
+	string workdir=argv[1];
+	string backgroundSPEdir=argv[2];
+	string calibdir=argv[3];
+	string s_quantity=argv[4]; //This is the sample weight in kg!!! Or can even be the number of the pieces (PMTs e.g.)
+	double quantity=atof(s_quantity.c_str()); 
+	//cout<<workdir<<" "<<backgroundSPEdir<<" "<<calibdir<<" "<<quantity<<endl;
+	
+
 	
 	if(!theApp) theApp = new TApplication("theApp",0,0);
-    sampleanalysis();
+	sampleanalysis(workdir, backgroundSPEdir, calibdir, quantity);
 	
 	return 0;
 }
@@ -70,7 +68,14 @@ void wait()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
-void sampleanalysis(){
+void sampleanalysis(string workdir, string backgroundSPEdir, string calibdir, double quantity)
+{
+
+	string spedatadir=workdir+"/SPE";
+	string configdir = workdir+"/effic";
+	string calibdir_bg = calibdir; // put as the same for now (Gabriela 06.20)
+
+/////////////////////////////////////////
 	
 	gStyle->SetOptStat("");
 	
@@ -84,53 +89,20 @@ void sampleanalysis(){
 	c1 -> Connect("TCanvas", "Closed()", "TApplication", gApplication,"Terminate()");
 #endif
 
-	
-//////////////////////////////////////////////////////////////////////////////////////////		
-// hard-coded input variables:
-	string sample = "Copper_nT_FS";
-	
-	string datadir = "/disk/bulk_atp/shayne/Gator/Gator_analysis/gatorcode/Data/Samples/Karl_PMTs/SPE"; // This could be BG SPE dir if "BGswitch" is false	
-	string workdir = "/disk/bulk_atp/shayne/Gator/Gator_analysis/gatorcode/Data/Samples/Karl_PMTs/"; // output files directory
-	
-	// For all isotopes except Cs, bkgrd is from before Oct 2014
-	string backgroundSPEdir = "/disk/bulk_atp/shayne/Gator/Gator_analysis/gatorcode/Data/Background_PMTs/bkgd/SPE/";
-//	string backgroundSPEdir = "/home/atp/galloway/Gator_Screening/Data/Background/Background_20131130/SPE"; // old bkgrd
-	
-	//calibration data
-//	string calibdir = "/home/atp/galloway/Gator_Screening/Calibrations/bkgrd_Cs_201410/"; // detector recalibrated Nov 1, 2014
-//	string calibdir_bg = "/home/atp/galloway/Gator_Screening/Calibrations/bkgrd_Cs_201410/"; // calibration file for bkgrd data taken between July 2014 and Oct 2014
-//	string calibdir_bg = "/home/atp/galloway/Gator_Screening/Calibrations/bkgrd_all_201407/"; // calibration file for bkgrd data taken between July 2014 and Oct 2014
-
-	string calibdir = "/home/atp/galloway/Gator_Screening/Calibrations/2015.08.07/";
-	string calibdir_bg = "/home/atp/galloway/Gator_Screening/Calibrations/2015.08.07/";
-	
-
-	// below depends on number of PMTs
-//	string configdir = "/home/atp/galloway/Gator_sims/Screening/Copper_nT_FS/effic/"; // location of lines.list generated from sim	
-	string configdir = "/disk/bulk_atp/shayne/Gator_sims/Screening/PMT_R12699/for_Karl/effic/";
-
-//	Double_t quantity = 1; //This is the sample weight in kg!!!	
-	Double_t quantity = 2; //This is the sample weight in kg!!! Or can even be the number of the pieces (PMTs e.g.)
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////////	
-
 
 	// input files		
 	string linesfilename = configdir + string("/lines.list"); //It doesn't matter if the "Eff_rootfile" switch is true. In such a case it is not used at all.
-	string calfilename = calibdir + string("calibration.root");
-	string calfilename_bg = calibdir_bg + string("calibration.root");
+	string calfilename = calibdir + string("/calibration.root");
+	string calfilename_bg = calibdir_bg + string("/calibration.root");
 	
 	// output files
-	string outfilename = workdir + sample + string(".txt");	
-	string efftabfilename = workdir + sample + string("_eff.txt");
-	string activityplotfilename = workdir + sample + string("_act.png");
-	string savefilename = workdir + sample + string(".root");
+	string outfilename = workdir + string("/output_sampleanalysis.txt");	
+	string efftabfilename = workdir + string("/output_sampleanalysis_eff.txt");
+	string activityplotfilename = workdir + string("/output_sampleanalysis_activity.pdf");
+	string savefilename = workdir + string("/output_sampleanalysis.root"); //ps: this is not used (I do not know why)
 
 	
-// end hard-coded variables
-//////////////////////////////////////////////////////////////////////////////////////////	
+	
 
 
 	
@@ -138,7 +110,7 @@ void sampleanalysis(){
 	analyser.SetSampleCalib(calibdir);
 	analyser.SetBackgroundCalib(calibdir_bg);
 	
-	if(!analyser.LoadData(datadir)){
+	if(!analyser.LoadData(spedatadir)){
 		exit(-1);
 	}	
 	if(!analyser.LoadBackground(backgroundSPEdir)){
@@ -151,7 +123,7 @@ void sampleanalysis(){
 	
 	analyser.DefaultIntervals();	
 	analyser.SetSampleQuntity(quantity);
-	analyser.SetQuantityUnit("kg");
+	analyser.SetQuantityUnit("(kg or unit)");
 	
 
 	
@@ -159,8 +131,6 @@ void sampleanalysis(){
 	
 	analyser.WriteEffTable(efftabfilename);
 	analyser.WriteOutputTable(outfilename);
-	
-
 	
 	
 	analyser.DrawActivityPlots(c1);

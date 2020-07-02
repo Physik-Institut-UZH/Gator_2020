@@ -1,25 +1,17 @@
 #include "isotopes.h"
-	bool U238 = true;
-	bool Th232 = true; 
-	bool U235 = true; 
-	bool K40 = true;
-	bool Co60 = true;
-	bool Cs137 = true;
-	bool Ra226 = true;
-
-	bool U186 = false;
-	bool Sc46 = false;
-	bool Pa1001 = false; 
-	bool Pa = false;
-	bool Mn54 = false;
-	bool Be7 = false; 
-	bool Pb210 = false; 
-
-// Use EffCalcLine.cpp for other individual isotopes (e.g. 110mAg)
-	bool Ag658 = false;
-	bool Ag885 = false;
-	bool Ag937 = false;
-// cobalt from activated copper
-	bool Co58 = false;
-//	bool Co57 = false; //not coded yet
-	bool Co56 = false;
+bool i_238U = true;
+bool i_232Th = true;
+bool i_40K = true;
+bool i_60Co = true;
+bool i_137Cs = true;
+bool i_226Ra = true;
+bool i_235U = true;
+bool i_54Mn = false;
+bool i_58Co = false;
+bool i_56Co = false;
+bool i_46Sc = false;
+bool i_186keV = false;
+bool i_1001keV = false;
+bool i_Pa = false;
+bool i_7Be = false;
+bool i_210Pb = false;

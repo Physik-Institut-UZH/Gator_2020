@@ -63,9 +63,9 @@ EXEOBJS      =
 
 #MYPROGS      = GatorBATCalib
 #MYPROGS      = GatorFinalCalib
-MYPROGS       = sampleanalysis_TTX_trial
+#MYPROGS       = sampleanalysis_TTX_trial
 #MYPROGS       = sampleanalysis_Karl_PMT
-#MYPROGS      = sampleanalysis
+MYPROGS      = sampleanalysis
 #MYPROGS      = sampleanalysis_bkgrd_v2.1
 #MYPROGS      = sampleanalysis_bkgrd_test
 #MYPROGS      = sampleanalysis_PMT_Cs
