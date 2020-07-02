@@ -32,7 +32,7 @@ int EffCalcAll(Char_t s_dir[1000], Int_t NumInEvt)//("pathsimulateddata", total_
 
 
 //////    Define the branching ratio (BR) for the main lines  
-	Float_t BR46 = 0.0425; // 46 keV of Pb210
+	Float_t BR46 = 0.0425; // 46 keV of i_210Pb
 	Float_t BR186 = 0.572; // 186 keV of 235U
 	Float_t BR239 = 0.436;  // 239 keV of 212Pb
 	Float_t BR339 = 0.114;  // 339 keV of 228Ac
@@ -70,7 +70,7 @@ TGraphErrors* g_effic = new TGraphErrors();
 
 
 //-------- Starting with the 232Th chain --------------//
-if(Th232){	
+if(i_232Th){	
 	
 	TCanvas* c1 = new TCanvas("c1","Simulated Spectra",870,500);
 	c1->SetLogy();
@@ -196,14 +196,14 @@ if(Th232){
 
 	t1->Delete();//Finished with 232Th chain
 
-} //End of the if(Th232)	
+} //End of the if(i_232Th)	
 	
 	
 	
 	
 
 //------ Starting with the 238U chain --------------//
-if(U238){
+if(i_238U){
 
 	TCanvas *c2 = new TCanvas("c2","Simulated Spectra",870,500);
 	c2->SetLogy();
@@ -310,7 +310,7 @@ if(U238){
 	// ************  1001 keV from 234mPa (0.59 % BR)  **************//
 	// This fainty line is simulated alone if here cannot be determined (visual check of the spectrum)
 	Float_t BRxEff1001, RealEff1001; //Otherwise it is not visible outside
-	if((!Pa1001)&&Pa){
+	if((!i_1001keV)&&i_Pa){
 		binx = h2 -> FindBin(1001.026);
 		BRxEff1001 = (h2->GetBinContent(binx) - (h2->Integral(binx-(compbins+1),binx-2)/compbins + h2->Integral(binx+2,binx+(compbins+1))/compbins)/2)/NumInEvtU;
 	
@@ -362,15 +362,15 @@ if(U238){
 	sprintf(title,"%s238U.C",workdir.c_str());
 	c2->SaveAs(title);
 
-	t1->Delete();//Finisched with 238U chain
+	t1->Delete();//Finisched with i_238U chain
 
-} //End of if(U238)	
+} //End of if(i_238U)	
 
 
 
 
 //------ 210Pb from  the 238U chain --------------//
-if(Pb210){
+if(i_210Pb){
 
 	TCanvas *c210 = new TCanvas("c210","Simulated Spectra",870,500);
 	c210->SetLogy();
@@ -396,7 +396,7 @@ if(Pb210){
 
 // --------------- Calculate the efficiencies ------------------- \\
 // try for this low-energy line from Pb-210
-//		if(Pb210) data_out << "210" << "\t" << "Pb" << "\t" << "46.539" << "\t" << BR46 << "\t" << RealEff46 << "\t" << BRxEff46 << endl;
+//		if(i_210Pb) data_out << "210" << "\t" << "Pb" << "\t" << "46.539" << "\t" << BR46 << "\t" << RealEff46 << "\t" << BRxEff46 << endl;
 // ************  46.539 keV from 210Pb (4 % BR)  ************** \\
 
 	binx = h210 -> FindBin(46.5);
@@ -434,12 +434,12 @@ if(Pb210){
 
 	t1->Delete();//Finished with 210Pb chain
 
-} //End of the if(Pb210)	
+} //End of the if(i_210Pb)	
 	
 	
 	
 //------ Starting with the 40K --------------//
-if(K40){
+if(i_40K){
 
 	TCanvas* c3 = new TCanvas("c3","Simulated Spectra",870,500);
 	c3->SetLogy();
@@ -482,11 +482,11 @@ if(K40){
 	
 	t1->Delete(); //Finished with 40K element
 	
-} //End of if(K40)	
+} //End of if(i_40K)	
 	
 	
 //------ Starting with the 7Be --------------//
-if(Be7){
+if(i_7Be){
 
 	TCanvas* c7Be = new TCanvas("c3","Simulated Spectra",870,500);
 	c7Be->SetLogy();
@@ -534,7 +534,7 @@ if(Be7){
 	
 	
 //------ Starting with the 60Co --------------//
-if(Co60){
+if(i_60Co){
 
 	sprintf(FullFN1,"%s60Co.root",DataPath);
 	sprintf(description1," ^{60}Co Simulation");
@@ -598,19 +598,19 @@ if(Co60){
 
 	t1->Delete(); //Finished with 60Co element
 	
-} //End of if(Co60)	
+} //End of if(i_60Co)	
 	
 	
 
 
 //------ Starting with the 58Co --------------//
-if(Co58){
+if(i_58Co){
 
 	sprintf(FullFN1,"%s58Co.root",DataPath);
 	sprintf(description1," ^{58}Co Simulation");
 	cout<<FullFN1<<endl;
 
-	Int_t NumInEvtCo58 = NumInEvt;
+	Int_t NumInEvti_58Co = NumInEvt;
 
 	TChain* t1 = new TChain("t1");
 	t1->Add(FullFN1);
@@ -630,7 +630,7 @@ if(Co58){
 // ************ 810.775 keV from 58Co (99 % BR)  ************** \\
 //NOTE: This is the highest energy line.... no Compton affects it.
 	binx = h58 -> FindBin(810.775);
-	Float_t BRxEff811 = (h58->GetBinContent(binx) - (h58->Integral(binx-(compbins+1),binx-2)/compbins))/NumInEvtCo58;
+	Float_t BRxEff811 = (h58->GetBinContent(binx) - (h58->Integral(binx-(compbins+1),binx-2)/compbins))/NumInEvti_58Co;
 	
 	
 	Float_t RealEff811 = BRxEff811 / BR811;
@@ -656,13 +656,13 @@ if(Co58){
 
 
 //------ Starting with the 56Co --------------//
-if(Co56){
+if(i_56Co){
 
 	sprintf(FullFN1,"%s56Co.root",DataPath);
 	sprintf(description1," ^{56}Co Simulation");
 	cout<<FullFN1<<endl;
 
-	Int_t NumInEvtCo56 = NumInEvt;
+	Int_t NumInEvti_56Co = NumInEvt;
 
 	TChain* t1 = new TChain("t1");
 	t1->Add(FullFN1);
@@ -681,7 +681,7 @@ if(Co56){
 // --------------- Calculate the efficiencies -------------------/
 // ************  846.771 keV from 56Co ( 100% BR)  **************/
 	binx = h56 -> FindBin(846.771);
-	Float_t BRxEff847 = (h4->GetBinContent(binx) - (h56->Integral(binx-(compbins+1),binx-2)/compbins + h56->Integral(binx+2,binx+(compbins+1))/compbins)/2)/NumInEvtCo56;
+	Float_t BRxEff847 = (h4->GetBinContent(binx) - (h56->Integral(binx-(compbins+1),binx-2)/compbins + h56->Integral(binx+2,binx+(compbins+1))/compbins)/2)/NumInEvti_56Co;
 	
 
 	Float_t RealEff847 = BRxEff847 / BR847;
@@ -700,7 +700,7 @@ if(Co56){
 	rightcompbins = 5;
 	leftcompbins = 3;
 	
-	Float_t BRxEff1238 = (h56->Integral(binx,binx+1) - 2*(h56->Integral(binx-(leftcompbins+1),binx-2)/leftcompbins + h56->Integral(binx+3,binx+(rightcompbins+2))/rightcompbins)/2)/NumInEvtCo56;
+	Float_t BRxEff1238 = (h56->Integral(binx,binx+1) - 2*(h56->Integral(binx-(leftcompbins+1),binx-2)/leftcompbins + h56->Integral(binx+3,binx+(rightcompbins+2))/rightcompbins)/2)/NumInEvti_56Co;
 	
 
 	Float_t RealEff1238 = BRxEff1238 / BR1238;
@@ -725,7 +725,7 @@ if(Co56){
 	
 //------ Starting with the 46Sc --------------//
 	
-if(Sc46){
+if(i_46Sc){
 	
 	sprintf(FullFN1,"%s46Sc.root",DataPath);
 	sprintf(description1," ^{46}Sc Simulation");
@@ -790,7 +790,7 @@ if(Sc46){
   
 	t1->Delete(); //Finished with 46Sc element
 	
-} //End of if(Sc46)
+} //End of if(i_46Sc)
 	
 	
 	
@@ -800,7 +800,7 @@ if(Sc46){
 	
 	
 //------ Starting with the 137Cs --------------//
-if(Cs137){
+if(i_137Cs){
 
 	sprintf(FullFN1,"%s137Cs.root",DataPath);
 	sprintf(description1," ^{137}Cs Simulation");
@@ -847,7 +847,7 @@ if(Cs137){
 	
 	t1->Delete(); //Finished with 137Cs element
 	
-} //End of if(Cs137)
+} //End of if(i_137Cs)
 	
 	
 	
@@ -857,7 +857,7 @@ if(Cs137){
 	
 	
 //------ Starting with the 235U (interested only to the 186 keV line)--------------//
-if((!U186)&&U235){
+if((!i_186keV)&&i_235U){
 	
 	sprintf(FullFN1,"%s235U.root",DataPath);
 	sprintf(description1," ^{235}U Simulation");
@@ -912,7 +912,7 @@ if((!U186)&&U235){
 	
 	
 	
-if(Pa1001&&Pa){
+if(i_1001keV&&i_Pa){
 //--------- Starting with the 1001 KeV 234m fainty line --------------//
 //This is simulated only if and when it is necessary other wise from the 238U Chain it be taken
 	
@@ -957,7 +957,7 @@ if(Pa1001&&Pa){
 	
 	t1->Delete(); //Finished with 1001 KeV line from 234mPa
 	
-} //End of if(Pa1001&&Pa)
+} //End of if(i_1001keV&&i_Pa)
 	
 	
 
@@ -966,7 +966,7 @@ if(Pa1001&&Pa){
 
 
 	
-if(U186&&U235){
+if(i_186keV&&i_235U){
 //------------ Starting with the 186 KeV 235U -------------------//
 //This is simulated only if and when it is necessary, otherwise it can be used the 235U isotope decay simulation
 	
@@ -1011,12 +1011,12 @@ if(U186&&U235){
 	
 	t1->Delete(); //Finished with 186 KeV line from 235U
 	
-} //End of if(U186&&U235)
+} //End of if(i_186keV&&i_235U)
 
 
 
 
-if(Mn54){
+if(i_54Mn){
 	
 	TCanvas* c9 = new TCanvas("c9","Simulated Spectra",870,500);
 	c9->SetLogy();
@@ -1075,33 +1075,33 @@ if(writetxt){
 		cout<< "can't open file" <<endl; exit(1);
     } else {
     
-		if(Pb210) data_out << "210" << "\t" << "Pb" << "\t" << "46.539" << "\t" << BR46 << "\t" << RealEff46 << "\t" << BRxEff46 << endl;
-		if(U238) data_out << "234" << "\t" << "Th" << "\t" << "92.6" << "\t" << BR92 << "\t" << RealEff92 << "\t" << BRxEff92 << endl;
-		if(U235) data_out << "235" << "\t" << "U" << "\t" << "185.720" << "\t" << BR186 << "\t" << RealEff186 << "\t" << BRxEff186 << endl;
-		if(Th232) data_out << "212" << "\t" << "Pb" << "\t" << "238.632" << "\t" << BR239 << "\t" << RealEff239 << "\t" << BRxEff239 << endl;
-		if(U238) data_out << "214" << "\t" << "Pb" << "\t" << "295.224" << "\t" << BR295 << "\t" << RealEff295 << "\t" << BRxEff295 << endl;
-		if(Th232) data_out << "228" << "\t" << "Ac" << "\t" << "338.32" << "\t" << BR339 << "\t" << RealEff339 << "\t" << BRxEff339 << endl;
-		if(U238) data_out << "214" << "\t" << "Pb" << "\t" << "351.932" << "\t" << BR352 << "\t" << RealEff352 << "\t" << BRxEff352 << endl;
-		if(Be7) data_out << "7" << "\t" << "Be" << "\t" << "477.595" << "\t" << BR478 << "\t" << RealEff478 << "\t" << BRxEff478 << endl;
-		if(Th232) data_out << "208" << "\t" << "Tl" << "\t" << "583.187" << "\t" << BR583 << "\t" << RealEff583 << "\t" << BRxEff583 << endl;
-		if(U238) data_out << "214" << "\t" << "Bi" << "\t" << "609.312" << "\t" << BR609 << "\t" << RealEff609 << "\t" << BRxEff609 << endl;
-		if(Cs137) data_out << "137" << "\t" << "Cs" << "\t" << "661.657" << "\t" << BR662 << "\t" << RealEff662 << "\t" << BRxEff662 << endl;
-		if(Pb210) data_out << "210" << "\t" << "Pb" << "\t" << "803.1" << "\t" << BR803 << "\t" << RealEff803 << "\t" << BRxEff803 << endl;
-		if(Mn54) data_out << "54" << "\t" << "Mn" << "\t" << "834.838" << "\t" << BR835 << "\t" << RealEff835 << "\t" << BRxEff835 << endl;
-		if(Sc46)data_out << "46" << "\t" << "Sc" << "\t" << "889.271" << "\t" << BR889 << "\t" << RealEff889 << "\t" << BRxEff889 << endl;
-		if(Th232) data_out << "228" << "\t" << "Ac" << "\t" << "911.196" << "\t" << BR911 << "\t" << RealEff911 << "\t" << BRxEff911 << endl;
-		if(Th232) data_out << "228" << "\t" << "Ac" << "\t" << "968.96" << "\t" << BR969 << "\t" << RealEff969 << "\t" << BRxEff969 << endl;
-		if(Pa) data_out << "234m" << "\t" << "Pa" << "\t" << "1001.026" << "\t" << BR1001 << "\t" << RealEff1001 << "\t" << BRxEff1001 << endl;
-		if(U238) data_out << "214" << "\t" << "Bi" << "\t" << "1120.287" << "\t" << BR1120 << "\t" << RealEff1120 << "\t" << BRxEff1120 << endl;
-		if(Sc46) data_out << "46" << "\t" << "Sc" << "\t" << "1120.537" << "\t" << BR1120s << "\t" << RealEff1120s << "\t" << BRxEff1120s << endl;
-		if(Co60) data_out << "60" << "\t" << "Co" << "\t" << "1173.228" << "\t" << BR1173 << "\t" << RealEff1173 << "\t" << BRxEff1173 << endl;
-		if(Co60) data_out << "60" << "\t" << "Co" << "\t" << "1332.492" << "\t" << BR1332 << "\t" << RealEff1332 << "\t" << BRxEff1332 << endl;
-		if(Co58) data_out << "58" << "\t" << "Co" << "\t" << "810.775" << "\t" << BR811 << "\t" << RealEff811 << "\t" << BRxEff811 << endl;
-		if(Co56) data_out << "56" << "\t" << "Co" << "\t" << "846.771" << "\t" << BR847 << "\t" << RealEff847 << "\t" << BRxEff847 << endl;
-		if(Co56) data_out << "56" << "\t" << "Co" << "\t" << "1238.282" << "\t" << BR1238 << "\t" << RealEff1238 << "\t" << BRxEff1238 << endl;
-		if(K40) data_out << "40" << "\t" << "K" << "\t" << "1460.882" << "\t" << BR1460 << "\t" << RealEff1460 << "\t" << BRxEff1460 << endl;
-		if(U238) data_out << "214" << "\t" << "Bi" << "\t" << "1764.494" << "\t" << BR1765 << "\t" << RealEff1765 << "\t" << BRxEff1765 << endl;
-		if(Th232) data_out << "208" << "\t" << "Tl" << "\t" << "2614.511" << "\t" << BR2615 << "\t" << RealEff2615 << "\t" << BRxEff2615 << endl;
+		if(i_210Pb) data_out << "210" << "\t" << "Pb" << "\t" << "46.539" << "\t" << BR46 << "\t" << RealEff46 << "\t" << BRxEff46 << endl;
+		if(i_238U) data_out << "234" << "\t" << "Th" << "\t" << "92.6" << "\t" << BR92 << "\t" << RealEff92 << "\t" << BRxEff92 << endl;
+		if(i_235U) data_out << "235" << "\t" << "U" << "\t" << "185.720" << "\t" << BR186 << "\t" << RealEff186 << "\t" << BRxEff186 << endl;
+		if(i_232Th) data_out << "212" << "\t" << "Pb" << "\t" << "238.632" << "\t" << BR239 << "\t" << RealEff239 << "\t" << BRxEff239 << endl;
+		if(i_238U) data_out << "214" << "\t" << "Pb" << "\t" << "295.224" << "\t" << BR295 << "\t" << RealEff295 << "\t" << BRxEff295 << endl;
+		if(i_232Th) data_out << "228" << "\t" << "Ac" << "\t" << "338.32" << "\t" << BR339 << "\t" << RealEff339 << "\t" << BRxEff339 << endl;
+		if(i_238U) data_out << "214" << "\t" << "Pb" << "\t" << "351.932" << "\t" << BR352 << "\t" << RealEff352 << "\t" << BRxEff352 << endl;
+		if(i_7Be) data_out << "7" << "\t" << "Be" << "\t" << "477.595" << "\t" << BR478 << "\t" << RealEff478 << "\t" << BRxEff478 << endl;
+		if(i_232Th) data_out << "208" << "\t" << "Tl" << "\t" << "583.187" << "\t" << BR583 << "\t" << RealEff583 << "\t" << BRxEff583 << endl;
+		if(i_238U) data_out << "214" << "\t" << "Bi" << "\t" << "609.312" << "\t" << BR609 << "\t" << RealEff609 << "\t" << BRxEff609 << endl;
+		if(i_137Cs) data_out << "137" << "\t" << "Cs" << "\t" << "661.657" << "\t" << BR662 << "\t" << RealEff662 << "\t" << BRxEff662 << endl;
+		if(i_210Pb) data_out << "210" << "\t" << "Pb" << "\t" << "803.1" << "\t" << BR803 << "\t" << RealEff803 << "\t" << BRxEff803 << endl;
+		if(i_54Mn) data_out << "54" << "\t" << "Mn" << "\t" << "834.838" << "\t" << BR835 << "\t" << RealEff835 << "\t" << BRxEff835 << endl;
+		if(i_46Sc)data_out << "46" << "\t" << "Sc" << "\t" << "889.271" << "\t" << BR889 << "\t" << RealEff889 << "\t" << BRxEff889 << endl;
+		if(i_232Th) data_out << "228" << "\t" << "Ac" << "\t" << "911.196" << "\t" << BR911 << "\t" << RealEff911 << "\t" << BRxEff911 << endl;
+		if(i_232Th) data_out << "228" << "\t" << "Ac" << "\t" << "968.96" << "\t" << BR969 << "\t" << RealEff969 << "\t" << BRxEff969 << endl;
+		if(i_Pa) data_out << "234m" << "\t" << "Pa" << "\t" << "1001.026" << "\t" << BR1001 << "\t" << RealEff1001 << "\t" << BRxEff1001 << endl;
+		if(i_238U) data_out << "214" << "\t" << "Bi" << "\t" << "1120.287" << "\t" << BR1120 << "\t" << RealEff1120 << "\t" << BRxEff1120 << endl;
+		if(i_46Sc) data_out << "46" << "\t" << "Sc" << "\t" << "1120.537" << "\t" << BR1120s << "\t" << RealEff1120s << "\t" << BRxEff1120s << endl;
+		if(i_60Co) data_out << "60" << "\t" << "Co" << "\t" << "1173.228" << "\t" << BR1173 << "\t" << RealEff1173 << "\t" << BRxEff1173 << endl;
+		if(i_60Co) data_out << "60" << "\t" << "Co" << "\t" << "1332.492" << "\t" << BR1332 << "\t" << RealEff1332 << "\t" << BRxEff1332 << endl;
+		if(i_58Co) data_out << "58" << "\t" << "Co" << "\t" << "810.775" << "\t" << BR811 << "\t" << RealEff811 << "\t" << BRxEff811 << endl;
+		if(i_56Co) data_out << "56" << "\t" << "Co" << "\t" << "846.771" << "\t" << BR847 << "\t" << RealEff847 << "\t" << BRxEff847 << endl;
+		if(i_56Co) data_out << "56" << "\t" << "Co" << "\t" << "1238.282" << "\t" << BR1238 << "\t" << RealEff1238 << "\t" << BRxEff1238 << endl;
+		if(i_40K) data_out << "40" << "\t" << "K" << "\t" << "1460.882" << "\t" << BR1460 << "\t" << RealEff1460 << "\t" << BRxEff1460 << endl;
+		if(i_238U) data_out << "214" << "\t" << "Bi" << "\t" << "1764.494" << "\t" << BR1765 << "\t" << RealEff1765 << "\t" << BRxEff1765 << endl;
+		if(i_232Th) data_out << "208" << "\t" << "Tl" << "\t" << "2614.511" << "\t" << BR2615 << "\t" << RealEff2615 << "\t" << BRxEff2615 << endl;
 		 
 		data_out.close();
     }

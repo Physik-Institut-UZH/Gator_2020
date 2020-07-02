@@ -1,5 +1,4 @@
 // Script is for samples, scaled accurately by counts/keV/day
-// Uses regular (long 2015-2016) background run
 
 #include <string>
 #include <fstream>
@@ -13,32 +12,15 @@
 #include "TFile.h"
 //#include <TTree.h>
 #include "TH1F.h"
-//#include <TH2F.h>
-//#include <TH1D.h>
-//#include <TH2D.h>
 #include "TF1.h"
 #include "TLegend.h"
 //#include <TCut.h>
 #include "TAxis.h"
 #include "TCanvas.h"
 #include "TColor.h"
-//#include <TGraph.h>
-//#include <TGraphErrors.h>
-//#include <TIterator.h>
-//#include <TList.h>
-//#include <TMultiGraph.h>
 #include "TMath.h"
 #include "TApplication.h"
-//#include <TSQLServer.h>
-//#include <TSQLResult.h>
-//#include <TSQLRow.h>
-//#include <TLatex.h>
-//#include <TTimeStamp.h>
-//#include <TLine.h>
-//#include <TVirtualFitter.h>
-//#include <TGaxis.h>
-//#include <TMarker.h>
-//#include <TFitResult.h>
+
 
 
 using namespace std;
@@ -47,11 +29,13 @@ TH1F* loadSPE(const char* dir, Double_t& aqtime);
 TH1F* convert_histo_ENR(TH1F* hADC, const char* calibdir);
 TCanvas* c1;
 
-void BuildFastSpectrum_Karl_PMT(){
+void BuildFastSpectrum(string workdir, string backgroundSPEdir, string calibdir, string samplename)
+{
 
-	//Style
+    //cout<<workdir<<" "<<backgroundSPEdir<<" "<<backgroundSPEdir<<" "<<calibdir<<" "<<samplename<<endl;
 
-	gStyle  ->SetOptStat(0);
+    //Style
+    gStyle  ->SetOptStat(0);
     gStyle  ->SetOptFit(0);
 
     //------ define color gradient
@@ -81,40 +65,32 @@ void BuildFastSpectrum_Karl_PMT(){
 	
 	
 //////////////////////////////////////////////////////////////////////////////////////////
-// HARD-CODED VARIABLES
-	
-	string workdir = "/disk/bulk_atp/shayne/Gator/Gator_analysis/gatorcode/Data/Samples/Karl_PMTs/";
-//	string SPEdir = "/home/atp/galloway/Gator_Screening/Data/Samples/PMT_R11410/PMT_16/SPE/";	
-        string SPEdir = "/disk/bulk_atp/shayne/Gator/Gator_analysis/gatorcode/Data/Samples/Karl_PMTs/SPE/";
-	string calibdir = "/home/atp/galloway/Gator_Screening/Calibrations/bkgrd_Cs_201410/";
-	string outfilename = workdir + string("tmp_Karl_PMT.root");
-	
-//	string backgroundSPEdir = "/home/atp/galloway/Gator_Screening/Data/Background_PMTs/PTFE_holders/SPE/";
-        string backgroundSPEdir = "/disk/bulk_atp/shayne/Gator/Gator_analysis/gatorcode/Data/Background_PMTs/bkgd/SPE/";
-	string calibdir_bg = "/home/atp/galloway/Gator_Screening/Calibrations/bkgrd_all_201407/";
 
+	string SPEdir=workdir+"SPE/";
+	string calibdir_bg = calibdir; // put as the same for now (Gabriela 06.20)
+
+	string outfilename = workdir + string("spectrum.root");
+	string spectrumfilename = workdir + string("spectrum.pdf");
 	
 	//int rebin =8;
-	int rebin = 16;
+	int rebin = 20;
 	
 	double minEn = 40;
 	double maxEn = 2650;
-	
-	string sampleLeg = "2 R12699-406-M4 PMTs (20 d)";
-	string bgLeg = "Background (15.5 d)";
-	
-	
-	string spectrumfilename = workdir + string("tmp_Karl_PMT_spectrum.png");
-	
+
 //////////////////////////////////////////////////////////////////////////////////////////
 	
 	Double_t aqtime, aqtime_bg;
 	
 	TH1F* hADC = loadSPE(SPEdir.c_str(), aqtime);
 	
-	TH1F* hADC_bg = loadSPE(backgroundSPEdir.c_str(), aqtime_bg);
+	TH1F* hADC_bg = loadSPE(backgroundSPEdir.c_str(), aqtime_bg);	
+
+	Double_t aqtime_days=aqtime/(24*3600); stringstream s_aqtime; s_aqtime<<aqtime_days;
+	Double_t aqtimebg_days=aqtime_bg/(24*3600); stringstream s_aqtimebg; s_aqtimebg<<aqtimebg_days;
 	
-	
+	string sampleLeg = samplename+" ("+s_aqtime.str()+"d)";
+	string bgLeg = "Background ("+s_aqtimebg.str()+"d)";
 	
 	c1 = new TCanvas("c1","",1200,400);
 	c1->SetLogy();
@@ -131,7 +107,7 @@ void BuildFastSpectrum_Karl_PMT(){
 	histoENR -> GetYaxis() -> SetTitle("counts keV^{-1} day^{-1}");
         histoENR -> GetXaxis() -> CenterTitle();
         histoENR -> GetYaxis() -> CenterTitle();
-	
+
 	//MAKEUP
 	histoENR->GetXaxis()->SetLabelFont(132); //Times New Roman
 	histoENR->GetXaxis()->SetLabelSize(0.045);
@@ -188,8 +164,9 @@ void BuildFastSpectrum_Karl_PMT(){
 	
 	
 	c1->SaveAs(spectrumfilename.c_str());
-	
-	//return 0;		
+	system("sleep 6");
+	gROOT->ProcessLine(".q");
+			
 }
 
 #include "../source/src/loadSPE.cc"

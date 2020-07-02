@@ -93,7 +93,7 @@ void sampleanalysis(){
 	string workdir = "/disk/bulk_atp/gator/Simulation_Results/TTX_trial/"; // output files directory
 	
 	// For all isotopes except Cs, bkgrd is from before Oct 2014
-	string backgroundSPEdir = "/disk/bulk_atp/gator/Bkg_october/";
+	string backgroundSPEdir = "/disk/bulk_atp/gator/Bkg_october/"; // /disk/bulk_atp/gator/background/bkg_2019_10
 //	string backgroundSPEdir = "/home/atp/galloway/Gator_Screening/Data/Background/Background_20131130/SPE"; // old bkgrd
 	
 	//calibration data
