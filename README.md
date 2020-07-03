@@ -2,6 +2,8 @@ Gator_2020
 
 This is the new version of the gator directory, which uses the easygator.C script to run simulations and analysis for the samples screneed at the Gator low-background counting facility  [1].
 
+For ATP users: there is a full documentation of how to run the code in the ATP wiki
+
 If you download the code to use in your private machine, make sure to change the name of the directories GATORDIR and data_dir in the beginning of the easygator.C script, then compile the code (as shown below).
 
 ////////////////////////////////////////////////////////////////////
