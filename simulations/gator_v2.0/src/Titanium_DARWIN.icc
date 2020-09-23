@@ -1,0 +1,54 @@
+// Set visibility properties for all the samples 
+G4VisAttributes* sample_vis = new G4VisAttributes(red);
+sample_vis -> SetVisibility(true); 
+sample_vis -> SetForceSolid(false);
+
+//---------- volume Titanium_DARWIN_batch_1 ---------- 
+
+//Dimensions of the sample in box and definition of the geometry
+ G4double box_Titanium_DARWIN_batch_1_x= 200*mm;
+ G4double box_Titanium_DARWIN_batch_1_y= 6*mm;
+ G4double box_Titanium_DARWIN_batch_1_z= 200*mm;
+ G4Box* Titanium_DARWIN_batch_1= new G4Box("Titanium_DARWIN_batch_1",0.5*box_Titanium_DARWIN_batch_1_x,0.5*box_Titanium_DARWIN_batch_1_y,0.5*box_Titanium_DARWIN_batch_1_z);
+
+//Construct the logical volume 
+ G4LogicalVolume* Titanium_DARWIN_batch_1_log = new G4LogicalVolume(Titanium_DARWIN_batch_1,Titanium_electropolished,"Titanium_DARWIN_batch_1_log");
+
+// Set visibility for the sample (all are set to the same color, change it if necessary) 
+Titanium_DARWIN_batch_1_log -> SetVisAttributes(sample_vis);
+
+// Set coordinates for the position of the sample and the position vector 
+G4double Titanium_DARWIN_batch_1_Pos_y =(baseOD1/2) + (box_Titanium_DARWIN_batch_1_y/2);
+G4double Titanium_DARWIN_batch_1_Pos_z= -(cavity1_z/2) + (box_Titanium_DARWIN_batch_1_z/2);
+G4double Titanium_DARWIN_batch_1_Pos_x =0*mm;
+
+// Define the position vector 
+G4ThreeVector Titanium_DARWIN_batch_1_Pos(Titanium_DARWIN_batch_1_Pos_x,Titanium_DARWIN_batch_1_Pos_y,Titanium_DARWIN_batch_1_Pos_z); 
+
+// Define the physical volume 
+G4VPhysicalVolume* Titanium_DARWIN_batch_1_phys = new  G4PVPlacement(0,Titanium_DARWIN_batch_1_Pos,Titanium_DARWIN_batch_1_log,"Titanium_DARWIN_batch_1_phys",cavity1_log,false,0,true);
+
+//---------- volume Titanium_DARWIN_batch_2 ---------- 
+
+//Dimensions of the sample in box and definition of the geometry
+ G4double box_Titanium_DARWIN_batch_2_x= 200*mm;
+ G4double box_Titanium_DARWIN_batch_2_y= 6*mm;
+ G4double box_Titanium_DARWIN_batch_2_z= 200*mm;
+ G4Box* Titanium_DARWIN_batch_2= new G4Box("Titanium_DARWIN_batch_2",0.5*box_Titanium_DARWIN_batch_2_x,0.5*box_Titanium_DARWIN_batch_2_y,0.5*box_Titanium_DARWIN_batch_2_z);
+
+//Construct the logical volume 
+ G4LogicalVolume* Titanium_DARWIN_batch_2_log = new G4LogicalVolume(Titanium_DARWIN_batch_2,Titanium_electropolished,"Titanium_DARWIN_batch_2_log");
+
+// Set visibility for the sample (all are set to the same color, change it if necessary) 
+Titanium_DARWIN_batch_2_log -> SetVisAttributes(sample_vis);
+
+// Set coordinates for the position of the sample and the position vector
+G4double Titanium_DARWIN_batch_2_Pos_y =-(baseOD1/2) - (box_Titanium_DARWIN_batch_2_y/2);
+G4double Titanium_DARWIN_batch_2_Pos_z= -(cavity1_z/2) + (box_Titanium_DARWIN_batch_2_z/2);
+G4double Titanium_DARWIN_batch_2_Pos_x =0*mm;
+
+// Define the position vector 
+G4ThreeVector Titanium_DARWIN_batch_2_Pos(Titanium_DARWIN_batch_2_Pos_x,Titanium_DARWIN_batch_2_Pos_y,Titanium_DARWIN_batch_2_Pos_z); 
+
+// Define the physical volume 
+G4VPhysicalVolume* Titanium_DARWIN_batch_2_phys = new  G4PVPlacement(0,Titanium_DARWIN_batch_2_Pos,Titanium_DARWIN_batch_2_log,"Titanium_DARWIN_batch_2_phys",cavity1_log,false,0,true);
