@@ -14,8 +14,8 @@ namespace fs = std::experimental::filesystem;
 using namespace std;
 
 // written by Gabriela R. Araujo
-// University of Zuricir
-// Last update by ... in May 2020
+// University of Zurich, May 2020
+// Last update by G.R A. in March 2021 (include new calib folders)
 // Check how to run and more info about the script in the README file
 
 int analysis(string s_dir, string ana_dir, string data_dir, string background_dir, string calib_dir, string samplename, string bashrcfile, int n_isot_full, string full_isotopes[]);
@@ -35,7 +35,7 @@ int main()
  string sim_dir=GATORDIR+"/simulations/gator_v2.0"; // simulation directory, version 2.0
  string ana_dir=GATORDIR+"/analysis"; // analysis directory with efficiency and analysis scripts
  string out_dir=GATORDIR+"/Sample_Sim_and_Analysis_Results"; // Results directory
- string calib_dir=GATORDIR+"/Calibrations/2015.08.07";
+ string calib_dir=GATORDIR+"/Calibrations/";// this value changes later to the specific calib folder chosen by the user
  string background_dir = GATORDIR+"/background"; // The SPE files used for background (with option to choose)
  string slurmlog_dir=GATORDIR+"/slurmlog";
  string bashrcfile=GATORDIR+"/.bashrc";
@@ -52,7 +52,7 @@ int main()
  cout<<"*****************************************" <<endl;
 
  // parameters used in a standard simulation
- int queue=2, nodes=50, n_beamOn=10000, n_totevents=1e+5, n_isot_std=8, n_isot_full=16, n_isot_full_sim=10;//These numbers are organized in such a way that the a queue of 2 and 50 nodes are enough for 10+6 events per macro (n_beamOn). if the total number of events change, then the number of jobs will change !!! Make sure that the number of jobs do not exceed the limit.. standard number of events: (currently e6 x 100 files).
+ int queue=2, nodes=100, n_beamOn=100000, n_totevents=1e+7, n_isot_std=8, n_isot_full=16, n_isot_full_sim=10;//These numbers are organized in such a way that the a queue of 2 and 50 nodes are enough for 10+6 events per macro (n_beamOn). if the total number of events change, then the number of jobs will change !!! Make sure that the number of jobs does not exceed the limit.. standard number of events: (currently e6 x 100 files). -> update: somehow a queue of 2 and 50 nodes is not enough anymore, so I changed values
  if (n_beamOn<10000) cout<<" min n_beamOn=10000"<<endl; //this is because of the output in the log files, which are later read to check whether the sim ran properly
 
  string std_isotopes[n_isot_std]={"238U","232Th","40K","60Co","137Cs","226Ra","235U","228Th"};
@@ -76,6 +76,12 @@ int main()
  char an_sim; int break_anal=0; 
  cout<<" Type A to run the analysis of a sample or S for simulation"<<endl;
  cin>>an_sim;
+
+ system (("echo 'Chose one one of the calibration folders below to be used for this analysis/simulation: ' && sleep 3.0 && ls -ltr "+calib_dir+" && echo '\nType the name of the calibration folder here\n'").c_str());
+ string calfolder; cin>>calfolder; 
+ while (!itExists((calib_dir+calfolder).c_str())) { cout<<" Wrong directory: "+calib_dir+calfolder+" does not exist, type it again. \n"; cin>>calfolder; } 
+ calib_dir=calib_dir+calfolder; cout<<" using calibration folder: "<<calib_dir<<endl;
+
  
  if(!itExists(out_dir)) system(("mkdir "+out_dir+" && mv Sample_standard "+out_dir+"/").c_str());
 
@@ -151,6 +157,7 @@ cout<<" To run the standard analysis (number of events: "<<n_totevents<<" and st
 		for (int i=0; i<n_isot; ++i) {cin>>isotopes[i];}
 		cout<<" Input the number of events to be simulated \n";
 		cin>>n_totevents;
+ 		if (n_totevents<n_beamOn) {cout<<" min number of events = n_beamOn ="+n_beamOn<<endl; cin>>n_totevents;}
 		break;
 	default: cout<<"invalid choice. Type either S, L or M"<<endl;
  }
@@ -486,4 +493,3 @@ void printsummary(string s_dir)
 	system("rm tmp*.txt; rm tmp*.pdf;");
 
 }
-
