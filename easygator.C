@@ -116,7 +116,7 @@ int main()
 	 incl_ihh.close();
 
 	 // Now the geometry is made, the overlap check is run, previous wrl files are deleted and a new is created.
-	 string comm_makegeo="bash --rcfile "+bashrcfile+" -ci 'cd "+sim_dir+"; make clean -f GlobGeom_makefile; make -f GlobGeom_makefile; make clean; make; touch g4_trash.wrl; rm g4_*.wrl; cp  "+bin_dir+"/"+bin_name+" .; ./"+bin_name+";'";  //here a bash interactive shell is open which loads a specific rc file, then the commands are run.
+	 string comm_makegeo="bash --rcfile "+bashrcfile+" -ci 'cd "+sim_dir+"; make clean -f GlobGeom_makefile; make -f GlobGeom_makefile; make clean; make; chmod -R g+w tmp/Linux-g++; touch g4_trash.wrl; rm g4_*.wrl; cp  "+bin_dir+"/"+bin_name+" .; ./"+bin_name+";'";  //here a bash interactive shell is open which loads a specific rc file, then the commands are run.
 	 system(comm_makegeo.c_str());
 
 	//now we check wheter the new wrl file was created, if not, this indicates that the previous commands did not run as expected: show warning and break.
