@@ -24,6 +24,7 @@ int build_geo(string samplename, string sim_dir)
 	cin>>cont;
 	if (cont=='S' || cont=='s') return n_vol;
  }
+ iccfile_check.close();
  if (n_vol>20) {cout<<"n_vol is too large, max =20. Change max in the script \n"; return -1;}
  
 
