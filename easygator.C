@@ -6,56 +6,67 @@
 #include <fstream>
 #include <sys/stat.h>
 #include <experimental/filesystem>
-//#include "functions.hh"
+#include "include/geometry_and_functions.h" 
+#include "src/geometry_and_functions.C"  // code with standard geometries and som other functions used here
 
 
 namespace fs = std::experimental::filesystem;
 using namespace std;
 
-// written by G. R. Araujo
-//
-// Last update by ... in May 2020
-// Check how to run and more info about the script in the README file in the same folder
+// written by Gabriela R. Araujo
+// University of Zurich, May 2020
+// Last update by G.R A. in March 2021 (include new calib folders)
+// Check how to run and more info about the script in the README file
 
-void check_matlist(string sim_dir);
-int build_geo(string samplename,string sim_dir);
-bool itExists(string dirName_in);
-int analysis(string s_dir, string ana_dir, string samplename, string bashrcfile);
+int analysis(string s_dir, string ana_dir, string data_dir, string background_dir, string calib_dir, string samplename, string bashrcfile, int n_isot_full, string full_isotopes[]);
 
 int main()
 {
 
 //--------------------------------------------------------------------------------
+// Paths to be changed ONLY when installing it in a new machine/directory
+// (all other paths are input interactively)
+//-------------------------------------------------------------------------------
  string GATORDIR="/disk/bulk_atp/gator"; //main directory for gator
+ string data_dir="/home/atp/atp/GatorSC/Data/SAMPLE_REPORTS/SPE";// The SPE files at the DAQ machine at  LNGS are transferred to this directory by the automatic script in marmotx.
+//--------------------------------------------------------------------------------
+// These paths should not be changed
+//-------------------------------------------------------------------------------
  string sim_dir=GATORDIR+"/simulations/gator_v2.0"; // simulation directory, version 2.0
- string ana_dir=GATORDIR+"/analysis"; // analysis directory
- string out_dir=GATORDIR+"/Simulation_Results"; // Results directory
+ string ana_dir=GATORDIR+"/analysis"; // analysis directory with efficiency and analysis scripts
+ string out_dir=GATORDIR+"/Sample_Sim_and_Analysis_Results"; // Results directory
+ string calib_dir=GATORDIR+"/Calibrations/";// this value changes later to the specific calib folder chosen by the user
+ string background_dir = GATORDIR+"/background"; // The SPE files used for background (with option to choose)
  string slurmlog_dir=GATORDIR+"/slurmlog";
  string bashrcfile=GATORDIR+"/.bashrc";
+ string bin_dir=sim_dir+"/bin/Linux-g++";//path to the binary file
+ string bin_name="gator_1.2"; //name of the binary file
 //--------------------------------------------------------------------------------
  
  cout<<"*****************************************" <<endl;
  cout<<"*                                       *" <<endl;
  cout<<"*              EASY GATOR               *" <<endl;
  cout<<"*     simulation and analysis scripts   *" <<endl;
- cout<<"*        version 1.0 feb.2020           *" <<endl;
+ cout<<"*        version 1.0 jun.2020           *" <<endl;
  cout<<"*                                       *" <<endl;
  cout<<"*****************************************" <<endl;
 
  // parameters used in a standard simulation
- int queue=2, nodes=50, n_beamOn=10000, n_totevents=1e+5, n_isot_std=8, n_isot_full=16;//These numbers are organized in such a way that the a queue of 2 and 50 nodes are enough for 10+6 events per macro (n_beamOn). if the total number of events change, then the number of jobs will change !!! Make sure that the number of jobs do not exceed the limit.. standard number of events: (currently e6 x 100 files).
- if (n_beamOn<10000) cout<<" min n_beamOn=10000"<<endl; //this is because of the output in the log files that are later read to check whether the sim ran properly
+ int queue=2, nodes=100, n_beamOn=100000, n_totevents=1e+7, n_isot_std=8, n_isot_full=16, n_isot_full_sim=10;//These numbers are organized in such a way that the a queue of 2 and 50 nodes are enough for 10+6 events per macro (n_beamOn). if the total number of events change, then the number of jobs will change !!! Make sure that the number of jobs does not exceed the limit.. standard number of events: (currently e6 x 100 files). -> update: somehow a queue of 2 and 50 nodes is not enough anymore, so I changed values
+ if (n_beamOn<10000) cout<<" min n_beamOn=10000"<<endl; //this is because of the output in the log files, which are later read to check whether the sim ran properly
 
  string std_isotopes[n_isot_std]={"238U","232Th","40K","60Co","137Cs","226Ra","235U","228Th"};
- string full_isotopes[n_isot_full]= {"238U","232Th","40K","60Co","137Cs", "226Ra","235U", "228Th", "110mAg", "207Bi", "54Mn", "58Co", "56Co", "57Co","134Cs", "46Sc"};
- //other lines \"1001keV\","186keV", \"605keV\", \"658keV\", \"885keV\", \"1064keV\", "186keV\", \"570keV\", \"796keV\", \"937keV\"]";
+ string full_isotopes[n_isot_full]= {"238U","232Th","40K","60Co","137Cs", "226Ra","235U",  "54Mn", "58Co", "56Co","46Sc", "186keV", "1001keV","Pa", "7Be", "210Pb"};//Note: do not remove isotopes from the full list, since they need to be later read by EffCalcAll.cpp. If you add new isotopes, you need to write a new function for it in EffCalcAll.cpp as well and create macros.// isotopes that have macros but are not in the analysis: "228Th", "110mAg", "207Bi","57Co","134Cs". Isotope 56Co not working, but needs to be in the list.
+ string full_isotopes_sim[n_isot_full_sim]= {"238U","232Th","40K","60Co","137Cs", "226Ra","235U", "54Mn", "58Co", "46Sc"};// Some isotopes are in the analysis (EffCalcAll.cpp) but have no macros: "Pa" (maybe it is the same to 1001Pa?), "7Be", "210Pb". 
+//other lines \"1001keV\","186keV", \"605keV\", \"658keV\", \"885keV\", \"1064keV\", "186keV\", \"570keV\", \"796keV\", \"937keV\"]"; -> for these you may need EffCalcLine.cpp, not yet implemented in easygator
 
-// !!! note, other enviroments and library paths are set in the .bashrc file in the GATORDIR folder
 //----------------------------------------------------------------------------------
- cout<<" Bash commands in this script are run in a fresh shell that sources from the .bashrc file located in "<<GATORDIR<<". \n Non-available versions of software and library paths can cause crashes. \n *** Press C to continue or B to check the .bashrc file first *** \n "<<endl; 
  char _key;
- cin>>_key;
- if (_key=='b' || _key=='B') system(("vi "+bashrcfile).c_str());
+ while(_key!='c' && _key!='C') 
+{
+	 cout<<" Bash commands in this script are run in a fresh shell that sources from the .bashrc file located in "<<GATORDIR<<". \n Non-available versions of software and library paths can cause crashes. \n *** Press C to continue or B to check the .bashrc file first *** \n "<<endl;  cin>>_key; 
+	if (_key=='b' || _key=='B') system(("vi "+bashrcfile).c_str());
+}
 
  string samplename; 
  cout<<"Type the name of the sample:"<<endl;
@@ -65,24 +76,33 @@ int main()
  char an_sim; int break_anal=0; 
  cout<<" Type A to run the analysis of a sample or S for simulation"<<endl;
  cin>>an_sim;
+
+ system (("echo 'Chose one one of the calibration folders below to be used for this analysis/simulation: ' && sleep 3.0 && ls -ltr "+calib_dir+" && echo '\nType the name of the calibration folder here\n'").c_str());
+ string calfolder; cin>>calfolder; 
+ while (!itExists((calib_dir+calfolder).c_str())) { cout<<" Wrong directory: "+calib_dir+calfolder+" does not exist, type it again. \n"; cin>>calfolder; } 
+ calib_dir=calib_dir+calfolder; cout<<" using calibration folder: "<<calib_dir<<endl;
+
  
- // first check whether the simulation directory exists
- string s_dir=out_dir+"/"+samplename;
+ if(!itExists(out_dir)) system(("mkdir "+out_dir+" && mv Sample_standard "+out_dir+"/").c_str());
+
+  string s_dir=out_dir+"/"+samplename;// Sample directory
+ // first check whether the sample directory exists
  char cont_sim='g';
  if (itExists(s_dir)) // in case it exists and you want to run a simulation, show message
  {
-	if(an_sim!='a' && an_sim!='A') {cout<<" \n The simulation directory of this sample already exists. Type G to build a new geometry for this sample or S to directly run the simulation.\n"; cin>>cont_sim;}
+	if(an_sim!='a' && an_sim!='A') {cout<<" \n The Sample Simulation/Results directory of this sample already exists. Type G to modify the geometry files for this sample or S to directly run the simulation.\n"; cin>>cont_sim;}
  }
  else if(!itExists(s_dir) && (an_sim=='a' || an_sim=='A'))
  {
-	cout<<" \n The simulation directory of this sample does not exist. Type G to build a new geometry for this sample or S to run the simulation."; cin>>cont_sim; //to do: but here I need to check that the included geometry files are indeed from this sample
+	cout<<" \n The simulation directory of this sample does not exist. Type G to write a new geometry file for this sample or S to run the simulation. \n"; an_sim='x'; cin>>cont_sim; 
  }
- if (an_sim=='a' || an_sim=='A') break_anal=analysis(s_dir, ana_dir, samplename, bashrcfile);
- if (break_anal!=0) return 0;
- if (cont_sim!='s' && cont_sim!='S')//it does not build the geometry, if you only want to re-run a simulation
+ if (an_sim=='a' || an_sim=='A') {break_anal=analysis(s_dir, ana_dir, data_dir, background_dir, calib_dir, samplename, bashrcfile, n_isot_full, full_isotopes); return break_anal;}
+ if (cont_sim=='g' || cont_sim=='G')//if you only want to re-run a simulation, this part is skipped
  { 
+	
 	 // Here the .icc and .ihh geometry files of the sample are created
 	 n_vol=build_geo(samplename.c_str(), sim_dir);
+	 if (n_vol<0) {cout<<" Error in building geometry"<<endl; return -1;}
 
 	 //Now these files are linked the GeConstructor file, since these files contain #include "includesample.hh"
 	 string s_incl_icc=sim_dir+"/src/includesample.hh";
@@ -96,7 +116,7 @@ int main()
 	 incl_ihh.close();
 
 	 // Now the geometry is made, the overlap check is run, previous wrl files are deleted and a new is created.
-	 string comm_makegeo="bash --rcfile "+bashrcfile+" -ci 'cd "+sim_dir+"; make clean -f GlobGeom_makefile; make -f GlobGeom_makefile; make clean; make; touch g4_trash.wrl; rm g4_*.wrl; cp bin/Linux-g++/gator_1.2 .; ./gator_1.2;'";  //here a bash interactive shell is open which loads a specific rc file, then the commands are run.
+	 string comm_makegeo="bash --rcfile "+bashrcfile+" -ci 'cd "+sim_dir+"; make clean -f GlobGeom_makefile; make -f GlobGeom_makefile; make clean; make; touch g4_trash.wrl; rm g4_*.wrl; cp  "+bin_dir+"/"+bin_name+" .; ./"+bin_name+";'";  //here a bash interactive shell is open which loads a specific rc file, then the commands are run.
 	 system(comm_makegeo.c_str());
 
 	//now we check wheter the new wrl file was created, if not, this indicates that the previous commands did not run as expected: show warning and break.
@@ -104,8 +124,9 @@ int main()
 	 {cout<<" \n \n The .wrl file was not created. Check whether the geometry was made in the previous step or if there were errors "<<endl; return -1;}
 	 
 	 // Now the the wrl file is open with freewrl 
-	 string s_echo="\n Opening .wrl file... \n\n *** Check wheter the geometry and position of the sample are right *** \n Then close the freewrl window to continue \n\n";
-	 string comm_openwrl="bash --rcfile "+bashrcfile+" -ci 'cd "+sim_dir+"; echo \""+s_echo+"\"; freewrl g4_*.wrl'"; 
+	 string s_echo=" \n Opening .wrl file... \n\n *** Check wheter the geometry and position of the sample are right *** \n Click on the window first (to save a print of the geometry) and then close the freewrl window to continue \n\n";
+	// int size=90; let str= String(format: "%.2f%%", size);
+	 string comm_openwrl="bash --rcfile "+bashrcfile+" -ci 'cd "+sim_dir+" && echo \""+s_echo+"\" && sleep 3 && freewrl g4_00.wrl | import -window -94371852 -resize \"90%\" g4_00.pdf'"; //&& echo \"This is a screenshot of the geometry. If it is not good, save a new screenshot with the name g4_00.pdf before going to the analysis\" && sleep 4 && xdg-open g4_00.pdf
 	 system(comm_openwrl.c_str());
  }//geometry part is finished
 
@@ -124,7 +145,7 @@ cout<<" To run the standard analysis (number of events: "<<n_totevents<<" and st
 	case 'L': 
 	case 'l': 
 		cout<<"\n Full list of isotopes: ";
-		for (int i=0; i<n_isot_full; i++){cout<<full_isotopes[i]<<" ";}
+		for (int i=0; i<n_isot_full_sim; i++){cout<<full_isotopes_sim[i]<<" ";}
 		cout<<" \n Type M to modify the list and other parameters or S to continue with the standard one"<<endl;
 		cin>>c_inp;
 		if (c_inp=='S' || c_inp=='s') break;
@@ -132,10 +153,11 @@ cout<<" To run the standard analysis (number of events: "<<n_totevents<<" and st
 	case 'm': 
 		cout<<" Input the number of isotopes/macros to be simulated \n";
 		cin>>n_isot;
-		cout<<"\n Copy the isotopes below that should be included\n";for (int i=0; i<n_isot_full; ++i){cout<<full_isotopes[i]<<" ";} cout<<"\n (if the isotope is not on the list, create a macro for it in the Sample_standard folder in "+out_dir+", modify the full list of this script and run it again)\n";
+		cout<<"\n Copy the isotopes below that should be included\n"; for (int i=0; i<n_isot_full_sim; ++i){cout<<full_isotopes_sim[i]<<" ";} cout<<"\n If the isotope is not on the list, create a macro for it in the Sample_standard folder in "+out_dir+", modify the full list of this script and run it again. You then also need to write new functions for the analysis in the EffCalcAll.cpp. \n";// 
 		for (int i=0; i<n_isot; ++i) {cin>>isotopes[i];}
 		cout<<" Input the number of events to be simulated \n";
 		cin>>n_totevents;
+ 		if (n_totevents<n_beamOn) {cout<<" min number of events = n_beamOn ="+n_beamOn<<endl; cin>>n_totevents;}
 		break;
 	default: cout<<"invalid choice. Type either S, L or M"<<endl;
  }
@@ -146,11 +168,11 @@ cout<<" To run the standard analysis (number of events: "<<n_totevents<<" and st
  if (itExists(s_dir)) // first check whether the directory already exists
  {
 	cout<<" \n The simulation directory of this sample already exists. Do you want to overwrite it? Press C to continue and ctrl+c to stop.\n"; char cont; cin>>cont;
-	comm_mkdirs_mv="cd "+out_dir+" && rm -rf "+samplename+" && cp -r Sample_standard "+samplename+" && mv "+sim_dir+"/g4_*.wrl "+samplename; // it forces the directory to be recreated, in case it already exists
+	comm_mkdirs_mv="mv "+s_dir+"/g4_* "+sim_dir+"/ ; mv "+s_dir+"/tmp_copy_of_the_iccfile "+GATORDIR+"/ ; cd "+out_dir+" && rm -rf "+samplename+" && cp -r Sample_standard "+samplename+" && mv "+sim_dir+"/g4_* "+samplename+" && mv "+GATORDIR+"/tmp_copy_of_the_iccfile "+samplename+"/"; // it forces the directory to be recreated, in case it already exists
  }
  else 
  {
-	comm_mkdirs_mv="cd "+out_dir+" && cp -r Sample_standard "+samplename+" && mv "+sim_dir+"/g4_*.wrl "+samplename;
+	comm_mkdirs_mv="cd "+out_dir+" && cp -r Sample_standard "+samplename+" && mv "+sim_dir+"/g4_* "+samplename+" && mv "+GATORDIR+"/tmp_copy_of_the_iccfile "+samplename+"/";
  }
  system(comm_mkdirs_mv.c_str());
 
@@ -161,7 +183,7 @@ string s_confinemorevolumes;
 string sconfine;
 if (n_vol>1) 
 {
-	cout<<" *** Check the volumes defined in the .ihh file below and input the _phys volumes to be confined *** \n";
+	cout<<"\n *** Check the volumes defined in the .ihh file below and input the _phys volumes to be confined *** \n";
 	system("sleep 2.");
 	system(("cat "+sim_dir+"/include/"+samplename+".ihh").c_str());
 	cout<<" \n\nInsert them with the _phys extension and separated by space: \n";
@@ -185,7 +207,7 @@ for (int i=0; i<n_isot; i++)
  string s_py_input=sim_dir+"/sim_input.py"; 
  ofstream py_input(s_py_input.c_str());
  py_input<<"gatordir=\""<<GATORDIR<<"\""<<endl;
- py_input<<"binary=\""<<sim_dir<<"/bin/Linux-g++/gator_1.2\""<<endl;
+ py_input<<"binary=\""<<bin_dir<<"/"<<bin_name<<"\""<<endl;
  py_input<<"datadir=\""<<out_dir.c_str()<<"\""<<endl;
  py_input<<"sample=\""<<samplename.c_str()<<"\""<<endl;
  py_input<<"queue=\""<<queue<<":00:00\"\nmaxnodes="<<nodes<<endl;
@@ -195,10 +217,10 @@ for (int i=0; i<n_isot; i++)
 
  py_input.close();
 
- //check whether there was any problem with simulations: whether there are files in the tmp_files (this did not work, it seems it was not compiled by the current gcc version)
- //string spath="/disk/bulk_atp/gator/slurm_tmpfiles/"; fs::path dirpath(spath.c_str()); if (dirpath.empty()) 
 
- //emptying the slurmlog folder for the new logfiles (moving old logs to archive)
+
+ //emptying the slurmlog folder for the new logfiles (moving old logs to archive) 
+ if (!itExists(slurmlog_dir.c_str())) system(("mkdir "+slurmlog_dir+"; mkdir "+slurmlog_dir+"_archive;").c_str());
  system(("mv "+slurmlog_dir+"/* "+slurmlog_dir+"_archive/").c_str());
 
  //Now the jobs to run the simulation will be submitted 
@@ -207,331 +229,267 @@ for (int i=0; i<n_isot; i++)
  //ps: GatorSims.py is only a script to manage the jobs which are submitted using sbatch to pass parameter to the GatorSims.slurm script. This script runs the binary $binary "$macro" $gatordir/slurm_tmpfiles/$SLURM_JOB_ID/"$outfilename" > "$logfilename"
 
  system(s_submit.c_str());
- cout<<" ------------------------------------------- \n The jobs are being submitted in the easygator_screen. Type 'screen -r easygator_screen' if you want to check the screen. \n (ps: The screen is terminated once all jobs were submitted) \n\n Use 'qstat -u username' to check status of the jobs: make sure that they are running (check slurm log if they get immediately canceled). Use 'scancel -u username' to cancel the jobs if needed. \n\n Job submission errors are output in the log files in the slurmlog directory and script errors in the logs folder in the sample directory.\n";
+ cout<<"\n\n ------------------------------------------- \n The jobs are being submitted in the easygator_screen. Type 'screen -r easygator_screen' if you want to check the screen. \n (ps: The screen is terminated once all jobs were submitted) \n\n Use 'qstat -u username' to check status of the jobs: make sure that they are running (check slurm log if they get immediately canceled). Use 'scancel -u username' to cancel the jobs if needed. \n\n Job submission errors are output in the log files in the slurmlog directory and script errors in the logs folder in the sample directory.\n";
 
 }
 
-int analysis(string s_dir, string ana_dir, string samplename, string bashrcfile)
+int analysis(string s_dir, string ana_dir, string data_dir, string background_dir, string calib_dir, string samplename, string bashrcfile, int n_isot_full, string full_isotopes[])
 {
 	int totevents, n_beamOn, sim_events, n_isot=0;
+	string analysislogfile=s_dir+"/analysis_input.log";
 
-	// TO DO: Check whether the analysis has already been run before 
-
-// Before starting the analysis, we check whether the simulation worked as it should by comparing the input file of the simulation to the total of simulated events, scanning for errors in the log files, verifying the size of the root files and checking whether they merged properly
-
-	string readinput, line, readline, isotopes[100];
-	string readinput_file=s_dir+"/sim_input.py";
-	cout<<"\n *** Reading the inputs of the simulation for the analysis ***  "<<endl;
-	ifstream readsim_input(readinput_file.c_str()); 
-	if(!readsim_input.is_open()) cout<<" error in reading the simulation input file: "<<s_dir+"sim_input.py"<<" \n If there was no sim_input.py file for this simulation, please make one in order to run the analysis or re-run the simulation. "<<endl;
-
-	while (readsim_input>>readinput) 
-	{
-		//cout<<readinput<<endl;
-		if (readinput=="totevents=") {readsim_input>>totevents; cout<<"totevents="<<totevents<<endl;}
-		if (readinput=="n_beamOn=") {readsim_input>>n_beamOn; cout<<"n_beamOn="<<n_beamOn<<endl;}
-		if (readinput=="isotope_list=[")
+//------// First: Check whether the analysis has already been run before and if so, from where to re-start it -------------------
+	char r_ana;
+	string message=" A: Simulation log checks\n B: Merge simulations root files\n C: Efficiency calculation (EffCalcAll.cpp script) from the simulation files\n D: Copy and selection of the SPE files \n E: Results: Spectrum plot & activity calculation (BuildFastSpectrum.cpp & sampleanalysis.cpp scripts) \n F: Merge main logs, plots and results into summary PDF \n or CTRL+C to exit the script\n";
+	string runbf="The analysis of this sample was already run before";
+	string stype="type one of the options below to start the simulation from: \n"+message;
+	
+	if (itExists(analysislogfile.c_str())) 
+	{	
+		string message_=runbf+". Type L to see the log file, or "+stype;
+		cout<<message_<<endl; cin>>r_ana;
+		if (r_ana=='l' || r_ana=='L') 
 		{
-			cout<<"isotope_list=";
-			readsim_input>>line;
-			istringstream iline(line);
-			getline(iline, readline, '\"');
-			while (readline!="]")
+			system ((" vi "+analysislogfile).c_str()); cout<<"ctrl+C to exit or "<<stype;
+		}
+	}
+	else if (itExists((s_dir+"/output_sampleanalysis.txt").c_str()))
+	{cout<<runbf<<", and the final resuts have already been calculated. If you want to repeat this step, press E, otherwise, "<<stype; cin>>r_ana;}
+	else if (itExists((s_dir+"/SPE").c_str()))
+	{cout<<runbf<<", the SPE files were already copied/selected. If you want to repeat this step, press D, otherwise, "<<stype; cin>>r_ana;}
+	else if (itExists((s_dir+"/efficiency.log").c_str()))
+	{cout<<runbf<<", the efficiency script was already run, If you want to do it again, press C, otherwise, "<<stype; cin>>r_ana;} 
+	else if (itExists((s_dir+"/merged").c_str())) 
+	{cout<<runbf<<", the log checks of the simulation were performed and the root files were merged, If you want to do it again, press B, otherwise, "<<stype; cin>>r_ana;}
+	else {cout<<" This analysis is done in 6 steps: \n"<<message<<endl; r_ana='A';}
+	while(r_ana!='A' && r_ana!='B' && r_ana!='C' && r_ana!='D' && r_ana!='E' && r_ana!='F') 
+	{cout<<" Not a valid option (mind uppercase!). "<<stype<<endl; cin>>r_ana;}
+//-------- End of check --------------------------------------------------------------------------------------------------
+
+
+	// Before starting the analysis, we check whether the simulation worked as it should by comparing the input file of the simulation to the total of simulated events, scanning for errors in the log files, verifying the size of the root files and checking whether they merged properly
+	if (r_ana=='A' || r_ana=='B' || r_ana=='C') //otherwise it skips diretly to copy SPE (D)
+	{
+		string readinput, line, readline, isotopes[100];
+		string readinput_file=s_dir+"/sim_input.py";
+		cout<<"\n *** Reading the inputs of the simulation for the analysis ***  "<<endl;
+		ifstream readsim_input(readinput_file.c_str()); 
+		if(!readsim_input.is_open()) cout<<" error in reading the simulation input file: "<<s_dir+"sim_input.py"<<" \n If there was no sim_input.py file for this simulation, please make one in order to run the analysis or re-run the simulation. "<<endl;
+
+		while (readsim_input>>readinput) 
+		{
+			if (readinput=="totevents=") {readsim_input>>totevents; cout<<"totevents="<<totevents<<endl;}
+			if (readinput=="n_beamOn=") {readsim_input>>n_beamOn; cout<<"n_beamOn="<<n_beamOn<<endl;}
+			if (readinput=="isotope_list=[")
 			{
+				cout<<"isotope_list=";
+				readsim_input>>line;
+				istringstream iline(line);
 				getline(iline, readline, '\"');
-				if (readline!="," && readline!="]") 
+				while (readline!="]")
 				{
-					isotopes[n_isot]=readline;
-					cout<<isotopes[n_isot]<<",";
-					n_isot++;
+					getline(iline, readline, '\"');
+					if (readline!="," && readline!="]") 
+					{
+						isotopes[n_isot]=readline;
+						cout<<isotopes[n_isot]<<",";
+						n_isot++;
+					}
+
 				}
-
-			}
-			//cout<<"\n";
-		} 
+				cout<<"\n";
+			} 
 
 
-	}
-
-	int totjobs=totevents/n_beamOn, n_errors=0;
-	stringstream stotev; stotev<<totevents;
-	string logdir=s_dir+"/logs/"; 
-	string effscript=ana_dir+"/EffCalcAll.cpp"; // This script calculates the prob. of a gamma from the sample to reach the det.
- 	string isotvarh=ana_dir+"/isotopes.h", isotvarcpp=ana_dir+"/isotopes.cpp";// in this file we save a list of isotopes as variables to be read by EffcalcAll.cpp
-
-
-	// Now we read the log files for each isotope and job
-	system("sleep 3.4"); cout<<" \n\n *** Opening log files to check simulated events and errors *** \n Note: this is a simple \"grep\" error scan. If something seems to be wrong check the log files anyway. "<<endl;  system("sleep 2.8");
-	for (int t=0; t<n_isot; t++) 
-	{
-		for (int j=1; j<=totjobs; j++)
-		{
-			stringstream s_nbeam, sjob; s_nbeam<<n_beamOn;
-			sjob<<j;
-			string logfile=logdir+samplename+"_"+isotopes[t]+"_"+s_nbeam.str()+"_"+sjob.str()+".log";
-
-			ifstream readlogfile(logfile.c_str(),ios::ate);
-			if (!readlogfile.is_open()) cout<<"Error: logfile was not open: "<<logfile<<endl;// else cout<<logfile<<endl;
-			//sim_events=0;
-			for (int i=90; i<200; i++)//positioning the cursor at the end of the file
-			{ 
-				//it goes through the file (starting at the end, until if finds n_beamOn 
-				readlogfile.seekg(-i, ios::end); 
-				readlogfile>>sim_events;
-				//cout<<sim_events<<endl;
-				if (sim_events==n_beamOn) break;	
-
-			}
-			if (sim_events!=n_beamOn){ n_errors++; cout<<"Error: there was a problem with log file " <<logfile<<": the number of simulated events read from the log ("<<sim_events<<") does not seem to match n_beamOn ("<<n_beamOn<<"). Check the file for errors"<<endl;}
 		}
-	}
-	system(("cd "+logdir+" && grep -iRl \"rror\" * > errors.log").c_str());
-	ifstream errorlog(logdir+"errors.log"); if (!errorlog.is_open()) cout<<"error log file did not open: "+logdir+"errors.log"<<endl; 
-	//while (!errorlog.eof()) {n_errors++; cout<<n_errors<<endl;}
-	cout<<"   ---> Logfile check was completed. *** "<<n_errors<<" errors were found  ***"<<endl; system("sleep 2.4");
-	if (n_errors>0) {cout<<" \n Do you want to continue the analysis despite the errors? if yes, type C, if not, ctrl+C. The list of files that contain error messages is in "+logdir+"errors.log. Also check the messages above in case logfiles were not open. This indicates the simulation maybe crashed before it finished. If no log files were produced, maybe there was an error in submitting the jobs, so check for errors in the slurmlog directory in this folder. \n"; char cont; cin>>cont;}
 
-	//Now log file checks were done, so we check the sizes of root files and merge them. Note: the merge dir is recreated in case it existed before.
-	// function s_dir, isotopes, n_isot
-	string merge_dir=s_dir+"/merged"; system(("rm -rf "+merge_dir+" && mkdir "+merge_dir).c_str()); 
-	cout<<"\n *** Merging root files for each isotope *** \n merge logs are in the merged directory and are scanned for errors, as well as file sizes are checked \n"; system("sleep 2.5");
-	for (int t=0; t<n_isot; t++) 
-	{
-		//for (int j=1; j<=totjobs; j++)
-		//{stringstream s_nbeam, sjob; s_nbeam<<n_beamOn;sjob<<j;
-		string rootdir=s_dir+"/"+isotopes[t];
-		string mergedroot=merge_dir+"/"+isotopes[t]+".root";
-		string mergelog=merge_dir+"/merge_"+isotopes[t]+".log";
-		string checkfilesizes="cd "+rootdir+" && min=$(ls -l | gawk '{sum += $5; n++;} END {printf \"%i\", sum/(n-1)*.85;}') && max=$(ls -l | gawk '{sum += $5; n++;} END {printf \"%i\", sum/(n-1)*1.15;}') && nfiles=$(find . -type f -size +\"$min\"c -size -\"$max\"c | wc -l) && nfilestot=$(ls | wc -l) && if [ $nfiles -eq $nfilestot ]; then echo \"GOOD :-) all root files in the "+isotopes[t]+" folder are roughly the same size, files will be therefore merged\" && sleep 2.4; else echo \"*** ERROR: one or more root files have a significantly different size, check it below\" && ls -l && sleep 2.4 && echo \"press C to continue anyway or S to stop the script and check further what happened\" && read var && echo \"$var\" > ../tmpfile; fi"; char cont='C';
-		system (checkfilesizes.c_str()); ifstream var((s_dir+"/tmpfile").c_str()); 
-		if(var.good()) {var>>cont; system(("rm "+s_dir+"/tmpfile").c_str());}
-		if (cont!='C' && cont!='c') {cout<<"script stopped by the user \n"; return -1;}
-		system(("hadd "+mergedroot+" "+rootdir+"/*.root &> "+mergelog+"; cd "+merge_dir+" && grep -iRl \"error\" * > mergelog.err").c_str()); //hadd and then grep errors in the hadd log 
-		ifstream checklog((merge_dir+"/mergelog.err").c_str()); checklog.seekg(0, ios::end);  
-		if (checklog.tellg()!=0) // if it is not empty
+		int totjobs=totevents/n_beamOn, n_errors=0;
+		stringstream stotev; stotev<<totevents;
+		string logdir=s_dir+"/logs/"; 
+		string effscript=ana_dir+"/EffCalcAll.cpp"; // This script calculates the prob. of a gamma from the sample to reach the det.
+	 	string isotvarh=ana_dir+"/isotopes.h", isotvarcpp=ana_dir+"/isotopes.cpp";// in this file we save a list of isotopes as variables to be read by EffcalcAll.cpp
+
+
+		// Now we read the log files for each isotope and job
+		system("sleep 2.8 && echo '\n\n *** Opening log files to check simulated events and errors *** \n Note: this is a simple check of simulated events and \"grep\" error scan. If something seems to be wrong, check the log files anyway. ' && sleep 3.0");  
+		for (int t=0; t<n_isot; t++) 
 		{
-			cout<<"*** MERGER ERRORS were found in these merge: \n\n";
-			system(("tail "+merge_dir+"/mergelog.err && echo \"press C to continue or S to stop the script and check further what happened\" && read var && echo \"$var\" > "+s_dir+"/tmpfile").c_str());
-			ifstream var((s_dir+"/tmpfile").c_str()); var>>cont; 
-			system(("rm "+s_dir+"/tmpfile").c_str());
-			if (cont!='C' && cont!='c') {cout<<"script stopped by the user \n"; return -1;}
-		} else { cout<<"No merge errors were found, but check the merge log "+mergelog+" in case something weird happens \n"<<endl;} 
-	}
-
-	system(("bash --rcfile "+bashrcfile+" -ci 'root -b -l <<EOF\n.L "+isotvarcpp+"++\n.x "+effscript+"(\"/disk/bulk_atp/gator/Simulation_Results/newmaytest\",100000)\n.q\nEOF'").c_str()); // -b (no graphics)
-
-	return 1;
-}
-
-
-int build_geo(string samplename, string sim_dir) 
-{
-
- string s_iccfile=sim_dir+"/src/"+samplename+".icc";
- string s_ihhfile=sim_dir+"/include/"+samplename+".ihh";
-
- int n_vol; cout<<" Type the number of volumes (n_vol) that were/will be constructed (if n_vol=1, its name will be the sample name) \n";
- cin>>n_vol;
-
- ifstream iccfile_check(s_iccfile.c_str()); 
- if (iccfile_check.good()) 
- {
-	cout<<" The geometry file (.icc) of this sample already exists. If you continue, THE FILE WILL BE OVERWRITTEN. Type C to continue (overwrite), M  to modify the sample name or G to build the geometry and run the simulations without modifying/overwriting the geometry (.icc and .hh) files\n"; //to do: give an option to visualize the current geometry (openin wrl file)
-	char cont;
-	cin>>cont;
-        if (cont=='M' || cont=='m') main();
-	if (cont=='G' || cont=='g') return n_vol;
- }
- if (n_vol>20) {cout<<"n_vol is too large, max =20. Change max in the script \n"; return -1;}
- 
-
-  
- string s_volumes[20];
- if (n_vol>1)
- { 
-	cout<<" Type the names of the volumes separated by space \n";
-	for (int i=0; i<n_vol; i++) {cout<<"volume "<<i+1<<endl; cin>>s_volumes[i];}
- } 
- else
- { s_volumes[0]=samplename;}
-
- ofstream ihhfile(s_ihhfile.c_str()); //creates a new ihh file 
- ofstream iccfile(s_iccfile.c_str()); //creates a new .icc geometry file
- string sgeo;
- int break_buildgeo=0;
-
- iccfile<<"// Set visibility properties for all the samples \nG4VisAttributes* sample_vis = new G4VisAttributes(red);\nsample_vis -> SetVisibility(true); \nsample_vis -> SetForceSolid(false);\n";
-
- for (int i=0; i<n_vol; i++)
- {
-
-	 ihhfile<<"\n// ---------- volume "<<s_volumes[i]<<" ---------- //\n\n";
-	 ihhfile<<"//---------------   logical and physical volumes definitions \n";
-	 ihhfile<<" G4LogicalVolume* "<<s_volumes[i]<<"_log;\n";
-	 ihhfile<<" G4VPhysicalVolume* "<<s_volumes[i]<<"_phys;\n";
-
-	 iccfile<<"\n//---------- volume "<<s_volumes[i]<<" ---------- \n\n";
-
-	 cout<<"Is the geometry of the sample/volume \""<<s_volumes[i]<<"\" a box, a tube or other?"<<endl;
-	 cin>>sgeo;
-
-	 double dim[3];// x,y,z in mm for box or ID, OD and length for tubes.
-	 int geom_ok; 
-	 
-	 do {
-		 geom_ok=1;	
-		 if (sgeo=="box")
-		 {
-			cout<<"type the x, y, z dimensions of the box in mm separated by space or ENTER (note: very small samples can lead to confinement  errors!!) "<<endl;
-			cin>>dim[0]>>dim[1]>>dim[2];
-			string sdim[3]={"x","y","z"};
-			iccfile<<"//Dimensions of the sample in box and definition of the geometry"<<endl;
-			for (int j=0; j<3;j++)
-			{iccfile<<" G4double box_"<<s_volumes[i]<<"_"<<sdim[j]<<"= "<<dim[j]<<"*mm;"<<endl;}
-			iccfile<<" G4Box* "<<s_volumes[i]<<"= new G4Box(\""<<s_volumes[i]<<"\",0.5*"<<"box_"<<s_volumes[i]<<"_"<<sdim[0]<<",0.5*"<<"box_"<<s_volumes[i]<<"_"<<sdim[1]<<",0.5*"<<"box_"<<s_volumes[i]<<"_"<<sdim[2]<<");\n\n";
-		 }
-		 else if (sgeo=="tube") 
-		 {
-			cout<<"type the ID, OD, and length of the tube in mm and separated by ENTER  (note: very small samples can lead to confinement  errors!!)"<<endl;
-			cin>>dim[0]>>dim[1]>>dim[2];
-			string sdim[3]={"ID","OD","L"};
-			iccfile<<"//Dimensions of the sample in tube and definition of the geometry"<<endl;
-			cout<<" *** Sorry, tube geometry not yet completely implemented **** \n";
-			//** to do: implement tube geometry
-
-		 } 
-		 else if (sgeo=="other")
-		 {
-			cout<<" You can copy a file to use as basis for your new geometry. See the list below: \n"<<endl;
-			string ls_src="cd "+sim_dir+"/src && ls *.icc"; 
-			system("sleep 2.3"); system(ls_src.c_str());
-			cout<<"\n Type the name of the file to be copied:"<<endl;
-			string s_copy;
-			cin>>s_copy; s_copy=sim_dir+"/src/"+s_copy;
-			ifstream f(s_copy.c_str());
-		   	if(f.good()) 
+			for (int j=1; j<=totjobs; j++)
 			{
-				string copy_comm="cp "+s_copy+" "+s_iccfile;
-				system(copy_comm.c_str());
-		 		cout<<"Now modify and save the .icc geometry file \n";
-				system("sleep 2.3"); 
-				system(("vi "+s_iccfile).c_str());
-				cout<<"Now modify and save the .ihh geometry file \n";
-				system("sleep 2.3"); 
-				system(("vi "+s_ihhfile).c_str());
-				
+				stringstream s_nbeam, sjob; s_nbeam<<n_beamOn;
+				sjob<<j;
+				string logfile=logdir+samplename+"_"+isotopes[t]+"_"+s_nbeam.str()+"_"+sjob.str()+".log";
+
+				ifstream readlogfile(logfile.c_str(),ios::ate);
+				if (!readlogfile.is_open()) cout<<"Error: logfile was not open: "<<logfile<<endl;
+				for (int i=90; i<200; i++)//positioning the cursor at the end of the file
+				{ 
+					//it goes through the file (starting at the end, until if finds n_beamOn 
+					readlogfile.seekg(-i, ios::end); 
+					readlogfile>>sim_events;
+					//cout<<sim_events<<endl;
+					if (sim_events==n_beamOn) break;	
+
+				}
+				if (sim_events!=n_beamOn){ n_errors++; cout<<"Error: there was a problem with log file " <<logfile<<": the number of simulated events read from the log ("<<sim_events<<") does not seem to match n_beamOn ("<<n_beamOn<<"). Check the file for errors"<<endl;}
 			}
-			else {cout<<" The file you typed does not exist. Maybe you forgot to type the .icc extension?"<<endl;}	
-			return n_vol;
-		 }
-		 else 
-		 {
-			cout<<" invalid option, type box, tube or other"<<endl;
-			cin>>sgeo; geom_ok=0;
-		 }
-	 } while (geom_ok==0);
-
-	 string material;
-	 check_matlist(sim_dir); //checks whether the material of the sample is already in the list.
-	 cin>>material; 
-	 
-	 //Construct the logical volume
-	 iccfile<<"//Construct the logical volume \n G4LogicalVolume* "<<s_volumes[i]<<"_log = new G4LogicalVolume("<<s_volumes[i]<<","<<material.c_str()<<",\""<<s_volumes[i]<<"_log\");\n"<<endl;
-
-	 // Set visibility properties
-	 iccfile<<"// Set visibility for the sample (all are set to the same color, change it if necessary) \n" <<s_volumes[i]<<"_log -> SetVisAttributes(sample_vis);\n\n";
-
-	 // Set the position of the sample
-	 double pos[3]; //coordinates x, y, z;
-	 char Pos;
-	 cout<<"If the sample is placed at the top and center of the detector (x=y=0), type D. If it is somewhere touching the bottom and the wall of the cavity (z=0, x=-cavity1_x/2+sample_size_x/2, y=0), type C. To set another position, type other\n";
-	 cin>>Pos;
-	 if (Pos=='D'||Pos=='d') //it positions the sample at the top of the detector.
-	 {
-		 iccfile<<"// Set coordinates for the position of the sample at the top of the detector\n";
-		 iccfile<<"G4double "<<s_volumes[i]<<"_Pos_x =0*mm;\n";
-		 iccfile<<"G4double "<<s_volumes[i]<<"_Pos_y =0*mm;\n";
-		 if (sgeo=="box") iccfile<<"G4double "<<s_volumes[i]<<"_Pos_z= endcapPos_z+0.5*endcapHeight1+0.5*box_"<<s_volumes[i]<<"_z+0.01*mm;\n\n";
-		 if (sgeo=="tube") 
-		 {
-			cout<<"the base of the tube is being positioned at the top of the detector. If this is not the case, rotate the tube\n";
-			iccfile<<"G4double "<<s_volumes[i]<<"_Pos_z= endcapPos_z+ 0.5*endcapHeight1+ 0.5*tube_"<<s_volumes[i]<<"_L +0.01*mm;\n\n";
 		}
-	 }		
-	 else // it simply writes some geometry that can be then changed (Pos=='C'|| Pos=='c') //To do: fix positions
-	 {
-		 iccfile<<"// Set coordinates for the position of the sample and the position vector touching the bottom and left wall of the cavity *** currently not working *** Check the positions againg \n";
-		if (sgeo=="box")  
+		system(("cd "+logdir+" && grep -iRl \"rror\" * > errors.log").c_str());
+		ifstream errorlog(logdir+"errors.log"); if (!errorlog.is_open()) cout<<"error log file did not open: "+logdir+"errors.log"<<endl; 
+		stringstream snerrors; snerrors<<n_errors;
+
+		system(("sleep 2.4 && echo '---> Logfile check was completed. *** "+snerrors.str()+" errors or files with incomplete simulation were found  ***' && sleep 2.6").c_str());
+		if (n_errors>0) {cout<<" \n Do you want to continue the analysis despite the errors? if yes, type C, if not, ctrl+C. The list of files that contain error messages is in "+logdir+"errors.log. Also check the messages above in case logfiles were not open. This indicates the simulation maybe crashed before it finished. If no log files were produced, maybe there was an error in submitting the jobs, so check for errors in the slurmlog directory in this folder. \n"; char cont; cin>>cont;}
+
+		//Now log file checks were done, so we check the sizes of root files and merge them (the merge dir is recreated in case it existed before).
+		if (r_ana!='C')// in this case, skip merge
 		{
-			iccfile<<"G4double "<<s_volumes[i]<<"_Pos_y =-mylarOD-0.5*box_"<<s_volumes[i]<<"_y;\n";
-			iccfile<<"G4double "<<s_volumes[i]<<"_Pos_z= 0.5*box_"<<s_volumes[i]<<"_z+0.01*mm-heightOfTheCrystal;\n";
+			string merge_dir=s_dir+"/merged"; system(("rm -rf "+merge_dir+" && mkdir "+merge_dir+" && echo '\n \n*** Merging root files for each isotope *** \n merge logs are in the merged directory and are scanned for errors, as well as file sizes are checked \n\n' && sleep 2.5").c_str()); 
+			for (int t=0; t<n_isot; t++) 
+			{
+
+				string rootdir=s_dir+"/"+isotopes[t];
+				string mergedroot=merge_dir+"/"+isotopes[t]+".root";
+				string mergelog=merge_dir+"/merge_"+isotopes[t]+".log";
+				string checkfilesizes="sleep 2.4 && cd "+rootdir+" && min=$(ls -l | gawk '{sum += $5; n++;} END {printf \"%i\", sum/(n-1)*.75;}') && max=$(ls -l | gawk '{sum += $5; n++;} END {printf \"%i\", sum/(n-1)*1.25;}') && nfiles=$(find . -type f -size +\"$min\"c -size -\"$max\"c | wc -l) && nfilestot=$(ls | wc -l) && if [ $nfiles -eq $nfilestot ]; then echo \"GOOD :-) all root files in the "+isotopes[t]+" folder are roughly the same size, files will be therefore merged\" && sleep 2.4; else echo \"*** ERROR: one or more root files have a significantly different size, check it below\" && ls -l && sleep 2.4 && echo \"press C to continue anyway or S to stop the script and check further what happened\" && read var && echo \"$var\" > ../tmpfile; fi"; char cont='C';
+				system (checkfilesizes.c_str()); ifstream var((s_dir+"/tmpfile").c_str()); 
+				if(var.good()) {var>>cont; system(("rm "+s_dir+"/tmpfile").c_str());}
+				if (cont!='C' && cont!='c') {cout<<"script stopped by the user \n"; return -1;}
+				system(("bash --rcfile "+bashrcfile+" -ci 'hadd "+mergedroot+" "+rootdir+"/*.root &> "+mergelog+"; cd "+merge_dir+" && grep -iRl \"error\" * > mergelog.err' &> /dev/null").c_str()); //hadd and then grep errors in the hadd log 
+				ifstream checklog((merge_dir+"/mergelog.err").c_str()); checklog.seekg(0, ios::end);  
+				if (checklog.tellg()!=0) // if it is not empty
+				{
+					cout<<"\n *** MERGER ERRORS were found in these merge: \n\n";
+					system(("tail "+merge_dir+"/mergelog.err && echo \"press C to continue or S to stop the script and check further what happened\" && read var && echo \"$var\" > "+s_dir+"/tmpfile").c_str());
+					ifstream var((s_dir+"/tmpfile").c_str()); var>>cont; 
+					system(("rm "+s_dir+"/tmpfile").c_str());
+					if (cont!='C' && cont!='c') {cout<<"script stopped by the user \n"; return -1;}
+				} else { cout<<"\n No merge errors were found, but check the merge log "+mergelog+" in case something weird happens \n"<<endl;} 
+			}
 		}
-		if (sgeo=="tube") 
+
+		// Now we write the isotopes.h and isotopes.cpp header files of EffCalcAll.cpp.
+
+		ofstream isoh(isotvarh.c_str()); ofstream isocpp(isotvarcpp.c_str());
+		isoh<<"#ifndef SIM_ISOTOPES\n#define SIM_ISOTOPES\n\n";
+		isocpp<<"#include \"isotopes.h\"\n";
+		for (int i=0; i<n_isot_full; i++)
 		{
-			cout<<"the tube is being positioned parallel to the detector. If this is not the case, rotate the tube\n";
-			iccfile<<"G4double "<<s_volumes[i]<<"_Pos_y =-mylarOD-0.5*tube_OD;\n";
-			iccfile<<"G4double "<<s_volumes[i]<<"_Pos_z=0.5*tube_L +0.01*mm-heightOfTheCrystal;\n";
+			bool isinthelist=false;
+			for (int j=0; j<n_isot; j++)
+			{if (full_isotopes[i]==isotopes[j]) {isinthelist=true; break;}}
+			string strue; if (isinthelist) strue="true"; else strue="false";
+			isocpp<<"bool i_"<<full_isotopes[i]<<" = "<<strue<<";\n";
+			isoh<<"extern bool i_"<<full_isotopes[i]<<";\n";
+
 		}
-		iccfile<<"G4double "<<s_volumes[i]<<"_Pos_x =0*mm;\n\n";
-	 }
+		isoh<<"\n#endif";
+		isoh.close(); isocpp.close();
+		
+		cout<<"\n *** Running the efficiency script "+effscript+" *** \n\n";
+		system(("sleep 3.8 && bash --rcfile "+bashrcfile+" -ci 'root -b -l <<EOF\n.L "+isotvarcpp+"++\n.x "+effscript+"(\""+s_dir+"\","+stotev.str()+") 2>  "+s_dir+"/efficiency.log\n.q\nEOF'").c_str()); // -b (no graphics) // 2> sends info and error message to a log file. Check this log file and display it
 
+		// Now, check if there were errors
+		system(("grep -i \"rror\" "+s_dir+"/efficiency.log > "+s_dir+"/efficiency.err").c_str());
+		ifstream checkerr((s_dir+"/efficiency.err").c_str()); checkerr.seekg(0, ios::end); 
+		if (checkerr.tellg()!=0) {cout<<"\n*** ERRORS were found when running the efficiency script, as shown in the log:\n";}
+		else {cout<<"\nNo errors were found while running the efficiency script\nYet, please check the log: \n\n";}
+		system(("sleep 4. && vi "+s_dir+"/efficiency.log").c_str()); 
+		if (checkerr.tellg()!=0) {cout<<"Now ctrl+c in case you want to stop the analysis or type C to continue despite errors.\n\n"; char s_cont; cin>>s_cont; if (s_cont!='c' && s_cont!='C') return -1;}
+	}// end of r_ana if A, B, C
 
-	 iccfile<<"// Define the position vector \n";
-	 iccfile<<"G4ThreeVector "<<s_volumes[i]<<"_Pos("<<s_volumes[i]<<"_Pos_x,"<<s_volumes[i]<<"_Pos_y,"<<s_volumes[i]<<"_Pos_z); \n\n";
+	// Now, we copy the SPE files to the s_dir 
+	if (r_ana!='E' && r_ana!='F') // In these cases, skip these parts
+	{
+		string samplefilename_tmp=samplename; //we initialize it like this
+		string samplefilename=checkfunction(data_dir, samplefilename_tmp);
+		if (samplefilename=="N") return -1;
 
-	 iccfile<<"// Define the physical volume \n";
-	 iccfile<<"G4VPhysicalVolume* "<<s_volumes[i]<<"_phys = new  G4PVPlacement(0,"<<s_volumes[i]<<"_Pos,"<<s_volumes[i]<<"_log,\""<<s_volumes[i]<< "_phys\",cavity1_log,false,0,true);\n";
-  }
+		system(("rm tmpfilelist; cd "+s_dir+" && rm -rf SPE && mkdir SPE && cp "+data_dir+"/"+samplefilename+"_20* SPE/").c_str()); 
 
- iccfile.close();
- ihhfile.close();
+		
+		system(("echo 'The list of SPE files in the sample folder now is:\n' && sleep 4.3 && cd "+s_dir+" && ls SPE/ && echo '\nDo you want to exclude a file from the analysis? (Type y or n)\n '").c_str());
+		char exc; cin>>exc;
 
- cout<<"Check or modify the .icc geometry file \n";
- system("sleep 2.1"); 
- system(("vi "+s_iccfile).c_str());
+		while (exc!='y' && exc!='Y' && exc!='n' && exc!='N')  {cout<<"Invalid option. Type it again"<<endl; cin>>exc;}
+		if (exc=='y' || exc=='Y')
+		{
+			cout<<"Type the complete name of the files you want to exclude separated by enter and then type 'stop' when done\n"; 
+			system (("cd "+s_dir+"/SPE && mkdir excluded").c_str());
+			string s_excl; 
+			while (cin>>s_excl) {if (s_excl=="stop") break; system(("cd "+s_dir+"/SPE && mv "+s_excl+" excluded/").c_str());}
+		}
+	}	
 
- cout<<"Check or modify the .ihh geometry file \n";
- system("sleep 2.1"); 
- system(("vi "+s_ihhfile).c_str());
+	if (r_ana!='F') // If F, skip this part
+	{
+		// now we indeed start with the analysis codes (part E)
+		string ana_sourcecode=ana_dir+"/gatorcode/source";
+		system (("echo 'Choose one of the background folders below to be used in the analysis:' && sleep 3.0 && ls -ltr "+background_dir+"/ && echo '\nType the name of the background folder here\n'").c_str());
+		string bkfolder; cin>>bkfolder; 
+		while (!itExists((background_dir+"/"+bkfolder).c_str())) { cout<<" Wrong directory, type it again. \n"; cin>>bkfolder; } 
+		string backgroundSPEdir = background_dir+"/"+bkfolder;
 
- return n_vol;
+		cout<<" \nType the quantity (in units or kg) of the material to be analysed\n";
+		string s_quantity; cin>>s_quantity;
+		
+		string ana_scriptcode=ana_dir+"/gatorcode/scripts"; //here you find the BuildFastSpectrum.cpp code
+		// So first we plot the spectrum
+		string run_buildfastspectrum="root -l 'BuildFastSpectrum.cpp(\""+s_dir+"/\", \""+backgroundSPEdir+"/\",\""+calib_dir+"/\",\""+samplename+"\")'"; cout<<run_buildfastspectrum<<endl;
+		system(("source "+bashrcfile+" && cd "+ana_scriptcode+" && "+run_buildfastspectrum).c_str());
 
+		//Then we run the analysis code
+		system(("bash --rcfile "+bashrcfile+" -ci 'cd "+ana_sourcecode+" && make clean && make && ./sampleanalysis "+s_dir+" "+backgroundSPEdir+" "+calib_dir+" "+s_quantity+"'").c_str());
+
+		ofstream ana_log(analysislogfile.c_str());
+		ana_log<<"\nBackground folder: "<<backgroundSPEdir<<endl;
+		ana_log<<"Calibration folder: "<<calib_dir<<endl;
+		ana_log<<"Amount of material (kg or pieces): "<<s_quantity<<endl;	
+		ana_log<<"\n === List of SPE files used for the analysis ==="<<endl;
+		ana_log.close();
+		system(("cd "+s_dir+"/SPE && ls -p | grep -v / >> "+s_dir+"/analysis_input.log").c_str());
+		ana_log.open((s_dir+"/analysis_input.log").c_str(), ofstream::app);
+		ana_log<<"\n === List of SPE files excluded from the analysis === "<<endl;
+		ana_log.close();
+		system(("ls "+s_dir+"/SPE/excluded >> "+s_dir+"/analysis_input.log").c_str());
+	}
+
+	printsummary(s_dir);
+	
+	return 0;
 }
 
-// This function asks the user whether the material of the sample is already in the list. If it is not, it asks the user to include it. 
-void check_matlist(string sim_dir)
+void printsummary(string s_dir)
 {
- string material_list=sim_dir+"/src/includematerials.hh"; 
- string s_comm_matlist="vi "+material_list;
- char is_mat;
- cout<<" Is the material of the sample already included in the material list? Press Y if the material is included, N if not or L to see the list."<<endl;
- cin>>is_mat; 
- switch(is_mat)
- {
-	case 'L': 
-	case 'l': 
-		system(s_comm_matlist.c_str()); 
-		check_matlist(sim_dir);
-		break;
-	case 'N': 
-	case 'n': 
-		cout<<" Insert the new material in the list"<<endl; 
-		system("sleep 2.3"); system(s_comm_matlist.c_str()); 
-		is_mat='Y';
-	case 'Y': 
-	case 'y': 
-		cout<<"Type the name of the material as shown in the list: "<<endl; 
-		break;
-	default: cout<<"invalid choice. Type either L, N or Y"<<endl;
- }
+
+
+	string tmptxt="tmp.txt";
+	ofstream pdf_file(tmptxt.c_str());
+	pdf_file<<" Sample directory: "<<s_dir<<endl;
+	pdf_file<<"\n ========= Simulation input ========= \n (See geometry below)"<<endl;
+	pdf_file.close();
+	system(("cat "+s_dir+"/sim_input.py >> "+tmptxt).c_str());
+
+	pdf_file.open(tmptxt.c_str(), ofstream::app);
+	pdf_file<<"\n ========= Line efficiency ========= "<<endl;
+	pdf_file<<"See values in Table 1.\n"<<endl;
+
+	pdf_file<<"\n ========= Livetime and inputs for the analysis ========= \n"<<endl;
+	pdf_file.close();
+	system(("tail -2 "+s_dir+"/SampleAnalysis.log >> "+tmptxt).c_str());
+	system(("cat "+s_dir+"/analysis_input.log >> "+tmptxt).c_str());
+
+	pdf_file.open(tmptxt.c_str(), ofstream::app);
+	pdf_file<<"\n ========= Geometry of the sample ========="<<endl; //to do: put figure here
+	pdf_file<<"See figure of the geometry below.\n The .wrl file is also saved in the sample directory. And the dimensions/material and position are specified in the code below.\n\n"<<endl;
+	pdf_file<<"----------------------- icc file code ---------------- \n"<<endl;
+	pdf_file.close();
+	system(("cat "+s_dir+"/tmp_copy_of_the_iccfile >> "+tmptxt).c_str());
+
+
+	system(("libreoffice --convert-to \"pdf\" "+tmptxt).c_str()); 
+	system(("cat "+s_dir+"/output_sampleanalysis_eff.txt "+s_dir+"/output_sampleanalysis.txt > tmp2.txt; pandoc tmp2.txt -o tmp2.pdf").c_str());
+	system(("pdfunite tmp.pdf "+s_dir+"/g4_00.pdf tmp2.pdf "+s_dir+"/spectrum.pdf "+s_dir+"/output_sampleanalysis_activity.pdf "+s_dir+"/simulation_analysis_summary.pdf").c_str());
+	system("rm tmp*.txt; rm tmp*.pdf;");
 
 }
-
-bool itExists(string dirName_in)
-{
-  struct stat buffer;
-  return (stat (dirName_in.c_str(), &buffer) == 0);
-}
-
-
-

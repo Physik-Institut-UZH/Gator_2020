@@ -87,7 +87,7 @@ void BuildFastSpectrum_Karl_PMT(){
 //	string SPEdir = "/home/atp/galloway/Gator_Screening/Data/Samples/PMT_R11410/PMT_16/SPE/";	
         string SPEdir = "/disk/bulk_atp/shayne/Gator/Gator_analysis/gatorcode/Data/Samples/Karl_PMTs/SPE/";
 	string calibdir = "/home/atp/galloway/Gator_Screening/Calibrations/bkgrd_Cs_201410/";
-	string outfilename = workdir + string("Karl_PMT.root");
+	string outfilename = workdir + string("tmp_Karl_PMT.root");
 	
 //	string backgroundSPEdir = "/home/atp/galloway/Gator_Screening/Data/Background_PMTs/PTFE_holders/SPE/";
         string backgroundSPEdir = "/disk/bulk_atp/shayne/Gator/Gator_analysis/gatorcode/Data/Background_PMTs/bkgd/SPE/";
@@ -104,7 +104,7 @@ void BuildFastSpectrum_Karl_PMT(){
 	string bgLeg = "Background (15.5 d)";
 	
 	
-	string spectrumfilename = workdir + string("Karl_PMT_spectrum.png");
+	string spectrumfilename = workdir + string("tmp_Karl_PMT_spectrum.png");
 	
 //////////////////////////////////////////////////////////////////////////////////////////
 	

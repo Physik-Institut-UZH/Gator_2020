@@ -1,0 +1,12 @@
+
+// ---------- volume Titanium_DARWIN_batch_1 ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* Titanium_DARWIN_batch_1_log;
+ G4VPhysicalVolume* Titanium_DARWIN_batch_1_phys;
+
+// ---------- volume Titanium_DARWIN_batch_2 ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* Titanium_DARWIN_batch_2_log;
+ G4VPhysicalVolume* Titanium_DARWIN_batch_2_phys;

@@ -1,29 +1,21 @@
 #ifndef SIM_ISOTOPES
 #define SIM_ISOTOPES
 
-extern bool U238;
-extern bool Th232;
-extern bool U235;
-extern bool K40;
-extern bool Co60;
-extern bool Cs137;
-extern bool Ra226;
-
-extern bool U186;
-extern bool Sc46;
-extern bool Pa1001;
-extern bool Pa;
-extern bool Mn54;
-extern bool Be7;
-extern bool Pb210;
-
-// Use EffCalcLine.cpp for other individual isotopes (e.g. 110mAg)
-extern bool Ag658;
-extern bool Ag885;
-extern bool Ag937;
-// cobalt from activated copper
-extern bool Co58;
-//extern bool Co57; //not coded yet
-extern bool Co56;
+extern bool i_238U;
+extern bool i_232Th;
+extern bool i_40K;
+extern bool i_60Co;
+extern bool i_137Cs;
+extern bool i_226Ra;
+extern bool i_235U;
+extern bool i_54Mn;
+extern bool i_58Co;
+extern bool i_56Co;
+extern bool i_46Sc;
+extern bool i_186keV;
+extern bool i_1001keV;
+extern bool i_Pa;
+extern bool i_7Be;
+extern bool i_210Pb;
 
 #endif
