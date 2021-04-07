@@ -4,7 +4,7 @@
 
 // to run it, run the following command inside the calibration folder:
 //$ root -l make_calib_files.C
-
+#include "TF1.h"
 
 void make_calib_files()
 {
