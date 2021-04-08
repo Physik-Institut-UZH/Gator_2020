@@ -1,30 +1,15 @@
 BACKGROUND_2019_clean
 
-Background data files as in `BACKGROUND_2019`, but excluding the following files as this data was taken in the vicinity of LN2 dewar refills, leading to a (potential) increase in the low-energy noise which might leak into the ROI:
+Background data files as in `../BACKGROUND_2019`, but excluding the following files as this data was taken in the vicinity of LN2 dewar refills, leading to an increase in the low-energy noise which might leak into the ROI:
 
-BACKGROUND_201905_015.SPE
 BACKGROUND_201905_009.SPE
 BACKGROUND_201906_019.SPE
 BACKGROUND_201906_034.SPE
 BACKGROUND_201906_060.SPE
-BACKGROUND_201906_061.SPE
 BACKGROUND_201906_076.SPE
-BACKGROUND_201906_077.SPE
 BACKGROUND_201906_102.SPE
-BACKGROUND_201906_103.SPE
 BACKGROUND_201906_117.SPE
-BACKGROUND_201906_118.SPE
-BACKGROUND_201907_013.SPE
 BACKGROUND_201907_014.SPE
 BACKGROUND_201907_029.SPE
 BACKGROUND_201907_055.SPE
-BACKGROUND_201907_056.SPE
-BACKGROUND_201907_070.SPE
 BACKGROUND_201907_071.SPE
-
-Futhermore, also exclude the following files as they are labelled `coaxial_connector_nt`.
-
-BACKGROUND_201905_012.SPE
-BACKGROUND_201905_013.SPE
-BACKGROUND_201905_014.SPE
-BACKGROUND_201905_015.SPE
