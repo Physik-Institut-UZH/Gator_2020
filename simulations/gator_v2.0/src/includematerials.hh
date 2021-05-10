@@ -48,6 +48,10 @@ Tetratex_mat->AddElement(F, 0.759817);
 G4Material* Titanium_mat = new G4Material(name="Titanium_mat",z=22.,a=47.867*g/mole,density=4.506*g/cm3);
 G4Material* Titanium_electropolished = new G4Material(name="Titanium_electropolished",z=22.,a=47.867*g/mole,density=4.3*g/cm3);
 
+G4Material* Alumina_mat = new G4Material(name="Alumina_mat", density=3.68*g/cm3, ncomponents=2);
+Alumina_mat->AddElement(Al, 2);
+Alumina_mat->AddElement(O, 3);
+
 G4Material* Pb = new G4Material("Lead", z=82., a=207.19*g/mole,
 				  density=11.34*g/cm3);
 
