@@ -105,15 +105,20 @@ int main()
 	 if (n_vol<0) {cout<<" Error in building geometry"<<endl; return -1;}
 
 	 //Now these files are linked the GeConstructor file, since these files contain #include "includesample.hh"
-	 string s_incl_icc=sim_dir+"/src/includesample.hh";
-	 ofstream incl_icc(s_incl_icc.c_str());
+	 string s_incl_icc=sim_dir+"/src/includesample.hh"; 
+	 system(("> "+s_incl_icc).c_str()); //emptying the file first
+	 ofstream incl_icc(s_incl_icc.c_str(), std::ios_base::app);
 	 incl_icc<<"#include \""+samplename+".icc\"\n";
 	 incl_icc.close();
 
-	 string s_incl_ihh=sim_dir+"/include/includesample.hh";
-	 ofstream incl_ihh(s_incl_ihh.c_str());
+	 string s_incl_ihh=sim_dir+"/include/includesample.hh"; 
+	 system(("> "+s_incl_ihh).c_str()); //emptying the file first
+	 ofstream incl_ihh(s_incl_ihh.c_str(), std::ios_base::app);
 	 incl_ihh<<"#include \""+samplename+".ihh\"\n";
 	 incl_ihh.close();
+
+	 //now the permission of these files are changed so that they can be modified by other users
+	 //system(("chmod g+w "+s_incl_icc+"; chmod g+w "+s_incl_ihh+";").c_str());
 
 	 // Now the geometry is made, the overlap check is run, previous wrl files are deleted and a new is created.
 	 string comm_makegeo="bash --rcfile "+bashrcfile+" -ci 'cd "+sim_dir+"; make clean -f GlobGeom_makefile; make -f GlobGeom_makefile; make clean; make; chmod -R g+w tmp/Linux-g++; touch g4_trash.wrl; rm g4_*.wrl; cp  "+bin_dir+"/"+bin_name+" .; ./"+bin_name+";'";  //here a bash interactive shell is open which loads a specific rc file, then the commands are run.
@@ -205,7 +210,8 @@ for (int i=0; i<n_isot; i++)
 
 // now the input necessary to send the jobs for the simulation is written (note that the $gatordir/.bashrc is sourced when submitting the jobs)
  string s_py_input=sim_dir+"/sim_input.py"; 
- ofstream py_input(s_py_input.c_str());
+ system(("> "+s_py_input).c_str()); //emptying the file first
+ ofstream py_input(s_py_input.c_str(), std::ios_base::app);
  py_input<<"gatordir=\""<<GATORDIR<<"\""<<endl;
  py_input<<"binary=\""<<bin_dir<<"/"<<bin_name<<"\""<<endl;
  py_input<<"datadir=\""<<out_dir.c_str()<<"\""<<endl;
@@ -368,9 +374,12 @@ int analysis(string s_dir, string ana_dir, string data_dir, string background_di
 			}
 		}
 
-		// Now we write the isotopes.h and isotopes.cpp header files of EffCalcAll.cpp.
+	 	// Now we write the isotopes.h and isotopes.cpp header files of EffCalcAll.cpp.
+		system(("> "+isotvarh).c_str()); //emptying the file first
+		system(("> "+isotvarcpp).c_str()); //emptying the file first
 
-		ofstream isoh(isotvarh.c_str()); ofstream isocpp(isotvarcpp.c_str());
+		ofstream isoh(isotvarh.c_str(), std::ios_base::app);
+		ofstream isocpp(isotvarcpp.c_str(), std::ios_base::app);
 		isoh<<"#ifndef SIM_ISOTOPES\n#define SIM_ISOTOPES\n\n";
 		isocpp<<"#include \"isotopes.h\"\n";
 		for (int i=0; i<n_isot_full; i++)
