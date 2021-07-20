@@ -96,26 +96,25 @@ void GatorSampleAnalysis::doAnalysis(){
 			line->BgLineCnts = line->BgPeakCnts - line->BgCompCnts;
 			line->BgLineCnts_err = sqrt( pow(line->BgPeakCnts_err,2) + pow(line->BgCompCnts_err,2) );
 			
-			//line->BgLdCnts = 2.86 + 4.87*TMath::Sqrt(1.36 + line->BgCompCnts);//From the Gator paper;  //Removed by Gabriela 06.2021 - value is not relevant anymore			
-	
-			/*	
+			//line->BgLdCnts = 2.86 + 4.87*TMath::Sqrt(1.36 + line->BgCompCnts); //Removed by Gabriela 06.2021 //From the Gator paper;
+			line->BgLdCnts = 0; //Added by Gabriela 06.2021
+			
+			/*
 			cout << "\n\n\n" << endl;
 			cout << bg_line_interv << endl;
 			cout << bg_comp_interv << endl;
 			cout << line->BgPeakCnts << endl;
 			cout << line->BgCompCnts << endl;
 			cout << line->BgLineCnts << endl;
-			cout << "\n\n\n" << endl;*/
-
-			//Full block below removed (Gabriela 07.2021)
+			cout << "\n\n\n" << endl;
+			*/
+			
 			//if(line->BgLdCnts<line->BgLineCnts){
-			/*if(line->BgLdCnts<=line->BgLineCnts){//added by Gabriela 06.2021. 
+			if(line->BgLdCnts<=line->BgLineCnts){//added by Gabriela 06.2021. Now this is =false only for negative BgLineCnts
 				line->BgDetected=true;
 			}else{
 				line->BgDetected=false;
-			}*/
-			// now, bg is always detected if if(mb_BGflag) // Gabriela 07.2021
-			line->BgDetected=true;
+			}
 		}else{
 			line->BgDetected=false;
 		}
@@ -134,36 +133,27 @@ void GatorSampleAnalysis::doAnalysis(){
 		line->CompCnts_err = sqrt(line->countsL+line->countsR+1)*line_interv/comp_interv;//added " "
 		
 		if(line->BgDetected){
-			//double bgcnts = (md_aqtime/md_Bgtime)*line->BgLineCnts; changed by Gabriela 07.2021
-			double bgcnts=0; // this will be used only to calculate net line counts
-			if (line->BgLineCnts>=0) bgcnts = line->BgLineCnts; // it only takes a value if positive
-			double bgcnts_err =line->BgLineCnts_err; // The error is always calculated
-
-			double time_ratio=(md_aqtime/md_Bgtime);
-	
-			line->LineCnts = line->PeakCnts - line->CompCnts - bgcnts*time_ratio;
-			//line->LineCnts_err = sqrt( line->PeakCnts + line->CompCnts + pow(bgcnts_err,2) );
-			line->LineCnts_err = sqrt( pow(line->PeakCnts_err,2) +pow(line->CompCnts_err,2) + pow(bgcnts_err*time_ratio,2));//added by Gabriela 06.2021
+			double bgcnts = (md_aqtime/md_Bgtime)*line->BgLineCnts;
+			double bgcnts_err = (md_aqtime/md_Bgtime)*line->BgLineCnts_err;
 			
-			//line->LdCnts = 2.86 + 4.87*TMath::Sqrt(1.36 + line->CompCnts + bgcnts); //From the Gator paper// changed now (G. 07.2021)
-			line->LdCnts = 2.86 + 4.87*TMath::Sqrt(1.36 + line->CompCnts + 0.5*(line->BgPeakCnts-line->BgCompCnts)*time_ratio + 0.5*(line->BgPeakCnts+line->BgCompCnts)*pow(time_ratio,2) +pow(time_ratio,2) ); //updated following the right derivation of the formula (Gabriela 07.2021)
+			line->LineCnts = line->PeakCnts - line->CompCnts - bgcnts;
+			//line->LineCnts_err = sqrt( line->PeakCnts + line->CompCnts + pow(bgcnts_err,2) );
+			line->LineCnts_err = sqrt( pow(line->PeakCnts_err,2) +pow(line->CompCnts_err,2) + pow(bgcnts_err,2));//added by Gabriela 06.2021
+			
+			line->LdCnts = 2.86 + 4.87*TMath::Sqrt(1.36 + line->CompCnts + bgcnts); //From the Gator paper
 			
 		}else{
 			line->LineCnts = line->PeakCnts - line->CompCnts;
 			//line->LineCnts_err = sqrt( line->PeakCnts + line->CompCnts );
 			line->LineCnts_err = sqrt( pow(line->PeakCnts_err,2) +pow(line->CompCnts_err,2) );//added by Gabriela 06.2021
+			
 			line->LdCnts = 2.86 + 4.87*TMath::Sqrt(1.36 + line->CompCnts); //From the Gator paper
 		}
-		double system_error_eff=0.1; //systematic error on the calculation of the efficiency (G. 07.2021)
-		double low_limit_eff=(1.-system_error_eff); //lowest value for the efficiency, given the systematic error (G. 07.2021)
-		double BRxlow_limit_eff=BRxEff*low_limit_eff;
 		
-		//line->LdActiv = 1000*line->LdCnts/(md_quant*BRxEff*md_aqtime);
-		line->LdActiv = 1000*line->LdCnts/(md_quant*BRxlow_limit_eff*md_aqtime);// now the systematic error on the eff is taken into account (G. 07.2021) 
+		line->LdActiv = 1000*line->LdCnts/(md_quant*BRxEff*md_aqtime);
 		
 		line->Activ = 1000*line->LineCnts/(md_quant*BRxEff*md_aqtime);
-		//line->Activ_err = line->Activ*sqrt( 0.01 + pow(line->LineCnts_err/line->LineCnts,2) ); //Adding a 10% sistematic from simulations (From Gator Paper)
-		line->Activ_err = line->Activ*sqrt( pow(system_error_eff,2) + pow(line->LineCnts_err/line->LineCnts,2) ); // now error is given in terms of system_error_eff // (G. 07.2021)
+		line->Activ_err = line->Activ*sqrt( 0.0625 + pow(line->LineCnts_err/line->LineCnts,2) ); //Adding a 10% sistematic from simulations (From Gator Paper)
 		
 		if(line->LdCnts < line->LineCnts){
 			line->Detected=true;
@@ -187,7 +177,7 @@ void GatorSampleAnalysis::doAnalysis(){
 			logfile << " Right compton counts = " << line->BgcountsR << endl;
 			logfile << " Estimated Compton counts in signal region = " << line->BgCompCnts << " +- " << line->BgCompCnts_err << endl;
 			logfile << " Estimated line net counts = " << line->BgLineCnts << " +- " << line->BgLineCnts_err << endl;
-			//logfile << " Background detection limit = " << line->BgLdCnts << endl; // removed by Gabriela 07.2021
+			logfile << " Background detection limit = " << line->BgLdCnts << endl;
 			if(line->BgDetected) logfile << " Background detected! " << endl;
 			logfile << "------------" << endl ;
 		}

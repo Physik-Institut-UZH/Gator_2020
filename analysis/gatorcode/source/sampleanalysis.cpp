@@ -117,6 +117,8 @@ void sampleanalysis(string workdir, string backgroundSPEdir, string calibdir, do
 		exit(-1);
 	}
 	if(!analyser.LoadLines(linesfilename)){
+		cout<<"ERROR: effic/lines.list file produced by the Effcalc script is empty for some reason - analysis cannot be continued !!! CHECK ISSUE FIRST"<<endl;
+		return;//edit gabriela: I added these two lines to stop the script in case lines are not loaded
 		exit(-1);
 
 	}

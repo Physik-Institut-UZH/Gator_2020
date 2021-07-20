@@ -1,0 +1,350 @@
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/convert_histo_ENR2.cc -o src/convert_histo_ENR2.o
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/convert_histo_ENR.cc -o src/convert_histo_ENR.o
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/formatdigits.cc -o src/formatdigits.o
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/GatorCalibFitters.cc -o src/GatorCalibFitters.o
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/GatorCalibFunc.cc -o src/GatorCalibFunc.o
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/GatorCalibScr.cc -o src/GatorCalibScr.o
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/GatorCounter.cc -o src/GatorCounter.o
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/GatorDataLoader.cc -o src/GatorDataLoader.o
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/GatorSampleAnalysis.cc -o src/GatorSampleAnalysis.o
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/linecounts2.cc -o src/linecounts2.o
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/loadSPE.cc -o src/loadSPE.o
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/misc.cc -o src/misc.o
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c sampleanalysis.cpp
+g++ -L/Users/francesco/Cuba-3.0/lib -g -O2 sampleanalysis.o src/convert_histo_ENR2.o src/convert_histo_ENR.o src/formatdigits.o src/GatorCalibFitters.o src/GatorCalibFunc.o src/GatorCalibScr.o src/GatorCounter.o src/GatorDataLoader.o src/GatorSampleAnalysis.o src/linecounts2.o src/loadSPE.o src/misc.o -L/disk/bulk_atp/gator/BAT-0.9.3/lib64 -lBATmodels -lBAT -lMinuit -L/app/cern/root_v5.34.38/lib -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -pthread -lm -ldl -rdynamic -lRooFitCore -lRooFit -lRooStats -lFoam -lMathMore -o sampleanalysis
+
+m -f src/convert_histo_ENR2.o src/convert_histo_ENR.o src/formatdigits.o src/GatorCalibFitters.o src/GatorCalibFunc.o src/GatorCalibScr.o src/GatorCounter.o src/GatorDataLoader.o src/GatorSampleAnalysis.o src/linecounts2.o src/loadSPE.o src/misc.o  *.o *~ link.d sampleanalysis
+gabriela@farm-ui:/disk/bulk_atp/gator/analysis/gatorcode/source> make
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/convert_histo_ENR2.cc -o src/convert_histo_ENR2.o
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/convert_histo_ENR.cc -o src/convert_histo_ENR.o
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/formatdigits.cc -o src/formatdigits.o
+src/formatdigits.cc:74:1: warning: multi-line comment [-Wcomment]
+ //------------------------------------------------------------------------------------------------\\
+ ^
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/GatorCalibFitters.cc -o src/GatorCalibFitters.o
+src/GatorCalibFitters.cc: In function ‘void sigmaInit(TH1D*, CalibLine&)’:
+src/GatorCalibFitters.cc:124:41: warning: ‘maxbin’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+  double lowval = histo->GetBinCenter(bin);
+                                         ^
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/GatorCalibFunc.cc -o src/GatorCalibFunc.o
+In file included from /app/cern/root_v5.34.38/include/TMatrixDSym.h:24:0,
+                 from /app/cern/root_v5.34.38/include/TFitResult.h:33,
+                 from src/GatorCalibFunc.cc:21:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h: In member function ‘virtual void TMatrixTSym<Element>::Clear(Option_t*)’:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:60: warning: this ‘else’ clause does not guard... [-Wmisleading-indentation]
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                            ^~~~
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:80: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘else’
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                                                ^~~~
+src/GatorCalibFunc.cc: In function ‘bool doFit(TH1F*, CalibLine&)’:
+src/GatorCalibFunc.cc:169:6: warning: unused variable ‘nPars’ [-Wunused-variable]
+  int nPars = paramsval.size();
+      ^~~~~
+src/GatorCalibFunc.cc: In function ‘TGraphErrors* plotResiduals(TF1*, TGraphErrors*, TFitResultPtr&)’:
+src/GatorCalibFunc.cc:314:11: warning: variable ‘a’ set but not used [-Wunused-but-set-variable]
+  Double_t a, a_err, b, b_err, c, c_err, cov_ab, cov_ac, cov_bc;
+           ^
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/GatorCalibScr.cc -o src/GatorCalibScr.o
+In file included from /app/cern/root_v5.34.38/include/TMatrixDSym.h:24:0,
+                 from /app/cern/root_v5.34.38/include/TFitResult.h:33,
+                 from ./include/screenfncs.h:39,
+                 from src/GatorCalibScr.cc:16:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h: In member function ‘virtual void TMatrixTSym<Element>::Clear(Option_t*)’:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:60: warning: this ‘else’ clause does not guard... [-Wmisleading-indentation]
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                            ^~~~
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:80: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘else’
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                                                ^~~~
+src/GatorCalibScr.cc: In function ‘int GatorCalibScript(std::__cxx11::string, std::__cxx11::string, bool)’:
+src/GatorCalibScr.cc:76:10: warning: unused variable ‘pmassN’ [-Wunused-variable]
+  string *pmassN = &massN;
+          ^~~~~~
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/GatorCounter.cc -o src/GatorCounter.o
+src/GatorCounter.cc: In member function ‘LineStruct* GatorCounter::GetLine(int)’:
+src/GatorCounter.cc:41:12: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  if( (iLine>=mv_lines->size()) || (iLine<0) ) return NULL;
+       ~~~~~^~~~~~~~~~~~~~~~~~
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/GatorDataLoader.cc -o src/GatorDataLoader.o
+In file included from /app/cern/root_v5.34.38/include/TMatrixDSym.h:24:0,
+                 from /app/cern/root_v5.34.38/include/TFitResult.h:33,
+                 from ./include/screenfncs.h:39,
+                 from src/GatorDataLoader.cc:1:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h: In member function ‘virtual void TMatrixTSym<Element>::Clear(Option_t*)’:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:60: warning: this ‘else’ clause does not guard... [-Wmisleading-indentation]
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                            ^~~~
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:80: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘else’
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                                                ^~~~
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/GatorSampleAnalysis.cc -o src/GatorSampleAnalysis.o
+In file included from /app/cern/root_v5.34.38/include/TMatrixDSym.h:24:0,
+                 from /app/cern/root_v5.34.38/include/TFitResult.h:33,
+                 from ./include/screenfncs.h:39,
+                 from src/GatorSampleAnalysis.cc:18:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h: In member function ‘virtual void TMatrixTSym<Element>::Clear(Option_t*)’:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:60: warning: this ‘else’ clause does not guard... [-Wmisleading-indentation]
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                            ^~~~
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:80: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘else’
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                                                ^~~~
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/linecounts2.cc -o src/linecounts2.o
+src/linecounts2.cc: In function ‘void linecounts2(const TH1F*, TCanvas*, Double_t, Double_t, Double_t, Double_t&, Double_t&, Double_t&, Double_t&, Double_t&, Double_t&, Double_t&, Double_t&, Bool_t&, Double_t&, const TH1F*, Double_t, Double_t)’:
+src/linecounts2.cc:208:76: warning: ‘bg_compcnts_err’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+   cout << "bg comptcnts err (resc) = " << bg_compcnts_err*(aqtime/bg_aqtime) << endl;
+                                                                            ^
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/loadSPE.cc -o src/loadSPE.o
+src/loadSPE.cc:15:2: warning: multi-line comment [-Wcomment]
+  //-------------------------------------------------\\
+  ^
+src/loadSPE.cc:277:2: warning: multi-line comment [-Wcomment]
+  //-------------------------------------------------\\
+  ^
+src/loadSPE.cc: In function ‘TH1F* loadSPE(const char*, Double_t&)’:
+src/loadSPE.cc:100:24: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     if (entries->size()==channels) break;
+         ~~~~~~~~~~~~~~~^~~~~~~~~~
+src/loadSPE.cc:103:28: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     if (entries_tmp->size()==channels) break;
+         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/loadSPE.cc:114:20: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    for(Int_t i=0; i<entries_tmp->size(); i++){
+                   ~^~~~~~~~~~~~~~~~~~~~
+src/loadSPE.cc:132:18: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for(Int_t i=0; i<entries->size(); i++){
+                 ~^~~~~~~~~~~~~~~~
+src/loadSPE.cc:25:47: warning: unused variable ‘trigrate’ [-Wunused-variable]
+  Double_t time_tmp=0, entry=0, Totalcounts=0, trigrate=0;
+                                               ^~~~~~~~
+src/loadSPE.cc:26:8: warning: unused variable ‘channel’ [-Wunused-variable]
+  Int_t channel=0;
+        ^~~~~~~
+src/loadSPE.cc: In function ‘TH1F* loadSPE3(Char_t*, Double_t&, UInt_t, std::__cxx11::string*)’:
+src/loadSPE.cc:252:25: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   if (entries -> size() >= channels) break;
+       ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+src/loadSPE.cc:263:18: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for(Int_t i=0; i<entries->size(); i++){
+                 ~^~~~~~~~~~~~~~~~
+src/loadSPE.cc: In function ‘TH1F* loadSpe(const char*, Double_t&)’:
+src/loadSPE.cc:362:24: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     if (entries->size()==channels) break;
+         ~~~~~~~~~~~~~~~^~~~~~~~~~
+src/loadSPE.cc:365:28: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     if (entries_tmp->size()==channels) break;
+         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/loadSPE.cc:375:20: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    for(Int_t i=0; i<entries_tmp->size(); i++){
+                   ~^~~~~~~~~~~~~~~~~~~~
+src/loadSPE.cc:390:18: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for(Int_t i=0; i<entries->size(); i++){
+                 ~^~~~~~~~~~~~~~~~
+src/loadSPE.cc:288:8: warning: unused variable ‘channel’ [-Wunused-variable]
+  Int_t channel=0;
+        ^~~~~~~
+src/loadSPE.cc: In function ‘TH1F* loadSPE(const char*, Double_t&)’:
+src/loadSPE.cc:103:28: warning: ‘channels’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+     if (entries_tmp->size()==channels) break;
+         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/loadSPE.cc: In function ‘TH1F* loadSpe(const char*, Double_t&)’:
+src/loadSPE.cc:365:28: warning: ‘channels’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+     if (entries_tmp->size()==channels) break;
+         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c src/misc.cc -o src/misc.o
+In file included from /app/cern/root_v5.34.38/include/TMatrixDSym.h:24:0,
+                 from /app/cern/root_v5.34.38/include/TFitResult.h:33,
+                 from src/misc.cc:36:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h: In member function ‘virtual void TMatrixTSym<Element>::Clear(Option_t*)’:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:60: warning: this ‘else’ clause does not guard... [-Wmisleading-indentation]
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                            ^~~~
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:80: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘else’
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                                                ^~~~
+g++ -g -Wall -fPIC -Wno-deprecated -O2 -pthread -m64 -I/app/cern/root_v5.34.38/include -I/Users/francesco/Cuba-3.0/include -I. -I./include -I/disk/bulk_atp/gator/BAT-0.9.3/include -c sampleanalysis.cpp
+In file included from /app/cern/root_v5.34.38/include/TMatrixDSym.h:24:0,
+                 from /app/cern/root_v5.34.38/include/TFitResult.h:33,
+                 from sampleanalysis.cpp:22:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h: In member function ‘virtual void TMatrixTSym<Element>::Clear(Option_t*)’:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:60: warning: this ‘else’ clause does not guard... [-Wmisleading-indentation]
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                            ^~~~
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:80: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘else’
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                                                ^~~~
+sampleanalysis.cpp: At global scope:
+sampleanalysis.cpp:42:22: warning: ‘theApp’ initialized and declared ‘extern’
+ extern TApplication* theApp=NULL;
+                      ^~~~~~
+g++ -L/Users/francesco/Cuba-3.0/lib -g -O2 sampleanalysis.o src/convert_histo_ENR2.o src/convert_histo_ENR.o src/formatdigits.o src/GatorCalibFitters.o src/GatorCalibFunc.o src/GatorCalibScr.o src/GatorCounter.o src/GatorDataLoader.o src/GatorSampleAnalysis.o src/linecounts2.o src/loadSPE.o src/misc.o -L/disk/bulk_atp/gator/BAT-0.9.3/lib64 -lBATmodels -lBAT -lMinuit -L/app/cern/root_v5.34.38/lib -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -pthread -lm -ldl -rdynamic -lRooFitCore -lRooFit -lRooStats -lFoam -lMathMore -o sampleanalysis
+gabriela@farm-ui:/disk/bulk_atp/gator/analysis/gatorcode/source> make > makeoutput
+In file included from /app/cern/root_v5.34.38/include/TMatrixDSym.h:24:0,
+                 from /app/cern/root_v5.34.38/include/TFitResult.h:33,
+                 from sampleanalysis.cpp:22:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h: In member function ‘virtual void TMatrixTSym<Element>::Clear(Option_t*)’:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:60: warning: this ‘else’ clause does not guard... [-Wmisleading-indentation]
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                            ^~~~
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:80: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘else’
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                                                ^~~~
+sampleanalysis.cpp: At global scope:
+sampleanalysis.cpp:42:22: warning: ‘theApp’ initialized and declared ‘extern’
+ extern TApplication* theApp=NULL;
+                      ^~~~~~
+gabriela@farm-ui:/disk/bulk_atp/gator/analysis/gatorcode/source> make clean
+rm -f src/convert_histo_ENR2.o src/convert_histo_ENR.o src/formatdigits.o src/GatorCalibFitters.o src/GatorCalibFunc.o src/GatorCalibScr.o src/GatorCounter.o src/GatorDataLoader.o src/GatorSampleAnalysis.o src/linecounts2.o src/loadSPE.o src/misc.o  *.o *~ link.d sampleanalysis
+gabriela@farm-ui:/disk/bulk_atp/gator/analysis/gatorcode/source> make > makeoutput
+src/formatdigits.cc:74:1: warning: multi-line comment [-Wcomment]
+ //------------------------------------------------------------------------------------------------\\
+ ^
+src/GatorCalibFitters.cc: In function ‘void sigmaInit(TH1D*, CalibLine&)’:
+src/GatorCalibFitters.cc:124:41: warning: ‘maxbin’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+  double lowval = histo->GetBinCenter(bin);
+                                         ^
+In file included from /app/cern/root_v5.34.38/include/TMatrixDSym.h:24:0,
+                 from /app/cern/root_v5.34.38/include/TFitResult.h:33,
+                 from src/GatorCalibFunc.cc:21:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h: In member function ‘virtual void TMatrixTSym<Element>::Clear(Option_t*)’:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:60: warning: this ‘else’ clause does not guard... [-Wmisleading-indentation]
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                            ^~~~
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:80: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘else’
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                                                ^~~~
+src/GatorCalibFunc.cc: In function ‘bool doFit(TH1F*, CalibLine&)’:
+src/GatorCalibFunc.cc:169:6: warning: unused variable ‘nPars’ [-Wunused-variable]
+  int nPars = paramsval.size();
+      ^~~~~
+src/GatorCalibFunc.cc: In function ‘TGraphErrors* plotResiduals(TF1*, TGraphErrors*, TFitResultPtr&)’:
+src/GatorCalibFunc.cc:314:11: warning: variable ‘a’ set but not used [-Wunused-but-set-variable]
+  Double_t a, a_err, b, b_err, c, c_err, cov_ab, cov_ac, cov_bc;
+           ^
+In file included from /app/cern/root_v5.34.38/include/TMatrixDSym.h:24:0,
+                 from /app/cern/root_v5.34.38/include/TFitResult.h:33,
+                 from ./include/screenfncs.h:39,
+                 from src/GatorCalibScr.cc:16:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h: In member function ‘virtual void TMatrixTSym<Element>::Clear(Option_t*)’:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:60: warning: this ‘else’ clause does not guard... [-Wmisleading-indentation]
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                            ^~~~
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:80: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘else’
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                                                ^~~~
+src/GatorCalibScr.cc: In function ‘int GatorCalibScript(std::__cxx11::string, std::__cxx11::string, bool)’:
+src/GatorCalibScr.cc:76:10: warning: unused variable ‘pmassN’ [-Wunused-variable]
+  string *pmassN = &massN;
+          ^~~~~~
+src/GatorCounter.cc: In member function ‘LineStruct* GatorCounter::GetLine(int)’:
+src/GatorCounter.cc:41:12: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  if( (iLine>=mv_lines->size()) || (iLine<0) ) return NULL;
+       ~~~~~^~~~~~~~~~~~~~~~~~
+In file included from /app/cern/root_v5.34.38/include/TMatrixDSym.h:24:0,
+                 from /app/cern/root_v5.34.38/include/TFitResult.h:33,
+                 from ./include/screenfncs.h:39,
+                 from src/GatorDataLoader.cc:1:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h: In member function ‘virtual void TMatrixTSym<Element>::Clear(Option_t*)’:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:60: warning: this ‘else’ clause does not guard... [-Wmisleading-indentation]
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                            ^~~~
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:80: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘else’
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                                                ^~~~
+In file included from /app/cern/root_v5.34.38/include/TMatrixDSym.h:24:0,
+                 from /app/cern/root_v5.34.38/include/TFitResult.h:33,
+                 from ./include/screenfncs.h:39,
+                 from src/GatorSampleAnalysis.cc:18:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h: In member function ‘virtual void TMatrixTSym<Element>::Clear(Option_t*)’:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:60: warning: this ‘else’ clause does not guard... [-Wmisleading-indentation]
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                            ^~~~
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:80: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘else’
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                                                ^~~~
+src/linecounts2.cc: In function ‘void linecounts2(const TH1F*, TCanvas*, Double_t, Double_t, Double_t, Double_t&, Double_t&, Double_t&, Double_t&, Double_t&, Double_t&, Double_t&, Double_t&, Bool_t&, Double_t&, const TH1F*, Double_t, Double_t)’:
+src/linecounts2.cc:208:76: warning: ‘bg_compcnts_err’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+   cout << "bg comptcnts err (resc) = " << bg_compcnts_err*(aqtime/bg_aqtime) << endl;
+                                                                            ^
+src/loadSPE.cc:15:2: warning: multi-line comment [-Wcomment]
+  //-------------------------------------------------\\
+  ^
+src/loadSPE.cc:277:2: warning: multi-line comment [-Wcomment]
+  //-------------------------------------------------\\
+  ^
+src/loadSPE.cc: In function ‘TH1F* loadSPE(const char*, Double_t&)’:
+src/loadSPE.cc:100:24: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     if (entries->size()==channels) break;
+         ~~~~~~~~~~~~~~~^~~~~~~~~~
+src/loadSPE.cc:103:28: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     if (entries_tmp->size()==channels) break;
+         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/loadSPE.cc:114:20: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    for(Int_t i=0; i<entries_tmp->size(); i++){
+                   ~^~~~~~~~~~~~~~~~~~~~
+src/loadSPE.cc:132:18: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for(Int_t i=0; i<entries->size(); i++){
+                 ~^~~~~~~~~~~~~~~~
+src/loadSPE.cc:25:47: warning: unused variable ‘trigrate’ [-Wunused-variable]
+  Double_t time_tmp=0, entry=0, Totalcounts=0, trigrate=0;
+                                               ^~~~~~~~
+src/loadSPE.cc:26:8: warning: unused variable ‘channel’ [-Wunused-variable]
+  Int_t channel=0;
+        ^~~~~~~
+src/loadSPE.cc: In function ‘TH1F* loadSPE3(Char_t*, Double_t&, UInt_t, std::__cxx11::string*)’:
+src/loadSPE.cc:252:25: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   if (entries -> size() >= channels) break;
+       ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+src/loadSPE.cc:263:18: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for(Int_t i=0; i<entries->size(); i++){
+                 ~^~~~~~~~~~~~~~~~
+src/loadSPE.cc: In function ‘TH1F* loadSpe(const char*, Double_t&)’:
+src/loadSPE.cc:362:24: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     if (entries->size()==channels) break;
+         ~~~~~~~~~~~~~~~^~~~~~~~~~
+src/loadSPE.cc:365:28: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     if (entries_tmp->size()==channels) break;
+         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/loadSPE.cc:375:20: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    for(Int_t i=0; i<entries_tmp->size(); i++){
+                   ~^~~~~~~~~~~~~~~~~~~~
+src/loadSPE.cc:390:18: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for(Int_t i=0; i<entries->size(); i++){
+                 ~^~~~~~~~~~~~~~~~
+src/loadSPE.cc:288:8: warning: unused variable ‘channel’ [-Wunused-variable]
+  Int_t channel=0;
+        ^~~~~~~
+src/loadSPE.cc: In function ‘TH1F* loadSPE(const char*, Double_t&)’:
+src/loadSPE.cc:103:28: warning: ‘channels’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+     if (entries_tmp->size()==channels) break;
+         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/loadSPE.cc: In function ‘TH1F* loadSpe(const char*, Double_t&)’:
+src/loadSPE.cc:365:28: warning: ‘channels’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+     if (entries_tmp->size()==channels) break;
+         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+In file included from /app/cern/root_v5.34.38/include/TMatrixDSym.h:24:0,
+                 from /app/cern/root_v5.34.38/include/TFitResult.h:33,
+                 from src/misc.cc:36:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h: In member function ‘virtual void TMatrixTSym<Element>::Clear(Option_t*)’:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:60: warning: this ‘else’ clause does not guard... [-Wmisleading-indentation]
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                            ^~~~
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:80: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘else’
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                                                ^~~~
+In file included from /app/cern/root_v5.34.38/include/TMatrixDSym.h:24:0,
+                 from /app/cern/root_v5.34.38/include/TFitResult.h:33,
+                 from sampleanalysis.cpp:22:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h: In member function ‘virtual void TMatrixTSym<Element>::Clear(Option_t*)’:
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:60: warning: this ‘else’ clause does not guard... [-Wmisleading-indentation]
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                            ^~~~
+/app/cern/root_v5.34.38/include/TMatrixTSym.h:97:80: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘else’
+                                                            else fElements = 0; this->fNelems = 0; }
+                                                                                ^~~~
+sampleanalysis.cpp: At global scope:
+sampleanalysis.cpp:42:22: warning: ‘theApp’ initialized and declared ‘extern’
+ extern TApplication* theApp=NULL;
+                      ^~~~~~
+
