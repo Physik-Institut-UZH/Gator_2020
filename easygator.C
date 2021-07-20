@@ -18,27 +18,31 @@ using namespace std;
 // Last update by G.R A. in March 2021 (include new calib folders)
 // Check how to run and more info about the script in the README file
 
-int analysis(string s_dir, string ana_dir, string data_dir, string background_dir, string calib_dir, string samplename, string bashrcfile, int n_isot_full, string full_isotopes[]);
+int analysis(string s_dir, string ana_dir, string data_dir, string background_dir, string calib_dir, string samplename, string bashrcfile, int n_isot_full, string full_isotopes[], string GATORDIR_summary);
 
 int main()
 {
 
 //--------------------------------------------------------------------------------
-// Paths to be changed ONLY when installing it in a new machine/directory
-// (all other paths are input interactively)
+// main directory for gator, this variable should be declared in the .bashrc file or exported
 //-------------------------------------------------------------------------------
- string GATORDIR="/disk/bulk_atp/gator"; //main directory for gator
- string data_dir="/home/atp/atp/GatorSC/Data/SAMPLE_REPORTS/SPE";// The SPE files at the DAQ machine at  LNGS are transferred to this directory by the automatic script in marmotx.
+ string GATORDIR(getenv("GATORDIR"));
 //--------------------------------------------------------------------------------
-// These paths should not be changed
+// central directory in ATP for all sample summary files. Don't
+// write in this directory for other purposes.
 //-------------------------------------------------------------------------------
+ string GATORDIR_summary(getenv("GATORDIR_summary"));
+//--------------------------------------------------------------------------------
+// These paths are relative and should not be changed
+//-------------------------------------------------------------------------------
+ string data_dir="/home/atp/atp/GatorSC/Data/SAMPLE_REPORTS/SPE";// The SPE files at the DAQ machine at  LNGS are transferred to this directory by the automatic script in marmotx.
  string sim_dir=GATORDIR+"/simulations/gator_v2.0"; // simulation directory, version 2.0
  string ana_dir=GATORDIR+"/analysis"; // analysis directory with efficiency and analysis scripts
- string out_dir=GATORDIR+"/Sample_Sim_and_Analysis_Results"; // Results directory
+ string out_dir=GATORDIR+"/Sample_Sim_and_Analysis_Results"; // Results directory, it is created if it does not exist yet
  string calib_dir=GATORDIR+"/Calibrations/";// this value changes later to the specific calib folder chosen by the user
  string background_dir = GATORDIR+"/background"; // The SPE files used for background (with option to choose)
- string slurmlog_dir=GATORDIR+"/slurmlog";
- string bashrcfile=GATORDIR+"/.bashrc";
+ string slurmlog_dir=GATORDIR+"/slurmlog";//log for jobs sent. Directory is created if it does not exist yet
+ string bashrcfile=GATORDIR+"/.bashrc";//file for where all the variables and software version are defined
  string bin_dir=sim_dir+"/bin/Linux-g++";//path to the binary file
  string bin_name="gator_1.2"; //name of the binary file
 //--------------------------------------------------------------------------------
@@ -52,7 +56,7 @@ int main()
  cout<<"*****************************************" <<endl;
 
  // parameters used in a standard simulation
- int queue=2, nodes=100, n_beamOn=100000, n_totevents=1e+7, n_isot_std=8, n_isot_full=16, n_isot_full_sim=10;//These numbers are organized in such a way that the a queue of 2 and 50 nodes are enough for 10+6 events per macro (n_beamOn). if the total number of events change, then the number of jobs will change !!! Make sure that the number of jobs does not exceed the limit.. standard number of events: (currently e6 x 100 files). -> update: somehow a queue of 2 and 50 nodes is not enough anymore, so I changed values
+ int queue=5, nodes=100, n_beamOn=100000, n_totevents=1e+7, n_isot_std=8, n_isot_full=16, n_isot_full_sim=10;//These numbers are organized in such a way that the a queue of 2 and 50 nodes are enough for 10+6 events per macro (n_beamOn). if the total number of events change, then the number of jobs will change !!! Make sure that the number of jobs does not exceed the limit.. standard number of events: (currently e6 x 100 files). -> update: somehow a queue of 2 and 50 nodes is not enough anymore, so I changed values
  if (n_beamOn<10000) cout<<" min n_beamOn=10000"<<endl; //this is because of the output in the log files, which are later read to check whether the sim ran properly
 
  string std_isotopes[n_isot_std]={"238U","232Th","40K","60Co","137Cs","226Ra","235U","228Th"};
@@ -77,12 +81,6 @@ int main()
  cout<<" Type A to run the analysis of a sample or S for simulation"<<endl;
  cin>>an_sim;
 
- system (("echo 'Chose one one of the calibration folders below to be used for this analysis/simulation: ' && sleep 3.0 && ls -ltr "+calib_dir+" && echo '\nType the name of the calibration folder here\n'").c_str());
- string calfolder; cin>>calfolder; 
- while (!itExists((calib_dir+calfolder).c_str())) { cout<<" Wrong directory: "+calib_dir+calfolder+" does not exist, type it again. \n"; cin>>calfolder; } 
- calib_dir=calib_dir+calfolder; cout<<" using calibration folder: "<<calib_dir<<endl;
-
- 
  if(!itExists(out_dir)) system(("mkdir "+out_dir+" && mv Sample_standard "+out_dir+"/").c_str());
 
   string s_dir=out_dir+"/"+samplename;// Sample directory
@@ -96,7 +94,7 @@ int main()
  {
 	cout<<" \n The simulation directory of this sample does not exist. Type G to write a new geometry file for this sample or S to run the simulation. \n"; an_sim='x'; cin>>cont_sim; 
  }
- if (an_sim=='a' || an_sim=='A') {break_anal=analysis(s_dir, ana_dir, data_dir, background_dir, calib_dir, samplename, bashrcfile, n_isot_full, full_isotopes); return break_anal;}
+ if (an_sim=='a' || an_sim=='A') {break_anal=analysis(s_dir, ana_dir, data_dir, background_dir, calib_dir, samplename, bashrcfile, n_isot_full, full_isotopes, GATORDIR_summary); return break_anal;}
  if (cont_sim=='g' || cont_sim=='G')//if you only want to re-run a simulation, this part is skipped
  { 
 	
@@ -186,13 +184,14 @@ string s_isolist="[ ";//ps: keep this space character here
 string s_confinemorevolumes;
 
 string sconfine;
-if (n_vol>1) 
+if (n_vol>1 || n_vol==0) 
 {
-	cout<<"\n *** Check the volumes defined in the .ihh file below and input the _phys volumes to be confined *** \n";
+	cout<<"\n *** Check the volumes defined in the .ihh file below and input the physical volumes to be confined *** \n";
 	system("sleep 2.");
 	system(("cat "+sim_dir+"/include/"+samplename+".ihh").c_str());
-	cout<<" \n\nInsert them with the _phys extension and separated by space: \n";
-	cin>>sconfine;
+	cout<<" \n\nInsert the volumes to be confined separated by space, and then press Enter\n";
+	system("sleep 2.");
+	cin.ignore(); getline(cin,sconfine);
 } 
 else
 {sconfine=samplename+"_phys";}
@@ -205,6 +204,12 @@ for (int i=0; i<n_isot; i++)
   append_macros<< "/run/beamOn "<<n_beamOn<<endl;
  string s_iso; if (i<n_isot-1) {s_iso="\""+isotopes[i]+"\",";} else {s_iso="\""+isotopes[i]+"\"";}
  s_isolist.append(s_iso);
+ if (i==0)
+ {
+	cout<<"Check one of the macros, make sure that the physical volumes to be confined are right, otherwise start again"<<endl;
+	system("sleep 3.");
+	system(("vi "+out_dir+"/"+samplename+"/macros/"+isotopes[i]+".mac").c_str());
+ }
 }
  s_isolist.append("]"); //cout<<s_isolist<<endl;
 
@@ -237,9 +242,9 @@ for (int i=0; i<n_isot; i++)
  system(s_submit.c_str());
  cout<<"\n\n ------------------------------------------- \n The jobs are being submitted in the easygator_screen. Type 'screen -r easygator_screen' if you want to check the screen. \n (ps: The screen is terminated once all jobs were submitted) \n\n Use 'qstat -u username' to check status of the jobs: make sure that they are running (check slurm log if they get immediately canceled). Use 'scancel -u username' to cancel the jobs if needed. \n\n Job submission errors are output in the log files in the slurmlog directory and script errors in the logs folder in the sample directory.\n";
 
-}
+}//end of main()
 
-int analysis(string s_dir, string ana_dir, string data_dir, string background_dir, string calib_dir, string samplename, string bashrcfile, int n_isot_full, string full_isotopes[])
+int analysis(string s_dir, string ana_dir, string data_dir, string background_dir, string calib_dir, string samplename, string bashrcfile, int n_isot_full, string full_isotopes[], string GATORDIR_summary)
 {
 	int totevents, n_beamOn, sim_events, n_isot=0;
 	string analysislogfile=s_dir+"/analysis_input.log";
@@ -434,7 +439,13 @@ int analysis(string s_dir, string ana_dir, string data_dir, string background_di
 	{
 		// now we indeed start with the analysis codes (part E)
 		string ana_sourcecode=ana_dir+"/gatorcode/source";
-		system (("echo 'Choose one of the background folders below to be used in the analysis:' && sleep 3.0 && ls -ltr "+background_dir+"/ && echo '\nType the name of the background folder here\n'").c_str());
+		// First, we choose the calibration and background folders
+ 		system (("echo 'Chose one one of the calibration folders below to be used for this analysis/simulation: ' && sleep 3.0 && ls -ltr "+calib_dir+" && echo '\nType the name of the calibration folder here\n'").c_str());
+		 string calfolder; cin>>calfolder; 
+		 while (!itExists((calib_dir+calfolder).c_str())) { cout<<" Wrong directory: "+calib_dir+calfolder+" does not exist, type it again. \n"; cin>>calfolder; } 
+ calib_dir=calib_dir+calfolder; cout<<" using calibration folder: "<<calib_dir<<endl;
+		
+ 		system (("echo 'Choose one of the background folders below to be used in the analysis:' && sleep 3.0 && ls -ltr "+background_dir+"/ && echo '\nType the name of the background folder here\n'").c_str());
 		string bkfolder; cin>>bkfolder; 
 		while (!itExists((background_dir+"/"+bkfolder).c_str())) { cout<<" Wrong directory, type it again. \n"; cin>>bkfolder; } 
 		string backgroundSPEdir = background_dir+"/"+bkfolder;
@@ -443,11 +454,11 @@ int analysis(string s_dir, string ana_dir, string data_dir, string background_di
 		string s_quantity; cin>>s_quantity;
 		
 		string ana_scriptcode=ana_dir+"/gatorcode/scripts"; //here you find the BuildFastSpectrum.cpp code
-		// So first we plot the spectrum
+		// Then, we plot the spectrum using BuildFastSpectrum.cpp
 		string run_buildfastspectrum="root -l 'BuildFastSpectrum.cpp(\""+s_dir+"/\", \""+backgroundSPEdir+"/\",\""+calib_dir+"/\",\""+samplename+"\")'"; cout<<run_buildfastspectrum<<endl;
 		system(("source "+bashrcfile+" && cd "+ana_scriptcode+" && "+run_buildfastspectrum).c_str());
 
-		//Then we run the analysis code
+		//Then we re-compile and run the analysis code 
 		system(("bash --rcfile "+bashrcfile+" -ci 'cd "+ana_sourcecode+" && make clean && make && ./sampleanalysis "+s_dir+" "+backgroundSPEdir+" "+calib_dir+" "+s_quantity+"'").c_str());
 
 		ofstream ana_log(analysislogfile.c_str());
@@ -463,12 +474,12 @@ int analysis(string s_dir, string ana_dir, string data_dir, string background_di
 		system(("ls "+s_dir+"/SPE/excluded >> "+s_dir+"/analysis_input.log").c_str());
 	}
 
-	printsummary(s_dir);
+	printsummary(s_dir, samplename, GATORDIR_summary);
 	
 	return 0;
 }
 
-void printsummary(string s_dir)
+void printsummary(string s_dir, string samplename, string GATORDIR_summary)
 {
 
 
@@ -499,6 +510,7 @@ void printsummary(string s_dir)
 	system(("libreoffice --convert-to \"pdf\" "+tmptxt).c_str()); 
 	system(("cat "+s_dir+"/output_sampleanalysis_eff.txt "+s_dir+"/output_sampleanalysis.txt > tmp2.txt; pandoc tmp2.txt -o tmp2.pdf").c_str());
 	system(("pdfunite tmp.pdf "+s_dir+"/g4_00.pdf tmp2.pdf "+s_dir+"/spectrum.pdf "+s_dir+"/output_sampleanalysis_activity.pdf "+s_dir+"/simulation_analysis_summary.pdf").c_str());
+        system(("cp "+s_dir+"/simulation_analysis_summary.pdf "+GATORDIR_summary+"/"+samplename+"_simulation_analysis_summary.pdf").c_str());
 	system("rm tmp*.txt; rm tmp*.pdf;");
 
 }
