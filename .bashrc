@@ -4,9 +4,12 @@ source /app/cern/root_v5.34.38/bin/thisroot.sh ###required for Gator analysis on
 source /app/cern/geant_4.9.3.2/env.sh 
 #####################################
 
-export G4WORKDIR=/disk/bulk_atp/gator/simulations/gator_v2.0 ## necessary to substitute env.sh.Sh variables
-export G4TMP=/disk/bulk_atp/gator/simulations/gator_v2.0/tmp ## necessary to substitute env.sh.Sh variables
-export BATINSTALLDIR=/disk/bulk_atp/gator/BAT-0.9.3
+export GATORDIR=/disk/bulk_atp/gator ## THIS VARIABLE NEEDS TO BE CHANGED IN NEW INSTALLATIONS!!!!!!
+export GATORDIR_summary=/disk/bulk_atp/gator/allsummaryfiles ## THIS VARIABLE REMAINS THE SAME 
+
+export G4WORKDIR=$GATORDIR/simulations/gator_v2.0 ## necessary to substitute env.sh.Sh variables
+export G4TMP=$GATORDIR/simulations/gator_v2.0/tmp ## necessary to substitute env.sh.Sh variables
+export BATINSTALLDIR=$GATORDIR/BAT-0.9.3 # it may be necessary to install BAT if you are using this code in your local directory
 
 export LD_LIBRARY_PATH=$BATINSTALLDIR/lib64:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/app/physik/freewrl-4.3.0/lib64:$LD_LIBRARY_PATH

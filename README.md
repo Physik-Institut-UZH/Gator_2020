@@ -5,7 +5,7 @@ This is the new version of the gator directory, which uses the easygator.C scrip
 
 For ATP users: there is a full documentation of how to run the code in the ATP wiki
 
-If you download the code to use in your private machine, make sure to change the name of the directories GATORDIR and data_dir in the beginning of the easygator.C script, then compile the code (as shown below).
+If you download the code to use in your private machine, make sure to change the .bashrc file accordingly, setting the paths to directories properly there. Then compile the code (as shown below).
 
 ////////////////////////////////////////////////////////////////////
 
@@ -17,7 +17,8 @@ a) simulation mode: it compiles and runs the scripts used for simulations (. It 
 
 b) analysis mode: it checks whether the simulation of the sample exists and if it worked as it should by comparing the input file of the simulation to the total of simulated events. It also scans for errors in the log files and shows the amount of errors encountered and if errors were found, it asks the user whether to continue or not. It then merges the root files and runs the analysis scripts to calculate the detection efficiency of each line and the resulting activity.
 
-To run the code: Go to the GATORDIR directory specified in easygator.C, and type: $ ./easygator
+To run the code: Go to the GATORDIR directory specified in the .bashrc, and type: $ source .bashrc; ./easygator or simply $ ./easygator 
+Depending on whether you set the path for GATORDIR in your personal .bashrc, or in the .bashrc found in the GATORDIR 
 
 To compile the code, type (only necessary if you make changes in the easygator script): $ g++ -o easygator easygator.C
 
