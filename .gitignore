@@ -1,0 +1,5 @@
+*root
+!*.o
+!*.so
+slurmlog/
+slurmlog_archive/
