@@ -1,0 +1,22 @@
+#186keV 235U line directly simulated
+
+#/xe/generateCE  0
+#/tracking/verbose 0
+#/run/verbose 0
+#/control/verbose 0
+#/xe/gun/verbose 0
+
+/Xe/saveHits 1
+/Xe/printModulo 10000
+
+
+/xe/gun/particle gamma
+#/xe/gun/ion
+
+/xe/gun/energy 185.72 keV
+
+/xe/gun/type Volume
+/xe/gun/shape Cylinder
+/xe/gun/radius 50 cm
+/xe/gun/halfz 25 cm
+/xe/gun/center 0 0 135 mm

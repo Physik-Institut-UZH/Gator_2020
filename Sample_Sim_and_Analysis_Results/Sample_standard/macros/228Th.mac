@@ -1,0 +1,23 @@
+#228Th  subchain: Ra-224
+
+#/xe/generateCE  0
+#/tracking/verbose 0
+#/run/verbose 0
+#/control/verbose 0
+#/xe/gun/verbose 0
+
+/Xe/saveHits 1
+/Xe/printModulo 10000
+
+
+/xe/gun/particle ion
+/xe/gun/ion 88 224 0 0
+#/grdm/nucleusLimits 234 238 90 92
+
+/xe/gun/energy 0 keV
+
+/xe/gun/type Volume
+/xe/gun/shape Cylinder
+/xe/gun/radius 50 cm
+/xe/gun/halfz 25 cm
+/xe/gun/center 0 0 135 mm
