@@ -148,7 +148,8 @@
  /usr/include/c++/7/bits/stl_vector.h \
  /usr/include/c++/7/bits/stl_bvector.h /usr/include/c++/7/bits/vector.tcc \
  /app/cern/geant_4.9.3.2/include/geant4/globals.hh \
- include/includesample.hh include/newmaytest.ihh include/GeScintSD.hh \
+ include/includesample.hh include/Tetratex_veryhighdens.ihh \
+ include/GeScintSD.hh \
  /app/cern/geant_4.9.3.2/include/geant4/G4VSensitiveDetector.hh \
  /app/cern/geant_4.9.3.2/include/geant4/G4VHit.hh /usr/include/c++/7/map \
  /usr/include/c++/7/bits/stl_tree.h \
@@ -448,4 +449,5 @@
  /app/cern/root_v5.34.38/include/TMathBase.h \
  /app/cern/root_v5.34.38/include/TError.h \
  /usr/lib64/gcc/x86_64-suse-linux/7/include/float.h \
- src/includematerials.hh src/includesample.hh src/newmaytest.icc
+ src/includematerials.hh src/includesample.hh \
+ src/Tetratex_veryhighdens.icc

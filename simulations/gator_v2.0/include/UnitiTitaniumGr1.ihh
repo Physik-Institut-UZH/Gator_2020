@@ -1,0 +1,18 @@
+
+// ---------- volume PTFE_Brick1 ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* PTFE_Brick1_log;
+ G4VPhysicalVolume* PTFE_Brick1_phys;
+
+// ---------- volume PTFE_Brick2 ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* PTFE_Brick2_log;
+ G4VPhysicalVolume* PTFE_Brick2_phys;
+
+// ---------- volume TiPlate ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* TiPlate_log;
+ G4VPhysicalVolume* TiPlate_phys;

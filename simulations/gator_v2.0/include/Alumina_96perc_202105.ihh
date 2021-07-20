@@ -1,0 +1,6 @@
+
+// ---------- volume Alumina_96perc_202105 ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* Alumina_96perc_202105_log;
+ G4VPhysicalVolume* Alumina_96perc_202105_phys;

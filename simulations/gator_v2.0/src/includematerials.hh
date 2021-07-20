@@ -45,8 +45,27 @@ G4Material* Tetratex_mat = new G4Material("Tetratex_mat",density=0.301*g/cm3,2);
 Tetratex_mat->AddElement(C, 0.240183);
 Tetratex_mat->AddElement(F, 0.759817);
 
+//Tetratex new mat added below just to investigate uncertanties caused by the density
+G4Material* Tetratex_newmat = new G4Material("Tetratex_newmat",density=0.601*g/cm3,2);
+Tetratex_newmat->AddElement(C, 0.240183);
+Tetratex_newmat->AddElement(F, 0.759817);
+
+//Tetratex new mat added below just to investigate uncertanties caused by the density
+G4Material* Tetratex_highdens = new G4Material("Tetratex_highdens",density=3.0*g/cm3,2);
+Tetratex_highdens->AddElement(C, 0.240183);
+Tetratex_highdens->AddElement(F, 0.759817);
+
+//Tetratex new mat added below just to investigate uncertanties caused by the density
+G4Material* Tetratex_newmatlow = new G4Material("Tetratex_newmatlow",density=0.100*g/cm3,2);
+Tetratex_newmatlow->AddElement(C, 0.240183);
+Tetratex_newmatlow->AddElement(F, 0.759817);
+
 G4Material* Titanium_mat = new G4Material(name="Titanium_mat",z=22.,a=47.867*g/mole,density=4.506*g/cm3);
 G4Material* Titanium_electropolished = new G4Material(name="Titanium_electropolished",z=22.,a=47.867*g/mole,density=4.3*g/cm3);
+
+G4Material* Alumina_mat = new G4Material(name="Alumina_mat", density=3.68*g/cm3, ncomponents=2);
+Alumina_mat->AddElement(Al, 2);
+Alumina_mat->AddElement(O, 3);
 
 G4Material* Pb = new G4Material("Lead", z=82., a=207.19*g/mole,
 				  density=11.34*g/cm3);

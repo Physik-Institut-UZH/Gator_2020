@@ -1,0 +1,6 @@
+
+// ---------- volume PMT_kovar_test ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* PMT_kovar_test_log;
+ G4VPhysicalVolume* PMT_kovar_test_phys;

@@ -1,0 +1,187 @@
+//Define the pmt envelope as a polycon with 4 z-surfaces (maybe more z-surfaces is better)
+const G4double PMTOD_ext_bot = 76 * mm;
+const G4double PMTOD_ext_top = 53 * mm;
+const G4double PMT_h1 = 30 * mm;
+const G4double PMT_h2 = 13 * mm;
+const G4double PMT_h3 = 71 * mm;
+
+G4double PMT_envel_IRads[] = {0,0,0,0};
+G4double PMT_envel_ORads[] = {PMTOD_ext_bot/2.,PMTOD_ext_bot/2.,PMTOD_ext_top/2.,PMTOD_ext_top/2.};
+G4double PMT_envel_zPlanes[] = {0, PMT_h1, PMT_h1+PMT_h2, PMT_h1+PMT_h2+PMT_h3};
+
+G4Polycone* PMT_envel = new G4Polycone("PMT_envel", 0, 360*deg, 4, PMT_envel_zPlanes, PMT_envel_IRads, PMT_envel_ORads);
+
+
+//Envelope material definition (kovar)
+//NOTE: This Kovar is Co free, whereas in normal Kovar there is about 16% of Co
+G4Material* PMT_kovar = new G4Material("PMT_kovar",density=8.36*g/cm3,2);
+PMT_kovar -> AddElement(Fe,0.71);
+PMT_kovar -> AddElement(Ni,0.29);
+
+
+//Envelope (body) Logical volume        
+G4LogicalVolume* PMT_envel_log = new G4LogicalVolume(PMT_envel, PMT_kovar, "PMT_envel_log", 0, 0, 0);
+
+G4VisAttributes* PMT_envel_vis = new G4VisAttributes(red);
+PMT_envel_vis -> SetVisibility(true);
+PMT_envel_vis -> SetForceSolid(false);
+PMT_envel_log -> SetVisAttributes(PMT_envel_vis);
+
+
+
+
+
+/******************************** Definition of the vacuum inside the PMTs *************************************/
+//Define the pmt vacuum as a polycon with 5 z-surfaces (maybe more z-surfaces is better)
+const G4double PMT_thickness = 0.8 * mm; //With this thickness the mass of the envelope is optimized to 101 g about (it fluctuate from run to run)
+
+const G4double PMTOD_int_bot = PMTOD_ext_bot - PMT_thickness;
+const G4double PMTOD_int_top = PMTOD_ext_top - PMT_thickness;
+const G4double PMTceram_OD = 35.*mm; //Put it before the definition of the ceramic
+const G4double PMTceram_ID = 0.*mm;
+//const G4double PMT_h1 = 30 * mm;
+//const G4double PMT_h2 = 13 * mm;
+//const G4double PMT_h3 = 71 * mm;
+
+G4double PMT_vacuum_IRads[] = {0,0,0,0};
+G4double PMT_vacuum_ORads[] = {PMTOD_int_bot/2., PMTOD_int_bot/2., PMTOD_int_top/2., PMTOD_int_top/2.};
+G4double PMT_vacuum_zPlanes[] = {0, PMT_h1, PMT_h1+PMT_h2, (PMT_h1+PMT_h2+PMT_h3)-PMT_thickness};
+
+G4Polycone* PMT_vacuum_poly = new G4Polycone("PMT_vacuum_poly", 0, 360*deg, 4, PMT_vacuum_zPlanes, PMT_vacuum_IRads, PMT_vacuum_ORads);
+G4Tubs* PMT_vacuum_tubs = new G4Tubs("PMT_vacuum_tubs",0.5*PMTceram_ID,0.5*PMTceram_OD,PMT_thickness,0.*deg,360.*deg);
+G4UnionSolid* PMT_vacuum = new G4UnionSolid("PMT_vacuum",PMT_vacuum_poly,PMT_vacuum_tubs,0,G4ThreeVector(0.,0.,PMT_h1+PMT_h2+PMT_h3-PMT_thickness));
+
+//Material definition for the vacuum inside the PMT
+G4Material* PMT_vacuum_mat = new G4Material(name="PMT_vacuum_mat", z=1., a=1.*g/mole, density=1.e-20*g/cm3, kStateGas, temperature=0.1*kelvin, pressure=1.e-20*bar);
+
+
+//Vacuum Logical volume
+G4LogicalVolume* PMT_vacuum_log = new G4LogicalVolume(PMT_vacuum, PMT_vacuum_mat, "PMT_vacuum_log", 0, 0, 0);
+
+G4VisAttributes* PMT_vacuum_vis = new G4VisAttributes(yellow);
+PMT_vacuum_vis -> SetVisibility(true);
+PMT_vacuum_vis -> SetForceSolid(false);
+PMT_vacuum_log -> SetVisAttributes(PMT_vacuum_vis);
+
+
+//Placement of the vacuum logical volume inside the PMT envelope volume
+G4ThreeVector PTM_vacuum_pos(0.,0.,0.);
+
+G4VPhysicalVolume* PTM_vacuum_phys = new G4PVPlacement(0,PTM_vacuum_pos,PMT_vacuum_log,"PTM_vacuum_phys", PMT_envel_log, false, 0);
+
+
+
+
+/******************************** Definition of the ceramic stems to put in PMTs *************************************/
+//Material definition for the ceramic inside the pmt
+G4Material* PMT_ceram_mat = new G4Material("PMT_ceram_mat",density=2.811*g/cm3,2);
+PMT_ceram_mat -> AddElement(Al,2);
+PMT_ceram_mat -> AddElement(O,3);
+
+
+//Dimension of each cilinder
+//G4double PMTceram_ID = 0.*mm;
+//G4double PMTceram_OD = 35.*mm;
+G4double PMTceram_H = 5.916*mm;
+
+
+//Definition of the geometry
+G4Tubs* PMT_ceram = new G4Tubs("PMT_ceram",0.5*PMTceram_ID,0.5*PMTceram_OD,0.5*PMTceram_H,0.*deg,360.*deg);
+
+
+//Contruction of logical volume
+G4LogicalVolume* PMT_ceram_log = new G4LogicalVolume(PMT_ceram,PMT_ceram_mat,"PMT_ceram_log");
+
+
+// Set visibility properties
+G4VisAttributes* PMT_ceram_vis = new G4VisAttributes(orange);
+PMT_ceram_vis -> SetVisibility(true);
+PMT_ceram_vis -> SetForceSolid(false);
+PMT_ceram_log -> SetVisAttributes(PMT_ceram_vis);
+
+
+// Put the ceramic stem in the PMT_envelop logical volume
+G4ThreeVector PMT_ceram_shift(0.,0.,(PMT_h1+PMT_h2+PMT_h3)-(PMTceram_H/2.));
+
+G4VPhysicalVolume* PMT_ceram_phys = new G4PVPlacement(0,PMT_ceram_shift,PMT_ceram_log,"PMT_ceram_phys",PMT_vacuum_log,false,0);
+
+
+
+
+/********************* Definition of the quartz window as a flat thin cilinder inside the PMTs vacuum ********************/
+//Material definition for the quartz inside the pmt
+G4Material* PMT_quartz_mat = new G4Material("PMT_quartz_mat",density=2.648*g/cm3,2);
+PMT_quartz_mat -> AddElement(Si,1);
+PMT_quartz_mat -> AddElement(O,2);
+
+
+//Dimension of each cilinder
+G4double PMTwindow_ID = 0.*mm;
+G4double PMTwindow_OD = 70.5*mm;
+G4double PMTwindow_H = 3.1*mm;
+
+
+//Definition of the geometry
+G4Tubs* PMT_window = new G4Tubs("PMT_window",0.5*PMTwindow_ID,0.5*PMTwindow_OD,0.5*PMTwindow_H,0.*deg,360.*deg);
+
+
+//Contruction of logical volume
+G4LogicalVolume* PMT_window_log = new G4LogicalVolume(PMT_window,PMT_quartz_mat,"PMT_window_log");
+
+
+// Set visibility properties
+G4VisAttributes* PMT_window_vis = new G4VisAttributes(blue);
+PMT_window_vis -> SetVisibility(true);
+PMT_window_vis -> SetForceSolid(false);
+PMT_window_log -> SetVisAttributes(PMT_window_vis);
+
+
+// Put the ceramic stem in the PMT_envelop logical volume
+G4ThreeVector PMT_window_shift(0.,0.,PMTwindow_H/2.);
+
+G4VPhysicalVolume* PMT_window_phys = new G4PVPlacement(0,PMT_window_shift,PMT_window_log,"PMT_window_phys",PMT_vacuum_log,false,0);
+
+
+
+
+/********************* Definition of the stuff inside a cilinder inside the PMTs vacuum ********************/
+//Material definition as a mesh respecting the mass model
+G4double mfrac_SiO2 = 0.284; //This is for quartz
+G4double mfrac_SS304 = 0.714; //This for some electrodes
+G4double mfrac_Ni = 1.-(mfrac_SiO2+mfrac_SS304);
+
+
+G4Material* PMT_nickel_mat = new G4Material("PMT_nickel_mat",density=8.908*g/cm3,1);
+PMT_nickel_mat -> AddElement(Ni,1);
+
+G4Material* PMT_internal_mat = new G4Material("PMT_internal_mat",density=1.014*g/cm3,3);
+PMT_internal_mat -> AddMaterial(PMT_quartz_mat,mfrac_SiO2);
+PMT_internal_mat -> AddMaterial(Steel_304,mfrac_SS304);
+PMT_internal_mat -> AddMaterial(PMT_nickel_mat,mfrac_Ni);
+
+
+//Dimension of the cilinder
+G4double PMTinternal_ID = 0.*mm;
+G4double PMTinternal_OD = 35.0*mm;
+G4double PMTinternal_H = 35.0*mm;
+
+
+//Definition of the geometry
+G4Tubs* PMT_internal = new G4Tubs("PMT_internal",0.5*PMTinternal_ID,0.5*PMTinternal_OD,0.5*PMTinternal_H,0.*deg,360.*deg);
+
+
+//Contruction of logical volume
+G4LogicalVolume* PMT_internal_log = new G4LogicalVolume(PMT_internal,PMT_internal_mat,"PMT_internal_log");
+
+
+// Set visibility properties
+G4VisAttributes* PMT_internal_vis = new G4VisAttributes(lblue);
+PMT_internal_vis -> SetVisibility(true);
+PMT_internal_vis -> SetForceSolid(false);
+PMT_internal_log -> SetVisAttributes(PMT_internal_vis);
+
+
+// Put the ceramic stem in the PMT_envelop logical volume
+G4ThreeVector PMT_internal_shift(0.,0.,(PMT_h1+PMT_h2+PMT_h3)-(PMTinternal_H/2.)-(PMTceram_H+1.*cm));
+
+G4VPhysicalVolume* PMT_internal_phys = new G4PVPlacement(0,PMT_internal_shift,PMT_internal_log,"PMT_internal_phys",PMT_vacuum_log,false,0);

@@ -1,0 +1,6 @@
+
+// ---------- volume Tetratex_newMat_newGeo_newBk ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* Tetratex_newMat_newGeo_newBk_log;
+ G4VPhysicalVolume* Tetratex_newMat_newGeo_newBk_phys;

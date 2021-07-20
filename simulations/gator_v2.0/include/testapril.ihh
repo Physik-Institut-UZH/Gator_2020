@@ -1,6 +1,0 @@
-
-// ---------- volume testapril ---------- //
-
-//---------------   logical and physical volumes definitions 
- G4LogicalVolume* testapril_log;
- G4VPhysicalVolume* testapril_phys;

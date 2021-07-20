@@ -1,5 +1,0 @@
-//---------------   logical volumes definitions 
- G4LogicalVolume* as_log;
-
- //---------------   physical volumes definitions 
- G4VPhysicalVolume* as_phys;

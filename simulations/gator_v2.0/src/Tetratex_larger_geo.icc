@@ -1,0 +1,29 @@
+// Set visibility properties for all the samples 
+G4VisAttributes* sample_vis = new G4VisAttributes(red);
+sample_vis -> SetVisibility(true); 
+sample_vis -> SetForceSolid(false);
+
+//---------- volume Tetratex_larger_geo ---------- 
+
+//Dimensions of the sample in box and definition of the geometry
+ G4double box_Tetratex_larger_geo_x= 226*mm;
+ G4double box_Tetratex_larger_geo_y= 226*mm;
+ G4double box_Tetratex_larger_geo_z= 52*mm;
+ G4Box* Tetratex_larger_geo= new G4Box("Tetratex_larger_geo",0.5*box_Tetratex_larger_geo_x,0.5*box_Tetratex_larger_geo_y,0.5*box_Tetratex_larger_geo_z);
+
+//Construct the logical volume 
+ G4LogicalVolume* Tetratex_larger_geo_log = new G4LogicalVolume(Tetratex_larger_geo,Tetratex_mat,"Tetratex_larger_geo_log");
+
+// Set visibility for the sample (all are set to the same color, change it if necessary) 
+Tetratex_larger_geo_log -> SetVisAttributes(sample_vis);
+
+// Set coordinates for the position of the sample at the top of the detector
+G4double Tetratex_larger_geo_Pos_x =0*mm;
+G4double Tetratex_larger_geo_Pos_y =0*mm;
+G4double Tetratex_larger_geo_Pos_z= endcapPos_z+0.5*endcapHeight1+0.5*box_Tetratex_larger_geo_z+0.01*mm;
+
+// Define the position vector 
+G4ThreeVector Tetratex_larger_geo_Pos(Tetratex_larger_geo_Pos_x,Tetratex_larger_geo_Pos_y,Tetratex_larger_geo_Pos_z); 
+
+// Define the physical volume 
+G4VPhysicalVolume* Tetratex_larger_geo_phys = new  G4PVPlacement(0,Tetratex_larger_geo_Pos,Tetratex_larger_geo_log,"Tetratex_larger_geo_phys",cavity1_log,false,0,true);

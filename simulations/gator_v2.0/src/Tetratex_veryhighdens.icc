@@ -1,0 +1,29 @@
+// Set visibility properties for all the samples 
+G4VisAttributes* sample_vis = new G4VisAttributes(red);
+sample_vis -> SetVisibility(true); 
+sample_vis -> SetForceSolid(false);
+
+//---------- volume Tetratex_veryhighdens ---------- 
+
+//Dimensions of the sample in box and definition of the geometry
+ G4double box_Tetratex_veryhighdens_x= 190*mm;
+ G4double box_Tetratex_veryhighdens_y= 200*mm;
+ G4double box_Tetratex_veryhighdens_z= 70*mm;
+ G4Box* Tetratex_veryhighdens= new G4Box("Tetratex_veryhighdens",0.5*box_Tetratex_veryhighdens_x,0.5*box_Tetratex_veryhighdens_y,0.5*box_Tetratex_veryhighdens_z);
+
+//Construct the logical volume 
+ G4LogicalVolume* Tetratex_veryhighdens_log = new G4LogicalVolume(Tetratex_veryhighdens,Tetratex_highdens,"Tetratex_veryhighdens_log");
+
+// Set visibility for the sample (all are set to the same color, change it if necessary) 
+Tetratex_veryhighdens_log -> SetVisAttributes(sample_vis);
+
+// Set coordinates for the position of the sample at the top of the detector
+G4double Tetratex_veryhighdens_Pos_x =0*mm;
+G4double Tetratex_veryhighdens_Pos_y =0*mm;
+G4double Tetratex_veryhighdens_Pos_z= endcapPos_z+0.5*endcapHeight1+0.5*box_Tetratex_veryhighdens_z+0.01*mm;
+
+// Define the position vector 
+G4ThreeVector Tetratex_veryhighdens_Pos(Tetratex_veryhighdens_Pos_x,Tetratex_veryhighdens_Pos_y,Tetratex_veryhighdens_Pos_z); 
+
+// Define the physical volume 
+G4VPhysicalVolume* Tetratex_veryhighdens_phys = new  G4PVPlacement(0,Tetratex_veryhighdens_Pos,Tetratex_veryhighdens_log,"Tetratex_veryhighdens_phys",cavity1_log,false,0,true);

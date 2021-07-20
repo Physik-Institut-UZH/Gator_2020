@@ -1,9 +1,9 @@
 gatordir="/disk/bulk_atp/gator"
 binary="/disk/bulk_atp/gator/simulations/gator_v2.0/bin/Linux-g++/gator_1.2"
-datadir="/disk/bulk_atp/gator/Simulation_Results"
-sample="newmaytest"
-queue="2:00:00"
-maxnodes=50
-totevents= 100000
-n_beamOn= 10000
-isotope_list=[ "238U","232Th","40K","60Co","137Cs","226Ra","235U","228Th"]
+datadir="/disk/bulk_atp/gator/Sample_Sim_and_Analysis_Results"
+sample="Tetratex_veryhighdens"
+queue="5:00:00"
+maxnodes=100
+totevents= 10000000
+n_beamOn= 100000
+isotope_list=[ "232Th"]

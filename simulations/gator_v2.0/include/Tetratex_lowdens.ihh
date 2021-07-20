@@ -1,0 +1,6 @@
+
+// ---------- volume Tetratex_lowdens ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* Tetratex_lowdens_log;
+ G4VPhysicalVolume* Tetratex_lowdens_phys;

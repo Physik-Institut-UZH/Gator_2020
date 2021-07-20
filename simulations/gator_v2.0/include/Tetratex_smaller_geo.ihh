@@ -1,0 +1,6 @@
+
+// ---------- volume Tetratex_smaller_geo ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* Tetratex_smaller_geo_log;
+ G4VPhysicalVolume* Tetratex_smaller_geo_phys;

@@ -1,0 +1,6 @@
+
+// ---------- volume GERDA_tetratex_sim_check ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* GERDA_tetratex_sim_check_log;
+ G4VPhysicalVolume* GERDA_tetratex_sim_check_phys;

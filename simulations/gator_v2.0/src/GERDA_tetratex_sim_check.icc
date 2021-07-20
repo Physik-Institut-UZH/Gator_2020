@@ -1,0 +1,29 @@
+// Set visibility properties for all the samples 
+G4VisAttributes* sample_vis = new G4VisAttributes(red);
+sample_vis -> SetVisibility(true); 
+sample_vis -> SetForceSolid(false);
+
+//---------- volume GERDA_tetratex_sim_check ---------- 
+
+//Dimensions of the sample in box and definition of the geometry
+ G4double box_GERDA_tetratex_sim_check_x= 100*mm;
+ G4double box_GERDA_tetratex_sim_check_y= 150*mm;
+ G4double box_GERDA_tetratex_sim_check_z= 45*mm;
+ G4Box* GERDA_tetratex_sim_check= new G4Box("GERDA_tetratex_sim_check",0.5*box_GERDA_tetratex_sim_check_x,0.5*box_GERDA_tetratex_sim_check_y,0.5*box_GERDA_tetratex_sim_check_z);
+
+//Construct the logical volume 
+ G4LogicalVolume* GERDA_tetratex_sim_check_log = new G4LogicalVolume(GERDA_tetratex_sim_check,Tetratex_mat,"GERDA_tetratex_sim_check_log");
+
+// Set visibility for the sample (all are set to the same color, change it if necessary) 
+GERDA_tetratex_sim_check_log -> SetVisAttributes(sample_vis);
+
+// Set coordinates for the position of the sample at the top of the detector
+G4double GERDA_tetratex_sim_check_Pos_x =0*mm;
+G4double GERDA_tetratex_sim_check_Pos_y =0*mm;
+G4double GERDA_tetratex_sim_check_Pos_z= endcapPos_z+0.5*endcapHeight1+0.5*box_GERDA_tetratex_sim_check_z+0.01*mm;
+
+// Define the position vector 
+G4ThreeVector GERDA_tetratex_sim_check_Pos(GERDA_tetratex_sim_check_Pos_x,GERDA_tetratex_sim_check_Pos_y,GERDA_tetratex_sim_check_Pos_z); 
+
+// Define the physical volume 
+G4VPhysicalVolume* GERDA_tetratex_sim_check_phys = new  G4PVPlacement(0,GERDA_tetratex_sim_check_Pos,GERDA_tetratex_sim_check_log,"GERDA_tetratex_sim_check_phys",cavity1_log,false,0,true);

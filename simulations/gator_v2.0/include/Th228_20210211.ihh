@@ -1,0 +1,6 @@
+
+// ---------- volume Th228_20210211 ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* Th228_20210211_log;
+ G4VPhysicalVolume* Th228_20210211_phys;

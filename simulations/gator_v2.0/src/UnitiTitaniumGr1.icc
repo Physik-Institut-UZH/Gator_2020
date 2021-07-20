@@ -1,0 +1,87 @@
+// Set visibility properties for the samples 
+G4VisAttributes* sample_vis = new G4VisAttributes(red);
+sample_vis -> SetVisibility(true); 
+sample_vis -> SetForceSolid(false);
+G4VisAttributes* brick_vis = new G4VisAttributes(blue);
+brick_vis -> SetVisibility(true);
+brick_vis -> SetForceSolid(false);
+
+//---------- volume PTFE_Brick1 ---------- 
+
+//Dimensions of the sample in box and definition of the geometry
+ G4double box_PTFE_Brick1_x= 100*mm;
+ G4double box_PTFE_Brick1_y= 35*mm;
+ G4double box_PTFE_Brick1_z= 200*mm;
+ G4Box* PTFE_Brick1= new G4Box("PTFE_Brick1",0.5*box_PTFE_Brick1_x,0.5*box_PTFE_Brick1_y,0.5*box_PTFE_Brick1_z);
+
+//Construct the logical volume 
+ G4LogicalVolume* PTFE_Brick1_log = new G4LogicalVolume(PTFE_Brick1,Teflon,"PTFE_Brick1_log");
+
+// Set visibility for the sample 
+PTFE_Brick1_log -> SetVisAttributes(brick_vis);
+
+// Set coordinates for the position of the sample and the position 
+G4double PTFE_Brick1_Pos_y =(cavity1_y/2) - (box_PTFE_Brick1_y/2);
+G4double PTFE_Brick1_Pos_z= -(cavity1_z/2) + (box_PTFE_Brick1_z/2);
+G4double PTFE_Brick1_Pos_x =0*mm;
+
+// Define the position vector 
+G4ThreeVector PTFE_Brick1_Pos(PTFE_Brick1_Pos_x,PTFE_Brick1_Pos_y,PTFE_Brick1_Pos_z); 
+
+// Define the physical volume 
+G4VPhysicalVolume* PTFE_Brick1_phys = new  G4PVPlacement(0,PTFE_Brick1_Pos,PTFE_Brick1_log,"PTFE_Brick1_phys",cavity1_log,false,0,true);
+
+//---------- volume PTFE_Brick2 ---------- 
+
+//Dimensions of the sample in box and definition of the geometry
+ G4double box_PTFE_Brick2_x= 100*mm;
+ G4double box_PTFE_Brick2_y= 35*mm;
+ G4double box_PTFE_Brick2_z= 200*mm;
+ G4Box* PTFE_Brick2= new G4Box("PTFE_Brick2",0.5*box_PTFE_Brick2_x,0.5*box_PTFE_Brick2_y,0.5*box_PTFE_Brick2_z);
+
+//Construct the logical volume 
+ G4LogicalVolume* PTFE_Brick2_log = new G4LogicalVolume(PTFE_Brick2,Teflon,"PTFE_Brick2_log");
+
+// Set visibility for the sample
+PTFE_Brick2_log -> SetVisAttributes(brick_vis);
+
+// Set coordinates for the position of the sample and the position vector
+G4double PTFE_Brick2_Pos_y =-(cavity1_y/2) + (box_PTFE_Brick2_y/2);
+G4double PTFE_Brick2_Pos_z= -(cavity1_z/2) + (box_PTFE_Brick2_z/2);
+G4double PTFE_Brick2_Pos_x =0*mm;
+
+// Define the position vector 
+G4ThreeVector PTFE_Brick2_Pos(PTFE_Brick2_Pos_x,PTFE_Brick2_Pos_y,PTFE_Brick2_Pos_z); 
+
+// Define the physical volume 
+G4VPhysicalVolume* PTFE_Brick2_phys = new  G4PVPlacement(0,PTFE_Brick2_Pos,PTFE_Brick2_log,"PTFE_Brick2_phys",cavity1_log,false,0,true);
+
+//---------- volume TiPlate ---------- 
+
+//Dimensions of the sample in box and definition of the geometry
+ G4double box_TiPlate_x= 248*mm;
+ G4double box_TiPlate_y= 248*mm;
+ G4double box_TiPlate_z= 35*mm;
+ G4Box* TiPlate= new G4Box("TiPlate",0.5*box_TiPlate_x,0.5*box_TiPlate_y,0.5*box_TiPlate_z);
+
+//Construct the logical volume 
+ G4LogicalVolume* TiPlate_log = new G4LogicalVolume(TiPlate,Titanium_mat,"TiPlate_log");
+
+// Set visibility for the sample
+TiPlate_log -> SetVisAttributes(sample_vis);
+
+// Set coordinates for the position of the sample and the position vector
+G4double TiPlate_Pos_y =0*mm;
+G4double TiPlate_Pos_z= -(cavity1_z/2) + box_PTFE_Brick1_z + (box_TiPlate_z/2) + (0.05*mm); //Added a little shift to avoid surfaces overlaps
+G4double TiPlate_Pos_x =0*mm;
+
+// Define the position vector 
+G4ThreeVector TiPlate_Pos(TiPlate_Pos_x,TiPlate_Pos_y,TiPlate_Pos_z); 
+
+// Define the physical volume 
+G4VPhysicalVolume* TiPlate_phys = new  G4PVPlacement(0,TiPlate_Pos,TiPlate_log,"TiPlate_phys",cavity1_log,false,0,true);
+
+/*
+The z absolute coordinates of the TiPlate should be (bottom, center, top): (17.005,18.755,20.505)cm 
+NOTE: top-surfaceI shifted upward the Titanium plate of 0.005cm (abitrary) to avoid that the bottom surface and the PTFE bricks top surfaces are in overlapping ==> Consider this little shift for simulation primary event generation.
+*/
