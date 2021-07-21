@@ -82,6 +82,8 @@ int main()
  cin>>an_sim;
 
  if(!itExists(out_dir)) system(("mkdir "+out_dir+" && mv Sample_standard "+out_dir+"/").c_str());
+ if(!itExists((out_dir+"/Sample_standard/effic").c_str())) system(("mkdir "+out_dir+"/Sample_standard/effic").c_str());
+ if(!itExists((out_dir+"/Sample_standard/logs").c_str())) system(("mkdir "+out_dir+"/Sample_standard/logs").c_str());
 
   string s_dir=out_dir+"/"+samplename;// Sample directory
  // first check whether the sample directory exists
