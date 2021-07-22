@@ -1,29 +1,29 @@
-// Set visibility properties for all the samples 
+// Set visibility properties for all the samples
 G4VisAttributes* sample_vis = new G4VisAttributes(red);
-sample_vis -> SetVisibility(true); 
+sample_vis -> SetVisibility(true);
 sample_vis -> SetForceSolid(false);
 
-//---------- volume Alumina_96perc_202105 ---------- 
+//---------- volume Alumina_96perc_202105 ----------
 
-//Dimensions of the sample in box and definition of the geometry
- G4double box_Alumina_96perc_202105_x= 2*mm;
- G4double box_Alumina_96perc_202105_y= 2*mm;
- G4double box_Alumina_96perc_202105_z= 2*mm;
- G4Box* Alumina_96perc_202105= new G4Box("Alumina_96perc_202105",0.5*box_Alumina_96perc_202105_x,0.5*box_Alumina_96perc_202105_y,0.5*box_Alumina_96perc_202105_z);
+//Dimensions of the sample in tube and definition of the geometry
+ G4double tubs_Alumina_96perc_202105_Ro= 64.8*mm/2;
+ G4double tubs_Alumina_96perc_202105_Ri= 25.0*mm/2;
+ G4double tubs_Alumina_96perc_202105_z= 54.7*mm;
+ G4Tubs* Alumina_96perc_202105= new G4Tubs("Alumina_96perc_202105", tubs_Alumina_96perc_202105_Ri, tubs_Alumina_96perc_202105_Ro, 0.5*tubs_Alumina_96perc_202105_z, 0.*deg, 360.*deg);
 
-//Construct the logical volume 
+//Construct the logical volume
  G4LogicalVolume* Alumina_96perc_202105_log = new G4LogicalVolume(Alumina_96perc_202105,Alumina_mat,"Alumina_96perc_202105_log");
 
-// Set visibility for the sample (all are set to the same color, change it if necessary) 
+// Set visibility for the sample (all are set to the same color, change it if necessary)
 Alumina_96perc_202105_log -> SetVisAttributes(sample_vis);
 
 // Set coordinates for the position of the sample at the top of the detector
 G4double Alumina_96perc_202105_Pos_x =0*mm;
 G4double Alumina_96perc_202105_Pos_y =0*mm;
-G4double Alumina_96perc_202105_Pos_z= endcapPos_z+0.5*endcapHeight1+0.5*box_Alumina_96perc_202105_z+0.01*mm;
+G4double Alumina_96perc_202105_Pos_z= endcapPos_z+0.5*endcapHeight1+0.5*tubs_Alumina_96perc_202105_z+0.01*mm;
 
-// Define the position vector 
-G4ThreeVector Alumina_96perc_202105_Pos(Alumina_96perc_202105_Pos_x,Alumina_96perc_202105_Pos_y,Alumina_96perc_202105_Pos_z); 
+// Define the position vector
+G4ThreeVector Alumina_96perc_202105_Pos(Alumina_96perc_202105_Pos_x, Alumina_96perc_202105_Pos_y, Alumina_96perc_202105_Pos_z);
 
-// Define the physical volume 
-G4VPhysicalVolume* Alumina_96perc_202105_phys = new  G4PVPlacement(0,Alumina_96perc_202105_Pos,Alumina_96perc_202105_log,"Alumina_96perc_202105_phys",cavity1_log,false,0,true);
+// Define the physical volume
+G4VPhysicalVolume* Alumina_96perc_202105_phys = new  G4PVPlacement(0, Alumina_96perc_202105_Pos, Alumina_96perc_202105_log, "Alumina_96perc_202105_phys", cavity1_log, false, 0, true);
