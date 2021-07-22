@@ -24,7 +24,17 @@ to avoid confinement issues and speed up the simulations
 //G4Element* P  = new G4Element(name="Phosphorus", symbol="P", z=15., a=30.973762*g/mole);
 //G4Element* S  = new G4Element(name="Sulfur", symbol="S", z=16., a=32.066*g/mole);
 //G4Element* O  = new G4Element(name="Oxygen" ,symbol="O" , z=8., a=16.0*g/mole);
-//G4Element* Al = new G4Element(name="Aluminum",symbol="Al",z=13.,a=26.98*g/mole);
+
+/*
+Material info PMT stems (Hamamatsu):
+- Header: Cobalt free metal, 26.2 g
+- Lead pins: Cobalt free metal, 2.5 g
+- Pipe: Kovar, 1.5 g
+- Pipe: Copper, 1.4 g
+- Glass: Borosilicate Glass, 1.2 g
+- Brazing metal: Gold, 0.1 g
+Total: 32.8 g
+*/
 
 //NOTE: This Kovar is Co free, whereas in normal Kovar there is about 16% of Co
 G4Material* PMT_stem_Kovar = new G4Material("PMT_stem_Kovar",density=8.36*g/cm3,2);
@@ -43,9 +53,10 @@ G4Material* PMT_stem_Steel_304 = new G4Material(name="PMT_stem_Steel_304" , dens
 
 G4Material* PMT_stem_Copper = new G4Material("PMT_stem_Copper", z=29., a=63.546*g/mole, density=8.920*g/cm3);
 
-G4Material* PMT_stem_Ceramic = new G4Material("PMT_stem_Ceramic",2.811*g/cm3,2);
-	PMT_stem_Ceramic -> AddElement(Al,2);
-	PMT_stem_Ceramic -> AddElement(O,3);
+//de.wikipedia.org/wiki/Borosilikatglas: 70%-80% Siliciumdioxid (SiO2), 7%-13% Bortrioxid (B2O3); Duran: density 2.23 g/cm^3
+G4Material* PMT_stem_Borosilicate_Glass = new G4Material("PMT_stem_Borosilicate_Glass", density=2.23*g/cm3, ncomponents=2);
+	PMT_stem_Borosilicate_Glass -> AddElement(Si,1);
+	PMT_stem_Borosilicate_Glass -> AddElement(O,2);
 
 
 /********************* Definition of dimensions (from measurements) *********************/
@@ -54,16 +65,16 @@ G4double PMT_stem_metal_disk_r_outer  = 54.8*mm/2;
 G4double PMT_stem_metal_disk_r_inner  =  5.0*mm/2;
 G4double PMT_stem_metal_disk_height   =  1.5*mm;
 
-G4double PMT_stem_metal_tube_r_outer  =  6.0*mm/2;
-G4double PMT_stem_metal_tube_r_inner  = PMT_stem_metal_disk_r_inner;
-G4double PMT_stem_metal_tube_height   = 22.0*mm;
-G4double PMT_stem_metal_tube_chamfer  =  2.0*mm;
-G4double PMT_stem_metal_tube_dist_upper_edge_to_top_disk = 43.5*mm;
+G4double PMT_stem_kovar_tube_r_outer  =  6.0*mm/2;
+G4double PMT_stem_kovar_tube_r_inner  = PMT_stem_metal_disk_r_inner;
+G4double PMT_stem_kovar_tube_height   = 22.0*mm;
+G4double PMT_stem_kovar_tube_chamfer  =  2.0*mm;
+G4double PMT_stem_kovar_tube_dist_upper_edge_to_top_disk = 43.5*mm;
 
 G4double PMT_stem_copper_tube_r_outer = PMT_stem_metal_disk_r_inner;
 G4double PMT_stem_copper_tube_r_inner =  4.0*mm/2;
-G4double PMT_stem_copper_tube_dist_upper_edge_to_top_metal_tube = 20.0*mm;
-G4double PMT_stem_copper_tube_height  = PMT_stem_metal_tube_dist_upper_edge_to_top_disk - PMT_stem_copper_tube_dist_upper_edge_to_top_metal_tube + PMT_stem_metal_disk_height;
+G4double PMT_stem_copper_tube_dist_upper_edge_to_top_kovar_tube = 20.0*mm;
+G4double PMT_stem_copper_tube_height  = PMT_stem_kovar_tube_dist_upper_edge_to_top_disk - PMT_stem_copper_tube_dist_upper_edge_to_top_kovar_tube + PMT_stem_metal_disk_height;
 
 G4double PMT_stem_metal_pin_r_outer   =  0.9*mm/2;
 G4double PMT_stem_metal_pin_r_inner   =  0.0*mm;
@@ -91,31 +102,31 @@ G4double PMT_stem_envel_IRads[] = {PMT_stem_copper_tube_r_inner,
 							PMT_stem_copper_tube_r_inner, 
 							PMT_stem_copper_tube_r_inner, 
 							PMT_stem_copper_tube_r_inner, 
-							PMT_stem_metal_tube_r_inner, 
-							PMT_stem_metal_tube_r_inner, 
-							PMT_stem_metal_tube_r_inner
+							PMT_stem_kovar_tube_r_inner, 
+							PMT_stem_kovar_tube_r_inner, 
+							PMT_stem_kovar_tube_r_inner
 							};
 
 G4double PMT_stem_envel_ORads[] = {PMT_stem_metal_disk_r_outer, 
 							PMT_stem_metal_disk_r_outer, 
 							PMT_stem_copper_tube_r_outer, 
 							PMT_stem_copper_tube_r_outer, 
-							PMT_stem_metal_tube_r_outer, 
-							PMT_stem_metal_tube_r_outer, 
-							PMT_stem_metal_tube_r_outer, 
-							PMT_stem_metal_tube_r_outer, 
-							PMT_stem_metal_tube_r_inner
+							PMT_stem_kovar_tube_r_outer, 
+							PMT_stem_kovar_tube_r_outer, 
+							PMT_stem_kovar_tube_r_outer, 
+							PMT_stem_kovar_tube_r_outer, 
+							PMT_stem_kovar_tube_r_inner
 							};
 
 G4double PMT_stem_envel_zPlanes[] = {0.0*mm, 
 							PMT_stem_metal_disk_height, 
 							PMT_stem_metal_disk_height, 
-							PMT_stem_metal_disk_height + PMT_stem_metal_tube_dist_upper_edge_to_top_disk - PMT_stem_metal_tube_height, 
-							PMT_stem_metal_disk_height + PMT_stem_metal_tube_dist_upper_edge_to_top_disk - PMT_stem_metal_tube_height, 
-							PMT_stem_metal_disk_height + PMT_stem_metal_tube_dist_upper_edge_to_top_disk - PMT_stem_copper_tube_dist_upper_edge_to_top_metal_tube, 
-							PMT_stem_metal_disk_height + PMT_stem_metal_tube_dist_upper_edge_to_top_disk - PMT_stem_copper_tube_dist_upper_edge_to_top_metal_tube, 
-							PMT_stem_metal_disk_height + PMT_stem_metal_tube_dist_upper_edge_to_top_disk - PMT_stem_metal_tube_chamfer, 
-							PMT_stem_metal_disk_height + PMT_stem_metal_tube_dist_upper_edge_to_top_disk
+							PMT_stem_metal_disk_height + PMT_stem_kovar_tube_dist_upper_edge_to_top_disk - PMT_stem_kovar_tube_height, 
+							PMT_stem_metal_disk_height + PMT_stem_kovar_tube_dist_upper_edge_to_top_disk - PMT_stem_kovar_tube_height, 
+							PMT_stem_metal_disk_height + PMT_stem_kovar_tube_dist_upper_edge_to_top_disk - PMT_stem_copper_tube_dist_upper_edge_to_top_kovar_tube, 
+							PMT_stem_metal_disk_height + PMT_stem_kovar_tube_dist_upper_edge_to_top_disk - PMT_stem_copper_tube_dist_upper_edge_to_top_kovar_tube, 
+							PMT_stem_metal_disk_height + PMT_stem_kovar_tube_dist_upper_edge_to_top_disk - PMT_stem_kovar_tube_chamfer, 
+							PMT_stem_metal_disk_height + PMT_stem_kovar_tube_dist_upper_edge_to_top_disk
 							};
 							
 G4Polycone* PMT_stem_envel_poly = new G4Polycone("PMT_stem_envel_poly", 0.*deg, 360.*deg, PMT_stem_envel_numZPlanes, PMT_stem_envel_zPlanes, PMT_stem_envel_IRads, PMT_stem_envel_ORads);
@@ -126,6 +137,8 @@ G4Tubs* PMT_stem_metal_pin = new G4Tubs("PMT_stem_metal_pin", PMT_stem_metal_pin
 
 
 
+
+// TODO: fix this
 
 G4ThreeVector i_PMT_stem_metal_pin_position(
 		PMT_stem_metal_pin_radial_position, 
@@ -158,16 +171,16 @@ for (G4int i_pin=0; i_pin < PMT_stem_metal_pin_num; i_pin++){
 G4Tubs* PMT_stem_copper_tube = new G4Tubs("PMT_stem_copper_tube", PMT_stem_copper_tube_r_inner, PMT_stem_copper_tube_r_outer, PMT_stem_copper_tube_height/2, 0.*deg, 360.*deg);
 
 
-/*********** Metal Disk ***********/
+/*********** Kovar Tube ***********/
 
-// TODO: continue here -> metal disk with holes for pins (or also spots?) <- but before run sim to check latest implementation
-
-
+// TODO: continue here -> kovar tube <- but before run sim to check latest implementation and fix PMT_stem_envel
 
 
 
 
-// TODO: finish solids (metal disk and glass spots)
+
+
+// TODO: finish solids (kovar tube and glass spots)
 
 /********************* Logical Volumes *********************/
 
@@ -216,3 +229,9 @@ PMT_stem_copper_tube_phys = new G4PVPlacement(0, PMT_stem_copper_tube_pos, PMT_s
 // TODO: place three stems
 G4ThreeVector PMT_stem_envel_pos(0., 0., endcapPos_z+0.5*endcapHeight1 + PMT_stem_metal_pin_dist_lower_edge_to_bottom_metal_disk + 0.01*mm);
 PMT_stem_envel_phys = new G4PVPlacement(0, PMT_stem_envel_pos, PMT_stem_envel_log, "PMT_stem_envel_phys", cavity1_log, false, 0, true);
+
+
+
+
+
+
