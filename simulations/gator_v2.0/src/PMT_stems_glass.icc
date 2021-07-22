@@ -94,9 +94,9 @@ G4double PMT_stem_glass_spots_radial_position = PMT_stem_metal_pin_radial_positi
 /*********** Definition of the envelope ***********/
 
 // everything apart from pins as polycone
-G4int PMT_stem_envel_numZPlanes = 9;
+G4int PMT_stem_metal_envel_numZPlanes = 9;
 
-G4double PMT_stem_envel_IRads[] = {PMT_stem_copper_tube_r_inner, 
+G4double PMT_stem_metal_envel_IRads[] = {PMT_stem_copper_tube_r_inner, 
 							PMT_stem_copper_tube_r_inner, 
 							PMT_stem_copper_tube_r_inner, 
 							PMT_stem_copper_tube_r_inner, 
@@ -107,7 +107,7 @@ G4double PMT_stem_envel_IRads[] = {PMT_stem_copper_tube_r_inner,
 							PMT_stem_kovar_tube_r_inner
 							};
 
-G4double PMT_stem_envel_ORads[] = {PMT_stem_metal_disk_r_outer, 
+G4double PMT_stem_metal_envel_ORads[] = {PMT_stem_metal_disk_r_outer, 
 							PMT_stem_metal_disk_r_outer, 
 							PMT_stem_copper_tube_r_outer, 
 							PMT_stem_copper_tube_r_outer, 
@@ -118,7 +118,7 @@ G4double PMT_stem_envel_ORads[] = {PMT_stem_metal_disk_r_outer,
 							PMT_stem_kovar_tube_r_inner
 							};
 
-G4double PMT_stem_envel_zPlanes[] = {0.0*mm, 
+G4double PMT_stem_metal_envel_zPlanes[] = {0.0*mm, 
 							PMT_stem_metal_disk_height, 
 							PMT_stem_metal_disk_height, 
 							PMT_stem_metal_disk_height + PMT_stem_kovar_tube_dist_upper_edge_to_top_disk - PMT_stem_kovar_tube_height, 
@@ -129,41 +129,19 @@ G4double PMT_stem_envel_zPlanes[] = {0.0*mm,
 							PMT_stem_metal_disk_height + PMT_stem_kovar_tube_dist_upper_edge_to_top_disk
 							};
 							
-G4Polycone* PMT_stem_envel_poly = new G4Polycone("PMT_stem_envel_poly", 0.*deg, 360.*deg, PMT_stem_envel_numZPlanes, PMT_stem_envel_zPlanes, PMT_stem_envel_IRads, PMT_stem_envel_ORads);
+G4Polycone* PMT_stem_metal_envel_poly = new G4Polycone("PMT_stem_metal_envel_poly", 0.*deg, 360.*deg, PMT_stem_metal_envel_numZPlanes, PMT_stem_metal_envel_zPlanes, PMT_stem_metal_envel_IRads, PMT_stem_metal_envel_ORads);
 
 // add pins
 
 G4Tubs* PMT_stem_metal_pin = new G4Tubs("PMT_stem_metal_pin", PMT_stem_metal_pin_r_inner, PMT_stem_metal_pin_r_outer, PMT_stem_metal_pin_length/2, 0.*deg, 360.*deg);
 
+G4UnionSolid* PMT_stem_metal_envel = new G4UnionSolid(
+"PMT_stem_metal_envel", PMT_stem_metal_envel_poly, PMT_stem_metal_pin, 0, G4ThreeVector(PMT_stem_metal_pin_radial_position * cos(360.*deg*0/PMT_stem_metal_pin_num), PMT_stem_metal_pin_radial_position * sin(360.*deg*0/PMT_stem_metal_pin_num), PMT_stem_metal_pin_length/2 - PMT_stem_metal_pin_dist_lower_edge_to_bottom_metal_disk));
 
-
-
-// TODO: fix this
-
-G4ThreeVector i_PMT_stem_metal_pin_position(
-		PMT_stem_metal_pin_radial_position, 
-		0, 
-		PMT_stem_metal_pin_length/2 - PMT_stem_metal_pin_dist_lower_edge_to_bottom_metal_disk);
-
-G4UnionSolid* PMT_stem_envel = new G4UnionSolid(
-"PMT_stem_envel", PMT_stem_envel_poly, PMT_stem_metal_pin, 0, i_PMT_stem_metal_pin_position);
-
-/*
-for (G4int i_pin=0; i_pin < PMT_stem_metal_pin_num; i_pin++){
-	G4ThreeVector i_PMT_stem_metal_pin_position(
-			PMT_stem_metal_pin_radial_position * cos(360.*deg*i_pin/PMT_stem_metal_pin_num), 
-			PMT_stem_metal_pin_radial_position * sin(360.*deg*i_pin/PMT_stem_metal_pin_num), 
-			PMT_stem_metal_pin_length/2 - PMT_stem_metal_pin_dist_lower_edge_to_bottom_metal_disk);
-	if(i_pin < 1){
-		G4UnionSolid* PMT_stem_envel = new G4UnionSolid(
-      "PMT_stem_envel", PMT_stem_envel_poly, PMT_stem_metal_pin, 0, i_PMT_stem_metal_pin_position);
-	}
-	else{
-		G4UnionSolid* PMT_stem_envel = new G4UnionSolid(
-      "PMT_stem_envel", PMT_stem_envel, PMT_stem_metal_pin, 0, i_PMT_stem_metal_pin_position);
-	}
+for (G4int i_pin=1; i_pin < PMT_stem_metal_pin_num; i_pin++){
+	PMT_stem_metal_envel = new G4UnionSolid(
+		"PMT_stem_metal_envel", PMT_stem_metal_envel, PMT_stem_metal_pin, 0, G4ThreeVector(PMT_stem_metal_pin_radial_position * cos(360.*deg*i_pin/PMT_stem_metal_pin_num), PMT_stem_metal_pin_radial_position * sin(360.*deg*i_pin/PMT_stem_metal_pin_num), PMT_stem_metal_pin_length/2 - PMT_stem_metal_pin_dist_lower_edge_to_bottom_metal_disk));
 }
-*/
 
 
 /*********** Copper Tube ***********/
@@ -173,27 +151,32 @@ G4Tubs* PMT_stem_copper_tube = new G4Tubs("PMT_stem_copper_tube", PMT_stem_coppe
 
 /*********** Kovar Tube ***********/
 
-// TODO: continue here -> kovar tube <- but before run sim to check latest implementation and fix PMT_stem_envel
+// TODO: continue here -> kovar tube
+
+
+/*********** Glass Spots ***********/
+
+// TODO: continue here -> glass spots (use std::stringstream for naming)
 
 
 
 
 
 
-// TODO: finish solids (kovar tube and glass spots)
+
 
 /********************* Logical Volumes *********************/
 
-PMT_stem_envel_log = new G4LogicalVolume(PMT_stem_envel, PMT_stem_Steel_304, "PMT_stem_envel_log");
-//PMT_stem_envel_log2 = new G4LogicalVolume(PMT_stem_envel, PMT_stem_Steel_304, "PMT_stem_envel_log2");
-//PMT_stem_envel_log3 = new G4LogicalVolume(PMT_stem_envel, PMT_stem_Steel_304, "PMT_stem_envel_log3");
+PMT_stem_metal_envel_log = new G4LogicalVolume(PMT_stem_metal_envel, PMT_stem_Steel_304, "PMT_stem_metal_envel_log");
+//PMT_stem_metal_envel_log2 = new G4LogicalVolume(PMT_stem_metal_envel, PMT_stem_Steel_304, "PMT_stem_metal_envel_log2");
+//PMT_stem_metal_envel_log3 = new G4LogicalVolume(PMT_stem_metal_envel, PMT_stem_Steel_304, "PMT_stem_metal_envel_log3");
 
-G4VisAttributes* PMT_stem_envel_vis = new G4VisAttributes(red);
-PMT_stem_envel_vis -> SetVisibility(true);
-PMT_stem_envel_vis -> SetForceSolid(false);
-PMT_stem_envel_log -> SetVisAttributes(PMT_stem_envel_vis);
-//PMT_stem_envel_log2 -> SetVisAttributes(PMT_stem_envel_vis);
-//PMT_stem_envel_log3 -> SetVisAttributes(PMT_stem_envel_vis);
+G4VisAttributes* PMT_stem_metal_envel_vis = new G4VisAttributes(red);
+PMT_stem_metal_envel_vis -> SetVisibility(true);
+PMT_stem_metal_envel_vis -> SetForceSolid(false);
+PMT_stem_metal_envel_log -> SetVisAttributes(PMT_stem_metal_envel_vis);
+//PMT_stem_metal_envel_log2 -> SetVisAttributes(PMT_stem_metal_envel_vis);
+//PMT_stem_metal_envel_log3 -> SetVisAttributes(PMT_stem_metal_envel_vis);
 
 //Copper Tube Logical Volume
 PMT_stem_copper_tube_log = new G4LogicalVolume(PMT_stem_copper_tube, PMT_stem_Copper, "PMT_stem_copper_tube_log");
@@ -217,7 +200,7 @@ PMT_stem_copper_tube_log -> SetVisAttributes(PMT_stem_copper_tube_vis);
 
 // Place copper tubes in envelopes
 G4ThreeVector PMT_stem_copper_tube_pos(0., 0., PMT_stem_copper_tube_height/2);
-PMT_stem_copper_tube_phys = new G4PVPlacement(0, PMT_stem_copper_tube_pos, PMT_stem_copper_tube_log, "PMT_stem_copper_tube_phys", PMT_stem_envel_log, false, 0, true);
+PMT_stem_copper_tube_phys = new G4PVPlacement(0, PMT_stem_copper_tube_pos, PMT_stem_copper_tube_log, "PMT_stem_copper_tube_phys", PMT_stem_metal_envel_log, false, 0, true);
 
 
 
@@ -227,8 +210,8 @@ PMT_stem_copper_tube_phys = new G4PVPlacement(0, PMT_stem_copper_tube_pos, PMT_s
 
 // Place envelopes on detector
 // TODO: place three stems
-G4ThreeVector PMT_stem_envel_pos(0., 0., endcapPos_z+0.5*endcapHeight1 + PMT_stem_metal_pin_dist_lower_edge_to_bottom_metal_disk + 0.01*mm);
-PMT_stem_envel_phys = new G4PVPlacement(0, PMT_stem_envel_pos, PMT_stem_envel_log, "PMT_stem_envel_phys", cavity1_log, false, 0, true);
+G4ThreeVector PMT_stem_metal_envel_pos(0., 0., endcapPos_z+0.5*endcapHeight1 + PMT_stem_metal_pin_dist_lower_edge_to_bottom_metal_disk + 0.01*mm);
+PMT_stem_metal_envel_phys = new G4PVPlacement(0, PMT_stem_metal_envel_pos, PMT_stem_metal_envel_log, "PMT_stem_metal_envel_phys", cavity1_log, false, 0, true);
 
 
 

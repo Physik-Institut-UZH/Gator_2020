@@ -2,14 +2,14 @@
 
 //---------------   logical Volumes definitions
 
-G4LogicalVolume* PMT_stem_envel_log;
-//G4LogicalVolume* PMT_stem_envel_log2;
-//G4LogicalVolume* PMT_stem_envel_log3;
+G4LogicalVolume* PMT_stem_metal_envel_log;
+//G4LogicalVolume* PMT_stem_metal_envel_log2;
+//G4LogicalVolume* PMT_stem_metal_envel_log3;
 G4LogicalVolume* PMT_stem_copper_tube_log;
 
 //oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
 
 //---------------   Physical Volumes definitions
 
-G4VPhysicalVolume* PMT_stem_envel_phys;
+G4VPhysicalVolume* PMT_stem_metal_envel_phys;
 G4VPhysicalVolume* PMT_stem_copper_tube_phys;
