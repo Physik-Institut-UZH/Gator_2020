@@ -151,7 +151,25 @@ G4Tubs* PMT_stem_copper_tube = new G4Tubs("PMT_stem_copper_tube", PMT_stem_coppe
 
 /*********** Kovar Tube ***********/
 
-// TODO: continue here -> kovar tube
+G4int PMT_stem_kovar_tube_numZPlanes = 3;
+
+G4double PMT_stem_kovar_tube_IRads[] = {PMT_stem_kovar_tube_r_inner, 
+							PMT_stem_kovar_tube_r_inner, 
+							PMT_stem_kovar_tube_r_inner
+							};
+							
+G4double PMT_stem_kovar_tube_ORads[] = {PMT_stem_kovar_tube_r_outer, 
+							PMT_stem_kovar_tube_r_outer, 
+							PMT_stem_kovar_tube_r_inner
+							};
+							
+G4double PMT_stem_kovar_tube_zPlanes[] = {
+							PMT_stem_metal_disk_height + PMT_stem_kovar_tube_dist_upper_edge_to_top_disk - PMT_stem_kovar_tube_height, 
+							PMT_stem_metal_disk_height + PMT_stem_kovar_tube_dist_upper_edge_to_top_disk - PMT_stem_kovar_tube_chamfer, 
+							PMT_stem_metal_disk_height + PMT_stem_kovar_tube_dist_upper_edge_to_top_disk
+							};
+							
+G4Polycone* PMT_stem_kovar_tube = new G4Polycone("PMT_stem_kovar_tube", 0.*deg, 360.*deg, PMT_stem_kovar_tube_numZPlanes, PMT_stem_kovar_tube_zPlanes, PMT_stem_kovar_tube_IRads, PMT_stem_kovar_tube_ORads);
 
 
 /*********** Glass Spots ***********/
@@ -178,6 +196,7 @@ PMT_stem_metal_envel_log -> SetVisAttributes(PMT_stem_metal_envel_vis);
 //PMT_stem_metal_envel_log2 -> SetVisAttributes(PMT_stem_metal_envel_vis);
 //PMT_stem_metal_envel_log3 -> SetVisAttributes(PMT_stem_metal_envel_vis);
 
+
 //Copper Tube Logical Volume
 PMT_stem_copper_tube_log = new G4LogicalVolume(PMT_stem_copper_tube, PMT_stem_Copper, "PMT_stem_copper_tube_log");
 //PMT_stem_copper_tube_log2 = new G4LogicalVolume(PMT_stem_copper_tube, PMT_stem_Copper, "PMT_stem_copper_tube_log2");
@@ -187,6 +206,21 @@ G4VisAttributes* PMT_stem_copper_tube_vis = new G4VisAttributes(orange);
 PMT_stem_copper_tube_vis -> SetVisibility(true);
 PMT_stem_copper_tube_vis -> SetForceSolid(false);
 PMT_stem_copper_tube_log -> SetVisAttributes(PMT_stem_copper_tube_vis);
+//PMT_stem_copper_tube_log2 -> SetVisAttributes(PMT_stem_copper_tube_vis);
+//PMT_stem_copper_tube_log3 -> SetVisAttributes(PMT_stem_copper_tube_vis);
+
+
+//Kovar Tube Logical Volume
+PMT_stem_kovar_tube_log = new G4LogicalVolume(PMT_stem_kovar_tube, PMT_stem_Kovar, "PMT_stem_kovar_tube_log");
+//PMT_stem_kovar_tube_log2 = new G4LogicalVolume(PMT_stem_kovar_tube, PMT_stem_Kovar, "PMT_stem_kovar_tube_log2");
+//PMT_stem_kovar_tube_log3 = new G4LogicalVolume(PMT_stem_kovar_tube, PMT_stem_Kovar, "PMT_stem_kovar_tube_log3");
+
+G4VisAttributes* PMT_stem_kovar_tube_vis = new G4VisAttributes(yellow);
+PMT_stem_kovar_tube_vis -> SetVisibility(true);
+PMT_stem_kovar_tube_vis -> SetForceSolid(false);
+PMT_stem_kovar_tube_log -> SetVisAttributes(PMT_stem_kovar_tube_vis);
+//PMT_stem_kovar_tube_log2 -> SetVisAttributes(PMT_stem_kovar_tube_vis);
+//PMT_stem_kovar_tube_log3 -> SetVisAttributes(PMT_stem_kovar_tube_vis);
 
 
 
@@ -201,6 +235,11 @@ PMT_stem_copper_tube_log -> SetVisAttributes(PMT_stem_copper_tube_vis);
 // Place copper tubes in envelopes
 G4ThreeVector PMT_stem_copper_tube_pos(0., 0., PMT_stem_copper_tube_height/2);
 PMT_stem_copper_tube_phys = new G4PVPlacement(0, PMT_stem_copper_tube_pos, PMT_stem_copper_tube_log, "PMT_stem_copper_tube_phys", PMT_stem_metal_envel_log, false, 0, true);
+
+
+// Place kovar tubes in envelopes
+G4ThreeVector PMT_stem_kovar_tube_pos(0., 0., 0.); //z-planes already account for shift
+PMT_stem_kovar_tube_phys = new G4PVPlacement(0, PMT_stem_kovar_tube_pos, PMT_stem_kovar_tube_log, "PMT_stem_kovar_tube_phys", PMT_stem_metal_envel_log, false, 0, true);
 
 
 
