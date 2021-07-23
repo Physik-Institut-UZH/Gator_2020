@@ -1,7 +1,7 @@
 /*
 Simulation geometry for metal stems with low activity materials 
 for Hamamatsu R11410-21 PMTs 
-Hint: you might need to reduce the default confinement volume 
+TODO: you might need to reduce the default confinement volume 
 to avoid confinement issues and speed up the simulations
 */
 
@@ -11,6 +11,8 @@ to avoid confinement issues and speed up the simulations
 //G4Colour yellow (1.0, 1.0, 0.0);
 //G4Colour orange (0.75, 0.55, 0.0);
 //G4Colour lblue (0.0, 0.0, 0.55);
+//G4Colour white (1.0, 1.0, 1.0);
+
 
 
 /********************* Definition of elements and materials *********************/
@@ -59,6 +61,7 @@ G4Material* PMT_stem_Borosilicate_Glass = new G4Material("PMT_stem_Borosilicate_
 	PMT_stem_Borosilicate_Glass -> AddElement(O,2);
 
 
+
 /********************* Definition of dimensions (from measurements) *********************/
 
 G4double PMT_stem_metal_disk_r_outer  = 54.8*mm/2;
@@ -87,6 +90,7 @@ G4double PMT_stem_glass_spots_r_outer = 4.3*mm/2;
 //G4double PMT_stem_glass_spots_small_r_outer = 2.6*mm/2;
 G4double PMT_stem_glass_spots_r_inner = PMT_stem_metal_pin_r_outer;
 G4double PMT_stem_glass_spots_radial_position = PMT_stem_metal_pin_radial_position;
+
 
 
 /********************* Definition of solids *********************/
@@ -174,77 +178,77 @@ G4Polycone* PMT_stem_kovar_tube = new G4Polycone("PMT_stem_kovar_tube", 0.*deg, 
 
 /*********** Glass Spots ***********/
 
-// TODO: continue here -> glass spots (use std::stringstream for naming)
-
-
-
-
-
+G4Tubs* PMT_stem_glass_spots = new G4Tubs("PMT_stem_glass_spots", PMT_stem_glass_spots_r_inner, PMT_stem_glass_spots_r_outer, PMT_stem_metal_disk_height/2, 0.*deg, 360.*deg);
 
 
 
 /********************* Logical Volumes *********************/
 
 PMT_stem_metal_envel_log = new G4LogicalVolume(PMT_stem_metal_envel, PMT_stem_Steel_304, "PMT_stem_metal_envel_log");
-//PMT_stem_metal_envel_log2 = new G4LogicalVolume(PMT_stem_metal_envel, PMT_stem_Steel_304, "PMT_stem_metal_envel_log2");
-//PMT_stem_metal_envel_log3 = new G4LogicalVolume(PMT_stem_metal_envel, PMT_stem_Steel_304, "PMT_stem_metal_envel_log3");
 
 G4VisAttributes* PMT_stem_metal_envel_vis = new G4VisAttributes(red);
 PMT_stem_metal_envel_vis -> SetVisibility(true);
 PMT_stem_metal_envel_vis -> SetForceSolid(false);
 PMT_stem_metal_envel_log -> SetVisAttributes(PMT_stem_metal_envel_vis);
-//PMT_stem_metal_envel_log2 -> SetVisAttributes(PMT_stem_metal_envel_vis);
-//PMT_stem_metal_envel_log3 -> SetVisAttributes(PMT_stem_metal_envel_vis);
 
 
 //Copper Tube Logical Volume
 PMT_stem_copper_tube_log = new G4LogicalVolume(PMT_stem_copper_tube, PMT_stem_Copper, "PMT_stem_copper_tube_log");
-//PMT_stem_copper_tube_log2 = new G4LogicalVolume(PMT_stem_copper_tube, PMT_stem_Copper, "PMT_stem_copper_tube_log2");
-//PMT_stem_copper_tube_log3 = new G4LogicalVolume(PMT_stem_copper_tube, PMT_stem_Copper, "PMT_stem_copper_tube_log3");
 
-G4VisAttributes* PMT_stem_copper_tube_vis = new G4VisAttributes(orange);
+G4VisAttributes* PMT_stem_copper_tube_vis = new G4VisAttributes(yellow);
 PMT_stem_copper_tube_vis -> SetVisibility(true);
 PMT_stem_copper_tube_vis -> SetForceSolid(false);
 PMT_stem_copper_tube_log -> SetVisAttributes(PMT_stem_copper_tube_vis);
-//PMT_stem_copper_tube_log2 -> SetVisAttributes(PMT_stem_copper_tube_vis);
-//PMT_stem_copper_tube_log3 -> SetVisAttributes(PMT_stem_copper_tube_vis);
 
 
 //Kovar Tube Logical Volume
 PMT_stem_kovar_tube_log = new G4LogicalVolume(PMT_stem_kovar_tube, PMT_stem_Kovar, "PMT_stem_kovar_tube_log");
-//PMT_stem_kovar_tube_log2 = new G4LogicalVolume(PMT_stem_kovar_tube, PMT_stem_Kovar, "PMT_stem_kovar_tube_log2");
-//PMT_stem_kovar_tube_log3 = new G4LogicalVolume(PMT_stem_kovar_tube, PMT_stem_Kovar, "PMT_stem_kovar_tube_log3");
 
-G4VisAttributes* PMT_stem_kovar_tube_vis = new G4VisAttributes(yellow);
+G4VisAttributes* PMT_stem_kovar_tube_vis = new G4VisAttributes(orange);
 PMT_stem_kovar_tube_vis -> SetVisibility(true);
 PMT_stem_kovar_tube_vis -> SetForceSolid(false);
 PMT_stem_kovar_tube_log -> SetVisAttributes(PMT_stem_kovar_tube_vis);
-//PMT_stem_kovar_tube_log2 -> SetVisAttributes(PMT_stem_kovar_tube_vis);
-//PMT_stem_kovar_tube_log3 -> SetVisAttributes(PMT_stem_kovar_tube_vis);
 
 
+//Glass Spots Logical Volume
+PMT_stem_glass_spots_log = new G4LogicalVolume(PMT_stem_glass_spots, PMT_stem_Borosilicate_Glass, "PMT_stem_glass_spots_log");
 
-
-
-
+G4VisAttributes* PMT_stem_glass_spots_vis = new G4VisAttributes(white);
+PMT_stem_glass_spots_vis -> SetVisibility(true);
+PMT_stem_glass_spots_vis -> SetForceSolid(false);
+PMT_stem_glass_spots_log -> SetVisAttributes(PMT_stem_glass_spots_vis);
 
 
 
 /********************* Physical Volumes and Placement *********************/
 
-// Place copper tubes in envelopes
+std::stringstream spot_name;
+
+// constant relative positions
 G4ThreeVector PMT_stem_copper_tube_pos(0., 0., PMT_stem_copper_tube_height/2);
+G4ThreeVector PMT_stem_kovar_tube_pos(0., 0., 0.); //z-planes already account for shift
+
+// Place copper tubes in envelopes
 PMT_stem_copper_tube_phys = new G4PVPlacement(0, PMT_stem_copper_tube_pos, PMT_stem_copper_tube_log, "PMT_stem_copper_tube_phys", PMT_stem_metal_envel_log, false, 0, true);
 
 
 // Place kovar tubes in envelopes
-G4ThreeVector PMT_stem_kovar_tube_pos(0., 0., 0.); //z-planes already account for shift
 PMT_stem_kovar_tube_phys = new G4PVPlacement(0, PMT_stem_kovar_tube_pos, PMT_stem_kovar_tube_log, "PMT_stem_kovar_tube_phys", PMT_stem_metal_envel_log, false, 0, true);
 
 
-
-
-
+// Place glass spots in envelopes
+for (G4int i_spot=0; i_spot < PMT_stem_metal_pin_num; i_spot++){
+	spot_name.str("");
+	spot_name << "PMT_stem_glass_spot_" << i_spot << "_phys";
+	
+	PMT_stem_glass_spots_phys = new G4PVPlacement(0, 
+		G4ThreeVector(
+			PMT_stem_glass_spots_radial_position * cos(360.*deg*i_spot/PMT_stem_metal_pin_num), 
+			PMT_stem_glass_spots_radial_position * sin(360.*deg*i_spot/PMT_stem_metal_pin_num), 
+			PMT_stem_metal_disk_height/2), 
+		PMT_stem_glass_spots_log, spot_name.str(), 
+		PMT_stem_metal_envel_log, false, 0, true);
+}
 
 
 // Place envelopes on detector

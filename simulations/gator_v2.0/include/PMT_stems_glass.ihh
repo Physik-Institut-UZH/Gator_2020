@@ -6,11 +6,9 @@ G4LogicalVolume* PMT_stem_metal_envel_log;
 //G4LogicalVolume* PMT_stem_metal_envel_log2;
 //G4LogicalVolume* PMT_stem_metal_envel_log3;
 G4LogicalVolume* PMT_stem_copper_tube_log;
-//G4LogicalVolume* PMT_stem_copper_tube_log2;
-//G4LogicalVolume* PMT_stem_copper_tube_log3;
 G4LogicalVolume* PMT_stem_kovar_tube_log;
-//G4LogicalVolume* PMT_stem_kovar_tube_log2;
-//G4LogicalVolume* PMT_stem_kovar_tube_log3;
+G4LogicalVolume* PMT_stem_glass_spots_log;
+
 
 //oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
 
@@ -19,3 +17,4 @@ G4LogicalVolume* PMT_stem_kovar_tube_log;
 G4VPhysicalVolume* PMT_stem_metal_envel_phys;
 G4VPhysicalVolume* PMT_stem_copper_tube_phys;
 G4VPhysicalVolume* PMT_stem_kovar_tube_phys;
+G4VPhysicalVolume* PMT_stem_glass_spots_phys;
