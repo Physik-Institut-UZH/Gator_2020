@@ -91,6 +91,8 @@ G4double PMT_stem_glass_spots_r_outer = 4.3*mm/2;
 G4double PMT_stem_glass_spots_r_inner = PMT_stem_metal_pin_r_outer;
 G4double PMT_stem_glass_spots_radial_position = PMT_stem_metal_pin_radial_position;
 
+G4int PMT_stem_num = 3; // put 3 stems in cavity
+
 
 
 /********************* Definition of solids *********************/
@@ -252,12 +254,23 @@ for (G4int i_spot=0; i_spot < PMT_stem_metal_pin_num; i_spot++){
 
 
 // Place envelopes on detector
-// TODO: place three stems
-G4ThreeVector PMT_stem_metal_envel_pos(0., 0., endcapPos_z+0.5*endcapHeight1 + PMT_stem_metal_pin_dist_lower_edge_to_bottom_metal_disk + 0.01*mm);
+G4ThreeVector PMT_stem_metal_envel_pos(
+	- PMT_stem_metal_disk_r_outer * cos(360.*deg*0/PMT_stem_num), 
+	- PMT_stem_metal_disk_r_outer * sin(360.*deg*0/PMT_stem_num), 
+	endcapPos_z+0.5*endcapHeight1 + PMT_stem_metal_pin_dist_lower_edge_to_bottom_metal_disk + 0.01*mm + 0*(PMT_stem_metal_disk_height + 0.01*mm));
 PMT_stem_metal_envel_phys = new G4PVPlacement(0, PMT_stem_metal_envel_pos, PMT_stem_metal_envel_log, "PMT_stem_metal_envel_phys", cavity1_log, false, 0, true);
 
+G4ThreeVector PMT_stem_metal_envel_pos2(
+	- PMT_stem_metal_disk_r_outer * cos(360.*deg*1/PMT_stem_num), 
+	- PMT_stem_metal_disk_r_outer * sin(360.*deg*1/PMT_stem_num), 
+	endcapPos_z+0.5*endcapHeight1 + PMT_stem_metal_pin_dist_lower_edge_to_bottom_metal_disk + 0.01*mm + 1*(PMT_stem_metal_disk_height + 0.01*mm));
+PMT_stem_metal_envel_phys2 = new G4PVPlacement(0, PMT_stem_metal_envel_pos2, PMT_stem_metal_envel_log, "PMT_stem_metal_envel_phys2", cavity1_log, false, 0, true);
+
+G4ThreeVector PMT_stem_metal_envel_pos3(
+	- PMT_stem_metal_disk_r_outer * cos(360.*deg*2/PMT_stem_num), 
+	- PMT_stem_metal_disk_r_outer * sin(360.*deg*2/PMT_stem_num), 
+	endcapPos_z+0.5*endcapHeight1 + PMT_stem_metal_pin_dist_lower_edge_to_bottom_metal_disk + 0.01*mm + 2*(PMT_stem_metal_disk_height + 0.01*mm));
+PMT_stem_metal_envel_phys3 = new G4PVPlacement(0, PMT_stem_metal_envel_pos3, PMT_stem_metal_envel_log, "PMT_stem_metal_envel_phys3", cavity1_log, false, 0, true);
 
 
-
-
-
+/* End of the file */
