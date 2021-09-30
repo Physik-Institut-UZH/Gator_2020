@@ -34,6 +34,7 @@
 	Bool_t Pa1001 = false; //To calculate the 1001 keV BRxEff from direct gamma simulation and not from the 238U decay chain
 	Bool_t Pa = true; //If want or not the 234mPa info
 	Bool_t Mn54 = true; //If I want Mn54 info
+	Bool_t Pb210 = true; 
 	
 	Bool_t writetxt = true;
 	
@@ -63,6 +64,7 @@
 	Float_t BR889 = 0.99984;  // 889 keV of 46Sc
 	Float_t BR1120s = 0.99987;  // 1120 keV of 46Sc
 	Float_t BR662 = 0.8499;  // 662 keV of 137Cs
+	Float_t BR46 = 0.0425; // 46 keV of 210Pb
 
 
 Int_t point = 0;
@@ -363,6 +365,51 @@ if(U238){
 	t1->Delete();//Finisched with 238U chain
 
 } //End of if(U238)	
+
+
+
+
+//------ Starting with the 210Pb --------------//
+if(Pb210){
+
+	TCanvas* c210 = new TCanvas("c210","Simulated Spectra",870,500);
+	c210->SetLogy();
+	sprintf(FullFN1,"%s210Pb.root",DataPath);
+	sprintf(description1," ^{210}Pb Simulation");
+	cout<<FullFN1<<endl;
+
+	TChain *t1 = new TChain("t1");
+	t1->Add(FullFN1);
+
+	TH1F *h210 = new TH1F("h210",description1,10000,0,1000);
+
+	h210->SetXTitle("Energy [keV]");
+	h210->SetYTitle("counts");
+	h210->SetStats(0);
+	t1->Draw("GeEtot>>h210");
+	
+	Int_t NumInEvtPb210 = 100000000;
+	
+	
+//--------------- Calculate the efficiencies (46.539 keV line) -------------------//
+	binx = h210 -> FindBin(46.539);
+	Float_t BRxEff46 = (h210->GetBinContent(binx) - (h210->Integral(binx-(compbins+1),binx-2)/compbins + h210->Integral(binx+2,binx+(compbins+1))/compbins)/2)/NumInEvtPb210;
+	
+	Float_t RealEff46 = BRxEff46 / BR46;
+	
+	cout<<"Efficiency x BR (46): "<<BRxEff46<<endl;
+	cout<<"Real Efficiency (46): "<<RealEff46<<endl;
+	
+	g_effic -> SetPoint(point,46.539,RealEff46);
+	g_effic -> SetPointError(point,0.0,0.1*RealEff46);
+	point++;
+	
+	sprintf(title,"%s210Pb.C",workdir.c_str());
+	c210->SaveAs(title);
+	
+	t1->Delete(); //Finished with 210Pb element
+	
+} //End of if(Pb210)	
 
 
 	
@@ -811,6 +858,7 @@ if(writetxt){
 		cout<< "can't open file" <<endl; exit(1);
     } else {
     
+		if(Pb210) data_out << "210" << "\t" << "Pb" << "\t" << "46.539" << "\t" << BR46 << "\t" << RealEff46 << "\t" << BRxEff46 << endl;
 		if(U238) data_out << "234" << "\t" << "Th" << "\t" << "92.6" << "\t" << BR92 << "\t" << RealEff92 << "\t" << BRxEff92 << endl;
 		if(U235) data_out << "235" << "\t" << "U" << "\t" << "185.720" << "\t" << BR186 << "\t" << RealEff186 << "\t" << BRxEff186 << endl;
 		if(Th232) data_out << "212" << "\t" << "Pb" << "\t" << "238.632" << "\t" << BR239 << "\t" << RealEff239 << "\t" << BRxEff239 << endl;

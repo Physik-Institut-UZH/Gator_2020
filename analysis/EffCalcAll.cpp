@@ -368,7 +368,7 @@ if(i_238U){
 
 
 
-
+/*
 //------ 210Pb from  the 238U chain --------------//
 if(i_210Pb){
 
@@ -435,7 +435,51 @@ if(i_210Pb){
 	t1->Delete();//Finished with 210Pb chain
 
 } //End of the if(i_210Pb)	
+*/	
+
+//------ Starting with the 210Pb --------------//
+if(i_210Pb){
+
+	sprintf(FullFN1,"%s210Pb.root",DataPath);
+	sprintf(description1," ^{210}Pb Simulation");
+	cout<<FullFN1<<endl;
 	
+	TChain* t1 = new TChain("t1");
+	t1->Add(FullFN1);
+	
+	TCanvas* c210 = new TCanvas("c210","Simulated Spectra",870,500);
+	c210->SetLogy();
+	
+	TH1F *h210 = new TH1F("h210",description1,10000,0,1000);
+	
+	h210->SetXTitle("Energy [keV]");
+	h210->SetYTitle("counts");
+	h210->SetStats(0);
+	t1->Draw("GeEtot>>h210");
+	
+	
+	Int_t NumInEvtPb210 = NumInEvt;
+	
+	
+//--------------- Calculate the efficiencies (46.539 keV line) -------------------//
+	binx = h210 -> FindBin(46.539);
+	Float_t BRxEff46 = (h210->GetBinContent(binx) - (h210->Integral(binx-(compbins+1),binx-2)/compbins + h210->Integral(binx+2,binx+(compbins+1))/compbins)/2)/NumInEvtPb210;
+	
+	Float_t RealEff46 = BRxEff46 / BR46;
+	
+	cout<<"Efficiency x BR (46): "<<BRxEff46<<endl;
+	cout<<"Real Efficiency (46): "<<RealEff46<<endl;
+	
+	g_effic -> SetPoint(point,46.539,RealEff46);
+	g_effic -> SetPointError(point,0.0,0.1*RealEff46);
+	point++;
+	
+	sprintf(title,"%s210Pb.C",workdir.c_str());
+	c210->SaveAs(title);
+	
+	t1->Delete(); //Finished with 210Pb element
+	
+} //End of if(i_210Pb)
 	
 	
 //------ Starting with the 40K --------------//
@@ -1086,7 +1130,7 @@ if(writetxt){
 		if(i_232Th) data_out << "208" << "\t" << "Tl" << "\t" << "583.187" << "\t" << BR583 << "\t" << RealEff583 << "\t" << BRxEff583 << endl;
 		if(i_238U) data_out << "214" << "\t" << "Bi" << "\t" << "609.312" << "\t" << BR609 << "\t" << RealEff609 << "\t" << BRxEff609 << endl;
 		if(i_137Cs) data_out << "137" << "\t" << "Cs" << "\t" << "661.657" << "\t" << BR662 << "\t" << RealEff662 << "\t" << BRxEff662 << endl;
-		if(i_210Pb) data_out << "210" << "\t" << "Pb" << "\t" << "803.1" << "\t" << BR803 << "\t" << RealEff803 << "\t" << BRxEff803 << endl;
+		//if(i_210Pb) data_out << "210" << "\t" << "Pb" << "\t" << "803.1" << "\t" << BR803 << "\t" << RealEff803 << "\t" << BRxEff803 << endl;
 		if(i_54Mn) data_out << "54" << "\t" << "Mn" << "\t" << "834.838" << "\t" << BR835 << "\t" << RealEff835 << "\t" << BRxEff835 << endl;
 		if(i_46Sc)data_out << "46" << "\t" << "Sc" << "\t" << "889.271" << "\t" << BR889 << "\t" << RealEff889 << "\t" << BRxEff889 << endl;
 		if(i_232Th) data_out << "228" << "\t" << "Ac" << "\t" << "911.196" << "\t" << BR911 << "\t" << RealEff911 << "\t" << BRxEff911 << endl;

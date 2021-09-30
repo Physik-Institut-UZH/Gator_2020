@@ -13,6 +13,7 @@
 	Bool_t sc = true;
 
 //////    Define the branching ratio (BR) for the main lines  
+  Float_t BR46 = 0.0425; // 46 keV of 210Pb
   Float_t BR186 = 0.570; // 286 keV of 235U
   Float_t BR239 = 0.436;  // 239 keV of 212Pb
   Float_t BR339 = 0.114;  // 339 keV of 228Ac
@@ -194,6 +195,47 @@
    c2->SaveAs(title);
 
 	t1->Delete();//Finisched with 238U chain
+
+
+
+//------ Starting with the 210Pb --------------//	
+	
+ TCanvas *c210 = new TCanvas("c210","Simulated Spectra",870,500);
+ c210->SetLogy();
+ sprintf(FullFN1,"%s%s_Pb210_1e6.root",DataPath,file);
+ sprintf(description1,"%s ^{210}Pb Simulation",file);
+ cout<<FullFN1<<endl;
+
+ 
+
+  TChain *t1 = new TChain("t1");
+  t1->Add(FullFN1);
+
+  TH1F *h210 = new TH1F("h210",description1,2700,0,2700);
+
+  h210->SetXTitle("Energy [keV]");
+  h210->SetYTitle("counts");
+  h210->SetStats(0);
+  t1->Draw("GeEtot>>h210");
+	
+	Int_t NumInEvtPb210 = 1000000;
+	
+	
+// ------- Calculate the efficiencies (46.539 keV line) ------//
+
+ //Float_t EffBR47 = h210->GetBinContent(47)/NumInEvtPb210;
+ Float_t EffBR47 = (h210->GetBinContent(47)-(h210->Integral(36,45)/10+h210->Integral(48,57)/10)/2)/NumInEvtPb210;
+
+ Float_t RealEff47 = EffBR47 / BR47;
+
+ cout<<"Efficiency x BR (47): "<<EffBR47<<endl;
+ cout<<"Real Efficiency (47): "<<RealEff47<<endl;
+	
+	sprintf(title,"./%s/%s_210Pb.png",file,file);
+   c210->SaveAs(title);
+	
+	
+	t1->Delete(); //Finisched with 210Pb element
 	
 	
 	
@@ -472,6 +514,7 @@
     }
   else
     {
+		data_out << "^{210}Pb" << "\t" << "46" << "\t" << BR46 << "\t" << RealEff46 << "\t" << EffBR46 << "\n";
 		data_out << "^{235}U" << "\t" << "186" << "\t" << BR186 << "\t" << RealEff186 << "\t" << EffBR186 << "\n";
       data_out << "^{212}Pb" << "\t" << "239" << "\t" << BR239 << "\t" << RealEff239 << "\t" << EffBR239 << "\n";
       data_out << "^{214}Pb" << "\t" << "295" << "\t" << BR295 << "\t" << RealEff295 << "\t" << EffBR295 << "\n";

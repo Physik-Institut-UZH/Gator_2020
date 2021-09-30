@@ -61,7 +61,7 @@ int main()
 
  string std_isotopes[n_isot_std]={"238U","232Th","40K","60Co","137Cs","226Ra","235U","228Th"};
  string full_isotopes[n_isot_full]= {"238U","232Th","40K","60Co","137Cs", "226Ra","235U",  "54Mn", "58Co", "56Co","46Sc", "186keV", "1001keV","Pa", "7Be", "210Pb"};//Note: do not remove isotopes from the full list, since they need to be later read by EffCalcAll.cpp. If you add new isotopes, you need to write a new function for it in EffCalcAll.cpp as well and create macros.// isotopes that have macros but are not in the analysis: "228Th", "110mAg", "207Bi","57Co","134Cs". Isotope 56Co not working, but needs to be in the list.
- string full_isotopes_sim[n_isot_full_sim]= {"238U","232Th","40K","60Co","137Cs", "226Ra","235U", "54Mn", "58Co", "46Sc"};// Some isotopes are in the analysis (EffCalcAll.cpp) but have no macros: "Pa" (maybe it is the same to 1001Pa?), "7Be", "210Pb". 
+ string full_isotopes_sim[n_isot_full_sim]= {"238U","232Th","40K","60Co","137Cs", "226Ra","235U", "54Mn", "58Co", "46Sc", "210Pb"};// Some isotopes are in the analysis (EffCalcAll.cpp) but have no macros: "Pa" (maybe it is the same to 1001Pa?), "7Be", "210Pb". 
 //other lines \"1001keV\","186keV", \"605keV\", \"658keV\", \"885keV\", \"1064keV\", "186keV\", \"570keV\", \"796keV\", \"937keV\"]"; -> for these you may need EffCalcLine.cpp, not yet implemented in easygator
 
 //----------------------------------------------------------------------------------
