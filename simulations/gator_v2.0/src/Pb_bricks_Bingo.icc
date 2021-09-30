@@ -1,0 +1,54 @@
+// Set visibility properties for all the samples 
+G4VisAttributes* sample_vis = new G4VisAttributes(red);
+sample_vis -> SetVisibility(true); 
+sample_vis -> SetForceSolid(false);
+
+//---------- volume Pb_brick_1 ---------- 
+
+//Dimensions of the sample in box and definition of the geometry
+ G4double box_Pb_brick_1_x= 10*cm;
+ G4double box_Pb_brick_1_y= 5*cm;
+ G4double box_Pb_brick_1_z= 20*cm;
+ G4Box* Pb_brick_1= new G4Box("Pb_brick_1",0.5*box_Pb_brick_1_x,0.5*box_Pb_brick_1_y,0.5*box_Pb_brick_1_z);
+
+//Construct the logical volume 
+ G4LogicalVolume* Pb_brick_1_log = new G4LogicalVolume(Pb_brick_1,Lead,"Pb_brick_1_log");
+
+// Set visibility for the sample (all are set to the same color, change it if necessary) 
+Pb_brick_1_log -> SetVisAttributes(sample_vis);
+
+// Set coordinates for the position of the sample and the position vector 
+G4double Pb_brick_1_Pos_y =(baseOD1/2) + (box_Pb_brick_1_y/2);
+G4double Pb_brick_1_Pos_z= -(cavity1_z/2) + (box_Pb_brick_1_z/2);
+G4double Pb_brick_1_Pos_x =0*mm;
+
+// Define the position vector 
+G4ThreeVector Pb_brick_1_Pos(Pb_brick_1_Pos_x,Pb_brick_1_Pos_y,Pb_brick_1_Pos_z); 
+
+// Define the physical volume 
+G4VPhysicalVolume* Pb_brick_1_phys = new  G4PVPlacement(0,Pb_brick_1_Pos,Pb_brick_1_log,"Pb_brick_1_phys",cavity1_log,false,0,true);
+
+//---------- volume Pb_brick_2 ---------- 
+
+//Dimensions of the sample in box and definition of the geometry
+ G4double box_Pb_brick_2_x= 10*cm;
+ G4double box_Pb_brick_2_y= 5*cm;
+ G4double box_Pb_brick_2_z= 20*cm;
+ G4Box* Pb_brick_2= new G4Box("Pb_brick_2",0.5*box_Pb_brick_2_x,0.5*box_Pb_brick_2_y,0.5*box_Pb_brick_2_z);
+
+//Construct the logical volume 
+ G4LogicalVolume* Pb_brick_2_log = new G4LogicalVolume(Pb_brick_2,Lead,"Pb_brick_2_log");
+
+// Set visibility for the sample (all are set to the same color, change it if necessary) 
+Pb_brick_2_log -> SetVisAttributes(sample_vis);
+
+// Set coordinates for the position of the sample and the position vector
+G4double Pb_brick_2_Pos_y =-(baseOD1/2) - (box_Pb_brick_2_y/2);
+G4double Pb_brick_2_Pos_z= -(cavity1_z/2) + (box_Pb_brick_2_z/2);
+G4double Pb_brick_2_Pos_x =0*mm;
+
+// Define the position vector 
+G4ThreeVector Pb_brick_2_Pos(Pb_brick_2_Pos_x,Pb_brick_2_Pos_y,Pb_brick_2_Pos_z); 
+
+// Define the physical volume 
+G4VPhysicalVolume* Pb_brick_2_phys = new  G4PVPlacement(0,Pb_brick_2_Pos,Pb_brick_2_log,"Pb_brick_2_phys",cavity1_log,false,0,true);
