@@ -12,7 +12,7 @@ sample_vis -> SetForceSolid(false);
  G4Box* Pb_brick_1= new G4Box("Pb_brick_1",0.5*box_Pb_brick_1_x,0.5*box_Pb_brick_1_y,0.5*box_Pb_brick_1_z);
 
 //Construct the logical volume 
- G4LogicalVolume* Pb_brick_1_log = new G4LogicalVolume(Pb_brick_1,Lead,"Pb_brick_1_log");
+ G4LogicalVolume* Pb_brick_1_log = new G4LogicalVolume(Pb_brick_1,Pb,"Pb_brick_1_log");
 
 // Set visibility for the sample (all are set to the same color, change it if necessary) 
 Pb_brick_1_log -> SetVisAttributes(sample_vis);
@@ -37,7 +37,7 @@ G4VPhysicalVolume* Pb_brick_1_phys = new  G4PVPlacement(0,Pb_brick_1_Pos,Pb_bric
  G4Box* Pb_brick_2= new G4Box("Pb_brick_2",0.5*box_Pb_brick_2_x,0.5*box_Pb_brick_2_y,0.5*box_Pb_brick_2_z);
 
 //Construct the logical volume 
- G4LogicalVolume* Pb_brick_2_log = new G4LogicalVolume(Pb_brick_2,Lead,"Pb_brick_2_log");
+ G4LogicalVolume* Pb_brick_2_log = new G4LogicalVolume(Pb_brick_2,Pb,"Pb_brick_2_log");
 
 // Set visibility for the sample (all are set to the same color, change it if necessary) 
 Pb_brick_2_log -> SetVisAttributes(sample_vis);
