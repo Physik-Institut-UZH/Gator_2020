@@ -368,7 +368,6 @@ if(i_238U){
 
 
 
-/*
 //------ 210Pb from  the 238U chain --------------//
 if(i_210Pb){
 
@@ -435,8 +434,9 @@ if(i_210Pb){
 	t1->Delete();//Finished with 210Pb chain
 
 } //End of the if(i_210Pb)	
-*/	
+	
 
+/*
 //------ Starting with the 210Pb --------------//
 if(i_210Pb){
 
@@ -480,6 +480,7 @@ if(i_210Pb){
 	t1->Delete(); //Finished with 210Pb element
 	
 } //End of if(i_210Pb)
+*/
 	
 	
 //------ Starting with the 40K --------------//
@@ -1130,7 +1131,7 @@ if(writetxt){
 		if(i_232Th) data_out << "208" << "\t" << "Tl" << "\t" << "583.187" << "\t" << BR583 << "\t" << RealEff583 << "\t" << BRxEff583 << endl;
 		if(i_238U) data_out << "214" << "\t" << "Bi" << "\t" << "609.312" << "\t" << BR609 << "\t" << RealEff609 << "\t" << BRxEff609 << endl;
 		if(i_137Cs) data_out << "137" << "\t" << "Cs" << "\t" << "661.657" << "\t" << BR662 << "\t" << RealEff662 << "\t" << BRxEff662 << endl;
-		//if(i_210Pb) data_out << "210" << "\t" << "Pb" << "\t" << "803.1" << "\t" << BR803 << "\t" << RealEff803 << "\t" << BRxEff803 << endl;
+		if(i_210Pb) data_out << "210" << "\t" << "Pb" << "\t" << "803.1" << "\t" << BR803 << "\t" << RealEff803 << "\t" << BRxEff803 << endl;
 		if(i_54Mn) data_out << "54" << "\t" << "Mn" << "\t" << "834.838" << "\t" << BR835 << "\t" << RealEff835 << "\t" << BRxEff835 << endl;
 		if(i_46Sc)data_out << "46" << "\t" << "Sc" << "\t" << "889.271" << "\t" << BR889 << "\t" << RealEff889 << "\t" << BRxEff889 << endl;
 		if(i_232Th) data_out << "228" << "\t" << "Ac" << "\t" << "911.196" << "\t" << BR911 << "\t" << RealEff911 << "\t" << BRxEff911 << endl;
