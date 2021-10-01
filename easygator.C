@@ -56,7 +56,7 @@ int main()
  cout<<"*****************************************" <<endl;
 
  // parameters used in a standard simulation
- int queue=5, nodes=100, n_beamOn=100000, n_totevents=1e+7, n_isot_std=8, n_isot_full=16, n_isot_full_sim=10;//These numbers are organized in such a way that the a queue of 2 and 50 nodes are enough for 10+6 events per macro (n_beamOn). if the total number of events change, then the number of jobs will change !!! Make sure that the number of jobs does not exceed the limit.. standard number of events: (currently e6 x 100 files). -> update: somehow a queue of 2 and 50 nodes is not enough anymore, so I changed values
+ int queue=5, nodes=100, n_beamOn=100000, n_totevents=1e+7, n_isot_std=8, n_isot_full=16, n_isot_full_sim= 11; //10;//These numbers are organized in such a way that the a queue of 2 and 50 nodes are enough for 10+6 events per macro (n_beamOn). if the total number of events change, then the number of jobs will change !!! Make sure that the number of jobs does not exceed the limit.. standard number of events: (currently e6 x 100 files). -> update: somehow a queue of 2 and 50 nodes is not enough anymore, so I changed values
  if (n_beamOn<10000) cout<<" min n_beamOn=10000"<<endl; //this is because of the output in the log files, which are later read to check whether the sim ran properly
 
  string std_isotopes[n_isot_std]={"238U","232Th","40K","60Co","137Cs","226Ra","235U","228Th"};
