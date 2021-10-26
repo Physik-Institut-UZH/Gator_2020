@@ -1,0 +1,20 @@
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   logical Volumes definitions
+
+G4LogicalVolume* PMT_stem_metal_envel_log;
+G4LogicalVolume* PMT_stem_copper_tube_log;
+G4LogicalVolume* PMT_stem_kovar_tube_log;
+G4LogicalVolume* PMT_stem_glass_spots_log;
+
+
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   Physical Volumes definitions
+
+G4VPhysicalVolume* PMT_stem_metal_envel_phys;
+G4VPhysicalVolume* PMT_stem_metal_envel_phys2;
+G4VPhysicalVolume* PMT_stem_metal_envel_phys3;
+G4VPhysicalVolume* PMT_stem_copper_tube_phys;
+G4VPhysicalVolume* PMT_stem_kovar_tube_phys;
+G4VPhysicalVolume* PMT_stem_glass_spots_phys;
