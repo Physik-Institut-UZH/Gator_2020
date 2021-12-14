@@ -1,11 +1,11 @@
 #include "isotopes.h"
-bool i_238U = true;
+bool i_238U = false;
 bool i_232Th = true;
-bool i_40K = true;
-bool i_60Co = true;
-bool i_137Cs = true;
-bool i_226Ra = true;
-bool i_235U = true;
+bool i_40K = false;
+bool i_60Co = false;
+bool i_137Cs = false;
+bool i_226Ra = false;
+bool i_235U = false;
 bool i_54Mn = false;
 bool i_58Co = false;
 bool i_56Co = false;
