@@ -368,7 +368,6 @@ if(i_238U){
 
 
 
-
 //------ 210Pb from  the 238U chain --------------//
 if(i_210Pb){
 
@@ -436,6 +435,52 @@ if(i_210Pb){
 
 } //End of the if(i_210Pb)	
 	
+
+/*
+//------ Starting with the 210Pb --------------//
+if(i_210Pb){
+
+	sprintf(FullFN1,"%s210Pb.root",DataPath);
+	sprintf(description1," ^{210}Pb Simulation");
+	cout<<FullFN1<<endl;
+	
+	TChain* t1 = new TChain("t1");
+	t1->Add(FullFN1);
+	
+	TCanvas* c210 = new TCanvas("c210","Simulated Spectra",870,500);
+	c210->SetLogy();
+	
+	TH1F *h210 = new TH1F("h210",description1,10000,0,1000);
+	
+	h210->SetXTitle("Energy [keV]");
+	h210->SetYTitle("counts");
+	h210->SetStats(0);
+	t1->Draw("GeEtot>>h210");
+	
+	
+	Int_t NumInEvtPb210 = NumInEvt;
+	
+	
+//--------------- Calculate the efficiencies (46.539 keV line) -------------------//
+	binx = h210 -> FindBin(46.539);
+	Float_t BRxEff46 = (h210->GetBinContent(binx) - (h210->Integral(binx-(compbins+1),binx-2)/compbins + h210->Integral(binx+2,binx+(compbins+1))/compbins)/2)/NumInEvtPb210;
+	
+	Float_t RealEff46 = BRxEff46 / BR46;
+	
+	cout<<"Efficiency x BR (46): "<<BRxEff46<<endl;
+	cout<<"Real Efficiency (46): "<<RealEff46<<endl;
+	
+	g_effic -> SetPoint(point,46.539,RealEff46);
+	g_effic -> SetPointError(point,0.0,0.1*RealEff46);
+	point++;
+	
+	sprintf(title,"%s210Pb.C",workdir.c_str());
+	c210->SaveAs(title);
+	
+	t1->Delete(); //Finished with 210Pb element
+	
+} //End of if(i_210Pb)
+*/
 	
 	
 //------ Starting with the 40K --------------//

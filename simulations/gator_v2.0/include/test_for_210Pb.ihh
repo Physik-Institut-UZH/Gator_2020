@@ -1,0 +1,6 @@
+
+// ---------- volume test_for_210Pb ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* test_for_210Pb_log;
+ G4VPhysicalVolume* test_for_210Pb_phys;

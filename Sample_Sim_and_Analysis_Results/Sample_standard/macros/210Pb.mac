@@ -1,4 +1,4 @@
-#228Th  subchain: Ra-224
+#210Pb radioisotope
 
 #/xe/generateCE  0
 #/tracking/verbose 0
@@ -11,13 +11,12 @@
 
 
 /xe/gun/particle ion
-/xe/gun/ion 88 224 0 0
-#/grdm/nucleusLimits 234 238 90 92
+/xe/gun/ion 82 210 0 0
 
 /xe/gun/energy 0 keV
 
 /xe/gun/type Volume
 /xe/gun/shape Cylinder
-/xe/gun/radius 3 mm
-/xe/gun/halfz 3 mm
-/xe/gun/center 0 0 156.411 mm
+/xe/gun/radius 50 cm
+/xe/gun/halfz 25 cm
+/xe/gun/center 0 0 135 mm

@@ -56,12 +56,12 @@ int main()
  cout<<"*****************************************" <<endl;
 
  // parameters used in a standard simulation
- int queue=5, nodes=100, n_beamOn=100000, n_totevents=1e+7, n_isot_std=8, n_isot_full=16, n_isot_full_sim=10;//These numbers are organized in such a way that the a queue of 2 and 50 nodes are enough for 10+6 events per macro (n_beamOn). if the total number of events change, then the number of jobs will change !!! Make sure that the number of jobs does not exceed the limit.. standard number of events: (currently e6 x 100 files). -> update: somehow a queue of 2 and 50 nodes is not enough anymore, so I changed values
+ int queue=5, nodes=100, n_beamOn=100000, n_totevents=1e+7, n_isot_std=8, n_isot_full=16, n_isot_full_sim= 11; //10;//These numbers are organized in such a way that the a queue of 2 and 50 nodes are enough for 10+6 events per macro (n_beamOn). if the total number of events change, then the number of jobs will change !!! Make sure that the number of jobs does not exceed the limit.. standard number of events: (currently e6 x 100 files). -> update: somehow a queue of 2 and 50 nodes is not enough anymore, so I changed values
  if (n_beamOn<10000) cout<<" min n_beamOn=10000"<<endl; //this is because of the output in the log files, which are later read to check whether the sim ran properly
 
  string std_isotopes[n_isot_std]={"238U","232Th","40K","60Co","137Cs","226Ra","235U","228Th"};
  string full_isotopes[n_isot_full]= {"238U","232Th","40K","60Co","137Cs", "226Ra","235U",  "54Mn", "58Co", "56Co","46Sc", "186keV", "1001keV","Pa", "7Be", "210Pb"};//Note: do not remove isotopes from the full list, since they need to be later read by EffCalcAll.cpp. If you add new isotopes, you need to write a new function for it in EffCalcAll.cpp as well and create macros.// isotopes that have macros but are not in the analysis: "228Th", "110mAg", "207Bi","57Co","134Cs". Isotope 56Co not working, but needs to be in the list.
- string full_isotopes_sim[n_isot_full_sim]= {"238U","232Th","40K","60Co","137Cs", "226Ra","235U", "54Mn", "58Co", "46Sc"};// Some isotopes are in the analysis (EffCalcAll.cpp) but have no macros: "Pa" (maybe it is the same to 1001Pa?), "7Be", "210Pb". 
+ string full_isotopes_sim[n_isot_full_sim]= {"238U","232Th","40K","60Co","137Cs", "226Ra","235U", "54Mn", "58Co", "46Sc", "210Pb"};// Some isotopes are in the analysis (EffCalcAll.cpp) but have no macros: "Pa" (maybe it is the same to 1001Pa?), "7Be", "210Pb". 
 //other lines \"1001keV\","186keV", \"605keV\", \"658keV\", \"885keV\", \"1064keV\", "186keV\", \"570keV\", \"796keV\", \"937keV\"]"; -> for these you may need EffCalcLine.cpp, not yet implemented in easygator
 
 //----------------------------------------------------------------------------------

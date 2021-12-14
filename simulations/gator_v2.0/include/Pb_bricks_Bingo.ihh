@@ -1,0 +1,12 @@
+
+// ---------- volume Pb_brick_1 ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* Pb_brick_1_log;
+ G4VPhysicalVolume* Pb_brick_1_phys;
+
+// ---------- volume Pb_brick_2 ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* Pb_brick_2_log;
+ G4VPhysicalVolume* Pb_brick_2_phys;
