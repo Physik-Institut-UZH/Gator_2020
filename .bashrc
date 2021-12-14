@@ -4,8 +4,8 @@ source /app/cern/root_v5.34.38/bin/thisroot.sh ###required for Gator analysis on
 source /app/cern/geant_4.9.3.2/env.sh 
 #####################################
 
-export GATORDIR=/disk/bulk_atp/gator ## THIS VARIABLE NEEDS TO BE CHANGED IN NEW INSTALLATIONS!!!!!!
-export GATORDIR_summary=/disk/bulk_atp/gator/allsummaryfiles ## THIS VARIABLE REMAINS THE SAME 
+export GATORDIR=/disk/gfs_atp/gator ## THIS VARIABLE NEEDS TO BE CHANGED IN NEW INSTALLATIONS!!!!!!
+export GATORDIR_summary=/disk/gfs_atp/gator/allsummaryfiles ## THIS VARIABLE REMAINS THE SAME 
 
 export G4WORKDIR=$GATORDIR/simulations/gator_v2.0 ## necessary to substitute env.sh.Sh variables
 export G4TMP=$GATORDIR/simulations/gator_v2.0/tmp ## necessary to substitute env.sh.Sh variables
