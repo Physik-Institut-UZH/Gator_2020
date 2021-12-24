@@ -4,3 +4,4 @@
 !*.so
 slurmlog/
 slurmlog_archive/
+BAT-0.9.3/
