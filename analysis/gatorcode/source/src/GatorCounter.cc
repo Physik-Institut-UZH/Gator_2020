@@ -105,9 +105,10 @@ void GatorCounter::NonIntRegionCounts(LineStruct &line){
 		line.countsL += mp_sampleSpect->GetBinContent(iBin);
 	}
 	line.countsL += fracUp*mp_sampleSpect->GetBinContent(bin2);
-	
+	//line.countsL*=line.binS/(2*line.binL); //this is here because the left compton region of the Tl 2.6 MeV line is much larger than the signal region.//deleted again
+
 	//Signal region
-	line.binS = line.UpEdgeS - line.LowEdgeS;
+	line.binS = line.UpEdgeS - line.LowEdgeS; 
 	BinLowEdge = mp_sampleSpect->GetBinLowEdge(bin3);
 	BinWidth = mp_sampleSpect->GetBinWidth(bin3);
 	
@@ -181,9 +182,11 @@ void GatorCounter::NonIntRegionCounts(LineStruct &line){
 			line.BgcountsL += mp_backgroundSpect->GetBinContent(iBin);
 		}
 		line.BgcountsL += fracUp*mp_backgroundSpect->GetBinContent(bin2);
+		//line.BgbinL*=line.BgbinS/(2*line.BgbinL); //this is here because the left compton region of the Tl 2.6 MeV line is much larger than the signal region.
 	
 		//Signal region
 		line.BgbinS = line.BgUpEdgeS - line.BgLowEdgeS;
+
 		BinLowEdge = mp_backgroundSpect->GetBinLowEdge(bin3);
 		BinWidth = mp_backgroundSpect->GetBinWidth(bin3);
 	

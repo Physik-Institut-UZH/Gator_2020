@@ -3,6 +3,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cmath>
+#include <math.h>
 
 #include "TCanvas.h"
 #include "TPad.h"
@@ -66,6 +68,7 @@ void GatorSampleAnalysis::doAnalysis(){
 	}
 	
 	int nLines = GetNLines();
+	double cov_f=1.282;
 	
 	ofstream logfile(m_logfilename.c_str());
 	
@@ -146,13 +149,13 @@ void GatorSampleAnalysis::doAnalysis(){
 			line->LineCnts_err = sqrt( pow(line->PeakCnts_err,2) +pow(line->CompCnts_err,2) + pow(bgcnts_err*time_ratio,2));//added by Gabriela 06.2021
 			
 			//line->LdCnts = 2.86 + 4.87*TMath::Sqrt(1.36 + line->CompCnts + bgcnts); //From the Gator paper// changed now (G. 07.2021)
-			line->LdCnts = 2.86 + 4.87*TMath::Sqrt(1.36 + line->CompCnts + 0.5*(line->BgPeakCnts-line->BgCompCnts)*time_ratio + 0.5*(line->BgPeakCnts+line->BgCompCnts)*pow(time_ratio,2) +pow(time_ratio,2) ); //updated following the right derivation of the formula (Gabriela 07.2021)
+			line->LdCnts = cov_f*cov_f + 2*cov_f*sqrt(2)*TMath::Sqrt(1 + cov_f*cov_f/8 + line->CompCnts + 0.5*(line->BgPeakCnts-line->BgCompCnts)*time_ratio + 0.5*(line->BgPeakCnts+line->BgCompCnts)*pow(time_ratio,2) +pow(time_ratio,2) ); //updated following the right derivation of the formula (Gabriela 07.2021)
 			
 		}else{
 			line->LineCnts = line->PeakCnts - line->CompCnts;
 			//line->LineCnts_err = sqrt( line->PeakCnts + line->CompCnts );
 			line->LineCnts_err = sqrt( pow(line->PeakCnts_err,2) +pow(line->CompCnts_err,2) );//added by Gabriela 06.2021
-			line->LdCnts = 2.86 + 4.87*TMath::Sqrt(1.36 + line->CompCnts); //From the Gator paper
+			line->LdCnts =  cov_f*cov_f + 2*cov_f*sqrt(2)*TMath::Sqrt(1 + cov_f*cov_f/8 + line->CompCnts); //From the Gator paper
 		}
 		double system_error_eff=0.1; //systematic error on the calculation of the efficiency (G. 07.2021)
 		double low_limit_eff=(1.-system_error_eff); //lowest value for the efficiency, given the systematic error (G. 07.2021)
