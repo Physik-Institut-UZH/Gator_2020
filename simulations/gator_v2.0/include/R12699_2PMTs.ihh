@@ -1,0 +1,19 @@
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   logical Volumes definitions
+
+G4LogicalVolume* R12699_silica_window_log;
+G4LogicalVolume* R12699_metal_dynodes_log;
+G4LogicalVolume* R12699_vacuum_vol_log;
+G4LogicalVolume* R12699_metal_envel_log;
+
+
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   Physical Volumes definitions
+
+G4VPhysicalVolume* R12699_silica_window_phys;
+G4VPhysicalVolume* R12699_metal_dynodes_phys;
+G4VPhysicalVolume* R12699_vacuum_vol_phys;
+G4VPhysicalVolume* R12699_metal_envel_phys_bot;
+G4VPhysicalVolume* R12699_metal_envel_phys_top;
