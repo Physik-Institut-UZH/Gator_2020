@@ -327,7 +327,7 @@ void GatorSampleAnalysis::WriteOutputTable(string outfilename){
 	}
 	outfile<<"\\hline"<<endl;
 	outfile<<"\\end{tabular}"<<endl;
-	outfile<<"\\caption{Activity Table, as calculated by the analysis code and given per unit, as indicated in the analysis input. Limits are given at 95CL, activities at one sigma.}"<<endl;
+	outfile<<"\\caption{Activity Table, as calculated by the analysis code and given per unit, as indicated in the analysis input. Limits are given at 90CL, activities at one sigma.}"<<endl;
 	outfile<<"\\end{table}"<<endl;
 	
 	outfile.close();
