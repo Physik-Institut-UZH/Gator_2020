@@ -1,0 +1,30 @@
+// Set visibility properties for all the samples 
+G4VisAttributes* sample_vis = new G4VisAttributes(red);
+sample_vis -> SetVisibility(true); 
+sample_vis -> SetForceSolid(false);
+
+//---------- volume Pb_PEP_tests_geom4_300um ---------- 
+
+//Dimensions of the sample in box and definition of the geometry
+ G4double Pb_PEP_tests_geom4_300um_ID     = 12.7*cm + 2*0.1*mm; // 0.1 mm larger than baseOD1
+ G4double Pb_PEP_tests_geom4_300um_OD     = Pb_PEP_tests_geom4_300um_ID + 2*0.3*mm; // 0.3mm thickness
+ G4double Pb_PEP_tests_geom4_300um_Height = 15.0*cm; // from top endcap to a bit above coldfinger
+ G4Tubs* Pb_PEP_tests_geom4_300um_tubs = new G4Tubs("Pb_PEP_tests_geom4_300um_tubs", 0.5*Pb_PEP_tests_geom4_300um_ID, 0.5*Pb_PEP_tests_geom4_300um_OD, 0.5*Pb_PEP_tests_geom4_300um_Height, 0.0*deg, 360.0*deg);
+
+//Construct the logical volume 
+ G4LogicalVolume* Pb_PEP_tests_geom4_300um_log = new G4LogicalVolume(Pb_PEP_tests_geom4_300um_tubs,Pb,"Pb_PEP_tests_geom4_300um_log");
+
+// Set visibility for the sample (all are set to the same color, change it if necessary) 
+Pb_PEP_tests_geom4_300um_log -> SetVisAttributes(sample_vis);
+
+// Set coordinates for the position of the sample and the position vector 
+G4double Pb_PEP_tests_geom4_300um_Pos_x = 0*mm;
+G4double Pb_PEP_tests_geom4_300um_Pos_y = 0*mm;
+G4double Pb_PEP_tests_geom4_300um_Pos_z= endcapPos_z - (Pb_PEP_tests_geom4_300um_Height - 12.905*cm)/2 + 0.1*mm; //Added a little shift to avoid surfaces overlap
+
+// Define the position vector 
+G4ThreeVector Pb_PEP_tests_geom4_300um_Pos(Pb_PEP_tests_geom4_300um_Pos_x, Pb_PEP_tests_geom4_300um_Pos_y, Pb_PEP_tests_geom4_300um_Pos_z); 
+
+// Define the physical volume 
+G4VPhysicalVolume* Pb_PEP_tests_geom4_300um_phys = new  G4PVPlacement(0, Pb_PEP_tests_geom4_300um_Pos, Pb_PEP_tests_geom4_300um_log, "Pb_PEP_tests_geom4_300um_phys", cavity1_log, false,0,true);
+

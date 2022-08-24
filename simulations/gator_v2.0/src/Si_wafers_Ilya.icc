@@ -1,0 +1,33 @@
+// Set visibility properties for all the samples
+G4VisAttributes* sample_vis = new G4VisAttributes(red);
+sample_vis -> SetVisibility(true);
+sample_vis -> SetForceSolid(false);
+
+//---------- Definition of elements and materials ----------
+// G4Element* Si  = new G4Element(name="Silicon", symbol="Si", z=14., a=28.0855*g/mole);
+G4Material* Si_wafers_Ilya_mat = new G4Material(name="Si_wafers_Ilya_mat", z=14., a=28.0855*g/mole, density=1.89*g/cm3);
+
+//---------- volume Si_wafers_Ilya ----------
+
+//Dimensions of the sample in tube and definition of the geometry
+ G4double tubs_Si_wafers_Ilya_Ro= 7.62*cm/2;
+ G4double tubs_Si_wafers_Ilya_Ri= 0.0*cm/2;
+ G4double tubs_Si_wafers_Ilya_z= 0.558*cm;
+ G4Tubs* Si_wafers_Ilya= new G4Tubs("Si_wafers_Ilya", tubs_Si_wafers_Ilya_Ri, tubs_Si_wafers_Ilya_Ro, 0.5*tubs_Si_wafers_Ilya_z, 0.*deg, 360.*deg);
+
+//Construct the logical volume
+ G4LogicalVolume* Si_wafers_Ilya_log = new G4LogicalVolume(Si_wafers_Ilya, Si_wafers_Ilya_mat, "Si_wafers_Ilya_log");
+
+// Set visibility for the sample (all are set to the same color, change it if necessary)
+Si_wafers_Ilya_log -> SetVisAttributes(sample_vis);
+
+// Set coordinates for the position of the sample at the top of the detector
+G4double Si_wafers_Ilya_Pos_x = 0*mm;
+G4double Si_wafers_Ilya_Pos_y = 0*mm;
+G4double Si_wafers_Ilya_Pos_z = endcapPos_z + 0.5*endcapHeight1 + 0.5*tubs_Si_wafers_Ilya_z + 0.01*mm;
+
+// Define the position vector
+G4ThreeVector Si_wafers_Ilya_Pos(Si_wafers_Ilya_Pos_x, Si_wafers_Ilya_Pos_y, Si_wafers_Ilya_Pos_z);
+
+// Define the physical volume
+G4VPhysicalVolume* Si_wafers_Ilya_phys = new  G4PVPlacement(0, Si_wafers_Ilya_Pos, Si_wafers_Ilya_log, "Si_wafers_Ilya_phys", cavity1_log, false, 0, true);

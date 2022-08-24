@@ -1,0 +1,7 @@
+
+// ---------- volume Pb_PEP_tests_geom4 ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* Pb_PEP_tests_geom4_log;
+ G4VPhysicalVolume* Pb_PEP_tests_geom4_phys;
+

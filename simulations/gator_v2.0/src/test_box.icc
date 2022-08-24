@@ -1,0 +1,29 @@
+// Set visibility properties for all the samples 
+G4VisAttributes* sample_vis = new G4VisAttributes(red);
+sample_vis -> SetVisibility(true); 
+sample_vis -> SetForceSolid(false);
+
+//---------- volume test_box ---------- 
+
+//Dimensions of the sample in box and definition of the geometry
+ G4double box_test_box_x= 50*mm;
+ G4double box_test_box_y= 50*mm;
+ G4double box_test_box_z= 50*mm;
+ G4Box* test_box= new G4Box("test_box",0.5*box_test_box_x,0.5*box_test_box_y,0.5*box_test_box_z);
+
+//Construct the logical volume 
+ G4LogicalVolume* test_box_log = new G4LogicalVolume(test_box,Teflon,"test_box_log");
+
+// Set visibility for the sample (all are set to the same color, change it if necessary) 
+test_box_log -> SetVisAttributes(sample_vis);
+
+// Set coordinates for the position of the sample at the top of the detector
+G4double test_box_Pos_x =0*mm;
+G4double test_box_Pos_y =0*mm;
+G4double test_box_Pos_z= endcapPos_z+0.5*endcapHeight1+0.5*box_test_box_z+0.01*mm;
+
+// Define the position vector 
+G4ThreeVector test_box_Pos(test_box_Pos_x,test_box_Pos_y,test_box_Pos_z); 
+
+// Define the physical volume 
+G4VPhysicalVolume* test_box_phys = new  G4PVPlacement(0,test_box_Pos,test_box_log,"test_box_phys",cavity1_log,false,0,true);

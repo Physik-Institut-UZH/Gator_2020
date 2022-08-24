@@ -1,0 +1,6 @@
+
+// ---------- volume test_box ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* test_box_log;
+ G4VPhysicalVolume* test_box_phys;

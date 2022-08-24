@@ -1,0 +1,6 @@
+
+// ---------- volume Si_wafers_Ilya ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* Si_wafers_Ilya_log;
+ G4VPhysicalVolume* Si_wafers_Ilya_phys;
