@@ -1,0 +1,82 @@
+/*
+Simulation geometry for 40 solar cable pieces without outer blue insulation 
+(only inner white one) for Gator PEP study. 
+40 pieces a 10 cm, two layers of 20 pieces each and 
+90 deg relative rotation. Size stack 10 cm x 10 cm x 1 cm.
+*/
+
+/********************* Colors for visualization properties *********************/
+//G4Colour red (1.0, 0.0, 0.0);
+//G4Colour white (1.0, 1.0, 1.0);
+
+/********************* Definition of elements and materials *********************/
+G4Material* Cables_PEP_Copper = new G4Material("Cables_PEP_Copper", z=29., a=63.546*g/mole, density=8.920*g/cm3);
+G4Material* Cables_PEP_Polyethylene = new G4Material(name="Cables_PEP_Polyethylene", density=0.95*g/cm3, ncomponents=2);
+    Cables_PEP_Polyethylene->AddElement(C,2);
+    Cables_PEP_Polyethylene->AddElement(H,4);
+
+
+/********************* Definition of dimensions *********************/
+G4double Cables_PEP_conductor_r_inner = 0*mm;
+G4double Cables_PEP_conductor_r_outer = 1.784*mm; // from 10mm^2 = A = pi*r^2
+G4double Cables_PEP_conductor_length  = 100*mm;
+
+G4double Cables_PEP_isolation_r_inner = Cables_PEP_conductor_r_inner;
+G4double Cables_PEP_isolation_r_outer = 5*mm/2;
+G4double Cables_PEP_isolation_length  = Cables_PEP_conductor_length;
+
+
+/********************* Definition of solids *********************/
+G4Tubs* Cables_PEP_isolation = new G4Tubs("Cables_PEP_isolation", Cables_PEP_isolation_r_inner, Cables_PEP_isolation_r_outer, Cables_PEP_isolation_length/2, 0.*deg, 360.*deg);
+
+G4Tubs* Cables_PEP_conductor = new G4Tubs("Cables_PEP_conductor", Cables_PEP_conductor_r_inner, Cables_PEP_conductor_r_outer, Cables_PEP_conductor_length/2, 0.*deg, 360.*deg);
+
+
+/********************* Logical Volumes *********************/
+Cables_PEP_isolation_log = new G4LogicalVolume(Cables_PEP_isolation, Cables_PEP_Polyethylene, "Cables_PEP_isolation_log");
+G4VisAttributes* Cables_PEP_isolation_vis = new G4VisAttributes(white);
+Cables_PEP_isolation_vis -> SetVisibility(true);
+Cables_PEP_isolation_vis -> SetForceSolid(false);
+Cables_PEP_isolation_log -> SetVisAttributes(Cables_PEP_isolation_vis);
+
+Cables_PEP_conductor_log = new G4LogicalVolume(Cables_PEP_conductor, Cables_PEP_Copper, "Cables_PEP_conductor_log");
+G4VisAttributes* Cables_PEP_conductor_vis = new G4VisAttributes(red);
+Cables_PEP_conductor_vis -> SetVisibility(true);
+Cables_PEP_conductor_vis -> SetForceSolid(false);
+Cables_PEP_conductor_log -> SetVisAttributes(Cables_PEP_conductor_vis);
+
+
+/********************* Physical Volumes and Placement *********************/
+// General positions
+G4double Pos_z_layer1 = endcapPos_z+0.5*endcapHeight1+Cables_PEP_isolation_r_outer+0.01*mm;
+G4double Pos_z_layer2 = Pos_z_layer1+2*Cables_PEP_isolation_r_outer+0.01*mm;
+G4ThreeVector Rot_axis_layer1 = G4ThreeVector(1,0,0);
+G4ThreeVector Rot_axis_layer2 = G4ThreeVector(0,1,0);
+
+// Place conductor in isolation
+G4ThreeVector Cables_PEP_conductor_in_isolation_pos(0., 0., 0.);
+Cables_PEP_conductor_phys = new G4PVPlacement(0, Cables_PEP_conductor_in_isolation_pos, Cables_PEP_conductor_log, "Cables_PEP_conductor_phys", Cables_PEP_isolation_log, false, 0, true);
+
+// Place cables
+std::stringstream cable_name;
+G4int num_cables_per_layer = 20;
+
+// Layer 1
+G4Transform3D t_1 = G4Translate3D(0, 0., Pos_z_layer1) * G4Rotate3D(90.0*deg, Rot_axis_layer1);
+for (G4int i_cable=0; i_cable < num_cables_per_layer; i_cable++){
+	cable_name.str("");
+	cable_name << "Cables_PEP_1_" << i_cable << "_phys";
+	t_1 = G4Translate3D((2*i_cable-19)*Cables_PEP_isolation_r_outer, 0., Pos_z_layer1) * G4Rotate3D(90.0*deg, Rot_axis_layer1);
+	Cables_PEP_1_phys = new G4PVPlacement(t_1, Cables_PEP_isolation_log, cable_name.str(), cavity1_log, false, 0, true);
+	}
+
+// Layer 2
+G4Transform3D t_2 = G4Translate3D(0, 0., Pos_z_layer2) * G4Rotate3D(90.0*deg, Rot_axis_layer2);
+for (G4int i_cable=0; i_cable < num_cables_per_layer; i_cable++){
+	cable_name.str("");
+	cable_name << "Cables_PEP_2_" << i_cable << "_phys";
+	t_2 = G4Translate3D(0., (2*i_cable-19)*Cables_PEP_isolation_r_outer, Pos_z_layer2) * G4Rotate3D(90.0*deg, Rot_axis_layer2);
+	Cables_PEP_2_phys = new G4PVPlacement(t_2, Cables_PEP_isolation_log, cable_name.str(), cavity1_log, false, 0, true);
+	}
+
+/* End of the file */

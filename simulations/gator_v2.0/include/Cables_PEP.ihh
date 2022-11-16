@@ -1,0 +1,15 @@
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   logical Volumes definitions
+
+G4LogicalVolume* Cables_PEP_isolation_log;
+G4LogicalVolume* Cables_PEP_conductor_log;
+
+
+//oooOOOOooo........oooOOOooo.......oooOOOooo.......oooOOOooo.......
+
+//---------------   Physical Volumes definitions
+
+G4VPhysicalVolume* Cables_PEP_1_phys;
+G4VPhysicalVolume* Cables_PEP_2_phys;
+G4VPhysicalVolume* Cables_PEP_conductor_phys;
