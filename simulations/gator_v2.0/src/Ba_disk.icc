@@ -1,0 +1,67 @@
+// Ba calibration source in disk
+
+// Set visibility properties for the components of the sample
+G4VisAttributes* sample_vis_red = new G4VisAttributes(red);
+sample_vis_red -> SetVisibility(true);
+sample_vis_red -> SetForceSolid(false);
+
+G4VisAttributes* sample_vis_white = new G4VisAttributes(white);
+sample_vis_white -> SetVisibility(true);
+sample_vis_white -> SetForceSolid(false);
+
+G4VisAttributes* sample_vis_orange = new G4VisAttributes(orange);
+sample_vis_orange -> SetVisibility(true);
+sample_vis_orange -> SetForceSolid(false);
+
+//Dimensions of the sample components and definition of the geometry
+ G4double tubs_Ba133_plastic_enclosure_Ro= 26.0*mm/2;
+ G4double tubs_Ba133_plastic_enclosure_Ri=  0.0*mm/2;
+ G4double tubs_Ba133_plastic_enclosure_z=   3.0*mm;
+ G4Tubs* Ba133_plastic_enclosure= new G4Tubs("Ba133_plastic_enclosure", tubs_Ba133_plastic_enclosure_Ri, tubs_Ba133_plastic_enclosure_Ro, 0.5*tubs_Ba133_plastic_enclosure_z, 0.*deg, 360.*deg);
+
+ G4double tubs_Ba133_bulk_Ro= tubs_Ba133_plastic_enclosure_Ro - 0.5*mm;
+ G4double tubs_Ba133_bulk_Ri=  0.0*mm/2;
+ G4double tubs_Ba133_bulk_z=   tubs_Ba133_plastic_enclosure_z - 0.5*mm;
+ G4Tubs* Ba133_bulk= new G4Tubs("Ba133_bulk", tubs_Ba133_bulk_Ri, tubs_Ba133_bulk_Ro, 0.5*tubs_Ba133_bulk_z, 0.*deg, 360.*deg);
+ 
+ G4double tubs_Ba133_source_Ro= 6.0*mm/2;
+ G4double tubs_Ba133_source_Ri= 0.0*mm/2;
+ G4double tubs_Ba133_source_z=  1.0*mm; 
+ G4Tubs* Ba133_source= new G4Tubs("Ba133_source", tubs_Ba133_source_Ri, tubs_Ba133_source_Ro, 0.5*tubs_Ba133_source_z, 0.*deg, 360.*deg);
+ 
+//Construct the logical volume
+  G4Material* Polypropylene = new G4Material(name="Polypropylene", density = 0.87*g/cm3, ncomponents = 2);
+        Polypropylene->AddElement(C,3);
+        Polypropylene->AddElement(H,6);
+
+  Ba133_plastic_enclosure_log = new G4LogicalVolume(Ba133_plastic_enclosure,Polypropylene,"Ba133_plastic_enclosure_log");
+ Ba133_bulk_log = new G4LogicalVolume(Ba133_bulk,Steel_304,"Ba133_bulk_log");
+ Ba133_source_log = new G4LogicalVolume(Ba133_source,Steel_304,"Ba133_source_log");
+ 
+// Set visibility for the sample components
+Ba133_plastic_enclosure_log -> SetVisAttributes(sample_vis_red);
+Ba133_bulk_log -> SetVisAttributes(sample_vis_white);
+Ba133_source_log -> SetVisAttributes(sample_vis_orange);
+
+// Set coordinates for the position of the sample at the top of the detector
+G4double Ba133_plastic_enclosure_Pos_x =0*mm;
+G4double Ba133_plastic_enclosure_Pos_y =0*mm;
+G4double Ba133_plastic_enclosure_Pos_z= endcapPos_z+0.5*endcapHeight1+0.5*tubs_Ba133_plastic_enclosure_z+0.01*mm;
+
+// Define the position vector of the full sample
+G4ThreeVector Ba133_plastic_enclosure_Pos(Ba133_plastic_enclosure_Pos_x, Ba133_plastic_enclosure_Pos_y, Ba133_plastic_enclosure_Pos_z);
+
+// Define the position vector of the bulk in the plastic enclosure
+G4ThreeVector Ba133_bulk_Pos(Ba133_plastic_enclosure_Pos_x, Ba133_plastic_enclosure_Pos_y, tubs_Ba133_plastic_enclosure_z/2 - tubs_Ba133_bulk_z/2);
+
+// Define the position vector of the source in the bulk
+G4ThreeVector Ba133_source_Pos(Ba133_plastic_enclosure_Pos_x, Ba133_plastic_enclosure_Pos_y, - tubs_Ba133_bulk_z/2 + tubs_Ba133_source_z/2);
+
+// Define the physical volumes
+Ba133_source_phys = new  G4PVPlacement(0, Ba133_source_Pos, Ba133_source_log, "Ba133_source_phys", Ba133_bulk_log, false, 0, true);
+
+Ba133_bulk_phys = new  G4PVPlacement(0, Ba133_bulk_Pos, Ba133_bulk_log, "Ba133_bulk_phys", Ba133_plastic_enclosure_log, false, 0, true);
+
+Ba133_plastic_enclosure_phys = new  G4PVPlacement(0, Ba133_plastic_enclosure_Pos, Ba133_plastic_enclosure_log, "Ba133_plastic_enclosure_phys", cavity1_log, false, 0, true);
+
+/* End of the file */

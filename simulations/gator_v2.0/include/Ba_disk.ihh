@@ -1,0 +1,10 @@
+
+// ---------- Ba calibration source in disk ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* Ba133_plastic_enclosure_log;
+ G4VPhysicalVolume* Ba133_plastic_enclosure_phys;
+ G4LogicalVolume* Ba133_bulk_log;
+ G4VPhysicalVolume* Ba133_bulk_phys;
+ G4LogicalVolume* Ba133_source_log;
+ G4VPhysicalVolume* Ba133_source_phys;
