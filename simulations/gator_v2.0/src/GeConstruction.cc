@@ -716,8 +716,8 @@ G4cout<<"lead top second layer"<<G4endl;
 
   //------------------------------ ge_crystal_active_region
   G4double crystalID = 0.0*cm;
-  G4double crystalOD = 8.01*cm;  //was 8.04
-  G4double crystalHeight = 7.9789933*cm;
+  G4double crystalOD = 8.01*cm;  // as of 02.2023
+  G4double crystalHeight = 8.02*cm;  // as of 02.2023
 
   G4Tubs* Crystal2WOHole = new G4Tubs("Crystal2WOHole", 0.5*crystalID,0.5*crystalOD,
 				      0.5*crystalHeight,0.0*deg,360.0*deg);
