@@ -1,0 +1,55 @@
+// Marinelli beaker
+
+// Set visibility properties for the components of the sample
+G4VisAttributes* sample_vis_orange = new G4VisAttributes(orange);
+sample_vis_orange -> SetVisibility(true);
+sample_vis_orange -> SetForceSolid(false);
+
+//Dimensions of the sample components and definition of the geometry
+ G4double thickness_wall = 2.7*mm;
+ 
+ G4double tubs_cylinder_inner_Ri = 105.5*mm/2;
+ G4double tubs_cylinder_inner_Ro = tubs_cylinder_inner_Ri + thickness_wall;
+ G4double tubs_cylinder_inner_z  = 100*mm + thickness_wall;
+ 
+ G4double tubs_disk_inner_Ro = tubs_cylinder_inner_Ro;
+ G4double tubs_disk_inner_Ri = 0.0*mm/2;
+ G4double tubs_disk_inner_z  = thickness_wall;
+ 
+ G4double tubs_cylinder_outer_Ro = 200*mm/2;
+ G4double tubs_cylinder_outer_Ri = tubs_cylinder_outer_Ro - thickness_wall;
+ G4double tubs_cylinder_outer_z  = 175*mm;
+ 
+ G4double tubs_disk_outer_Ro = tubs_cylinder_outer_Ro;
+ G4double tubs_disk_outer_Ri = tubs_cylinder_inner_Ri;
+ G4double tubs_disk_outer_z  = thickness_wall;
+
+ G4Tubs* tubs_cylinder_inner= new G4Tubs("tubs_cylinder_inner", tubs_cylinder_inner_Ri, tubs_cylinder_inner_Ro, 0.5*tubs_cylinder_inner_z, 0.*deg, 360.*deg);
+ G4Tubs* tubs_cylinder_outer= new G4Tubs("tubs_cylinder_outer", tubs_cylinder_outer_Ri, tubs_cylinder_outer_Ro, 0.5*tubs_cylinder_outer_z, 0.*deg, 360.*deg);
+ G4Tubs* tubs_disk_inner= new G4Tubs("tubs_disk_inner", tubs_disk_inner_Ri, tubs_disk_inner_Ro, 0.5*tubs_disk_inner_z, 0.*deg, 360.*deg);
+ G4Tubs* tubs_disk_outer= new G4Tubs("tubs_disk_outer", tubs_disk_outer_Ri, tubs_disk_outer_Ro, 0.5*tubs_disk_outer_z, 0.*deg, 360.*deg);
+ 
+ G4UnionSolid* marinelli_beaker = new G4UnionSolid("marinelli_beaker", tubs_disk_inner, tubs_cylinder_inner, 0, G4ThreeVector(0*mm, 0*mm, tubs_disk_inner_z/2 - tubs_cylinder_inner_z/2));
+ marinelli_beaker = new G4UnionSolid("marinelli_beaker", marinelli_beaker, tubs_disk_outer, 0, G4ThreeVector(0*mm, 0*mm, tubs_disk_inner_z/2 - tubs_cylinder_inner_z + tubs_disk_outer_z/2));
+ marinelli_beaker = new G4UnionSolid("marinelli_beaker", marinelli_beaker, tubs_cylinder_outer, 0, G4ThreeVector(0*mm, 0*mm, tubs_disk_inner_z/2 - tubs_cylinder_inner_z + tubs_cylinder_outer_z/2));
+ 
+//Construct the logical volume
+  G4Material* Polypropylene = new G4Material(name="Polypropylene", density = 0.87*g/cm3, ncomponents = 2);
+        Polypropylene->AddElement(C,3);
+        Polypropylene->AddElement(H,6);
+
+ marinelli_beaker_log = new G4LogicalVolume(marinelli_beaker, Polypropylene, "marinelli_beaker_log");
+ 
+// Set visibility for the sample components
+marinelli_beaker_log -> SetVisAttributes(sample_vis_orange);
+
+// Set coordinates for the position of the sample at the top of the detector
+G4double marinelli_beaker_Pos_x = 0*mm;
+G4double marinelli_beaker_Pos_y = 0*mm;
+G4double marinelli_beaker_Pos_z = endcapPos_z + 0.5*endcapHeight1 + 0.01*mm + 0.5*tubs_disk_inner_z;
+G4ThreeVector marinelli_beaker_Pos(marinelli_beaker_Pos_x, marinelli_beaker_Pos_y, marinelli_beaker_Pos_z);
+
+// Define the physical volumes
+marinelli_beaker_phys = new  G4PVPlacement(0, marinelli_beaker_Pos, marinelli_beaker_log, "marinelli_beaker_phys", cavity1_log, false, 0, true);
+
+/* End of the file */
