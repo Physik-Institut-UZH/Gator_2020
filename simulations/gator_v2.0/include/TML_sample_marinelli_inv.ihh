@@ -1,0 +1,8 @@
+
+// ---------- Ba calibration source in disk ---------- //
+
+//---------------   solids, logical and physical volumes definitions 
+ G4LogicalVolume* marinelli_beaker_log;
+ G4LogicalVolume* tml_log;
+ G4VPhysicalVolume* marinelli_beaker_phys;
+ G4VPhysicalVolume* tml_phys;

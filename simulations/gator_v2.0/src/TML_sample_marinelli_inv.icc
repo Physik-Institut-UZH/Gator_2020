@@ -1,0 +1,114 @@
+// TML (table mountain latite) in inverted Marinelli beaker
+
+// TML material definition 
+
+/*
+"Table Mountain is a series of flat-topped hills in Tuolumne County, California that roughly parallels the modern Stanislaus River. These hills are capped by lava which flowed down from the crest of the Sierra Nevada 10.4 million years ago and hardened into a rock (latite) that is relatively resistant to erosion. The top of Table Mountain is composed of Table Mountain Latite, which formed from potassium-rich lavas erupted from a center of volcanism near modern-day Sonora Pass around 10.4 million years ago. Most outcrops on Table Mountain reveal flow-top breccias, while some outcrops show distinctive columnar jointing." - https://en.wikipedia.org/wiki/Table_Mountain_(Tuolumne_County,_California) 
+
+"Latite is an igneous, volcanic rock, with aphanitic-aphyric to aphyric-porphyritic texture. Its mineral assemblage is usually alkali feldspar and plagioclase in approximately equal amounts. Quartz is less than five percent and is absent in a feldspathoid-bearing latite, and olivine is absent in a quartz-bearing latite." - https://en.wikipedia.org/wiki/Latite 
+
+Feldspar formula (repeating unit, https://en.wikipedia.org/wiki/Feldspar): 
+K Al Si3 O8 – Na Al Si3 O8 – Ca Al2 Si2 O8
+
+Plagioclase formula (repeating unit, https://en.wikipedia.org/wiki/Plagioclase): 
+Na Al Si3 O8 – Ca Al2 Si2 O8
+
+=> elements (total both consituents):
+K  1 = 1
+Na 1+1 = 2
+Ca 1+1 = 2
+Al 1+1+2+1+2 = 7
+Si 3+3+2+3+2 = 13
+O  8+8+8+8+8 = 40
+
+-----
+
+Sample mass: 
+  114.8g - 17.0g = 97.8g
+Sample volume: 
+  assume 5mm effective height
+  tubs_cylinder_inner_Ri = 105.5*mm/2
+  -> V = pi * (10.55cm/2)^2 * 0.5cm ~ 43.7 cm^3
+Effective density: 
+  rho_eff = 97.8g/(43.7cm^3) ~ 2.24 g/cm^3
+*/
+
+  G4Material* Polypropylene = new G4Material(name="Polypropylene", density = 0.87*g/cm3, ncomponents = 2);
+        Polypropylene->AddElement(C,3);
+        Polypropylene->AddElement(H,6);
+
+  G4Material* TML_mat = new G4Material(name="TML_mat", density = 2.24*g/cm3, ncomponents = 6);
+        TML_mat->AddElement(K,1);
+        TML_mat->AddElement(Na,2);
+        TML_mat->AddElement(Ca,2);
+        TML_mat->AddElement(Al,7);
+        TML_mat->AddElement(Si,13);
+        TML_mat->AddElement(O,40);
+
+// Set visibility properties for the components of the sample
+G4VisAttributes* sample_vis_white = new G4VisAttributes(white);
+sample_vis_white -> SetVisibility(true);
+sample_vis_white -> SetForceSolid(false);
+
+G4VisAttributes* sample_vis_red = new G4VisAttributes(red);
+sample_vis_red -> SetVisibility(true);
+sample_vis_red -> SetForceSolid(false);
+
+//Dimensions of the sample components and definition of the geometry
+ G4double thickness_wall = 2.7*mm;
+ 
+ G4double tubs_cylinder_inner_Ri = 105.5*mm/2;
+ G4double tubs_cylinder_inner_Ro = tubs_cylinder_inner_Ri + thickness_wall;
+ G4double tubs_cylinder_inner_z  = 100*mm + thickness_wall;
+ 
+ G4double tubs_disk_inner_Ro = tubs_cylinder_inner_Ro;
+ G4double tubs_disk_inner_Ri = 0.0*mm/2;
+ G4double tubs_disk_inner_z  = thickness_wall;
+ 
+ G4double tubs_cylinder_outer_Ro = 200*mm/2;
+ G4double tubs_cylinder_outer_Ri = tubs_cylinder_outer_Ro - thickness_wall;
+ G4double tubs_cylinder_outer_z  = 175*mm;
+ 
+ G4double tubs_disk_outer_Ro = tubs_cylinder_outer_Ro;
+ G4double tubs_disk_outer_Ri = tubs_cylinder_inner_Ri;
+ G4double tubs_disk_outer_z  = thickness_wall;
+
+ G4Tubs* tubs_cylinder_inner= new G4Tubs("tubs_cylinder_inner", tubs_cylinder_inner_Ri, tubs_cylinder_inner_Ro, 0.5*tubs_cylinder_inner_z, 0.*deg, 360.*deg);
+ G4Tubs* tubs_cylinder_outer= new G4Tubs("tubs_cylinder_outer", tubs_cylinder_outer_Ri, tubs_cylinder_outer_Ro, 0.5*tubs_cylinder_outer_z, 0.*deg, 360.*deg);
+ G4Tubs* tubs_disk_inner= new G4Tubs("tubs_disk_inner", tubs_disk_inner_Ri, tubs_disk_inner_Ro, 0.5*tubs_disk_inner_z, 0.*deg, 360.*deg);
+ G4Tubs* tubs_disk_outer= new G4Tubs("tubs_disk_outer", tubs_disk_outer_Ri, tubs_disk_outer_Ro, 0.5*tubs_disk_outer_z, 0.*deg, 360.*deg);
+ 
+ G4UnionSolid* marinelli_beaker = new G4UnionSolid("marinelli_beaker", tubs_disk_inner, tubs_cylinder_inner, 0, G4ThreeVector(0*mm, 0*mm, -(tubs_disk_inner_z/2 - tubs_cylinder_inner_z/2)));
+ marinelli_beaker = new G4UnionSolid("marinelli_beaker", marinelli_beaker, tubs_disk_outer, 0, G4ThreeVector(0*mm, 0*mm, -(tubs_disk_inner_z/2 - tubs_cylinder_inner_z + tubs_disk_outer_z/2)));
+ marinelli_beaker = new G4UnionSolid("marinelli_beaker", marinelli_beaker, tubs_cylinder_outer, 0, G4ThreeVector(0*mm, 0*mm, -(tubs_disk_inner_z/2 - tubs_cylinder_inner_z + tubs_cylinder_outer_z/2)));
+ 
+ G4double tubs_tml_Ri = 0*mm;
+ G4double tubs_tml_Ro = tubs_cylinder_inner_Ri;
+ G4double tubs_tml_z  = 5*mm;
+ 
+ G4Tubs* tubs_tml= new G4Tubs("tubs_tml", tubs_tml_Ri, tubs_tml_Ro, 0.5*tubs_tml_z, 0.*deg, 360.*deg);
+ 
+//Construct the logical volume
+ marinelli_beaker_log = new G4LogicalVolume(marinelli_beaker, Polypropylene, "marinelli_beaker_log");
+ tml_log = new G4LogicalVolume(tubs_tml, TML_mat, "tml_log");
+ 
+// Set visibility for the sample components
+marinelli_beaker_log -> SetVisAttributes(sample_vis_white);
+tml_log -> SetVisAttributes(sample_vis_red);
+
+// Set coordinates for the position of the sample at the top of the detector
+G4double marinelli_beaker_Pos_x = 0*mm;
+G4double marinelli_beaker_Pos_y = 0*mm;
+G4double marinelli_beaker_Pos_z = endcapPos_z + 0.5*endcapHeight1 + 0.01*mm + 0.5*tubs_disk_inner_z;
+G4ThreeVector marinelli_beaker_Pos(marinelli_beaker_Pos_x, marinelli_beaker_Pos_y, marinelli_beaker_Pos_z);
+
+G4double tml_Pos_x = 0*mm;
+G4double tml_Pos_y = 0*mm;
+G4double tml_Pos_z = marinelli_beaker_Pos_z + 0.5*tubs_disk_inner_z + 0.5*tubs_tml_z;
+G4ThreeVector tml_Pos(tml_Pos_x, tml_Pos_y, tml_Pos_z);
+
+// Define the physical volumes
+marinelli_beaker_phys = new  G4PVPlacement(0, marinelli_beaker_Pos, marinelli_beaker_log, "marinelli_beaker_phys", cavity1_log, false, 0, true);
+tml_phys = new  G4PVPlacement(0, tml_Pos, tml_log, "tml_phys", cavity1_log, false, 0, true);
+
+/* End of the file */
