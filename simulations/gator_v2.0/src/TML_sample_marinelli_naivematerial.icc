@@ -38,19 +38,13 @@ Effective density:
         Polypropylene->AddElement(C,3);
         Polypropylene->AddElement(H,6);
 
-  // composition by fraction of mass derived from tml.csv
-  G4Material* TML_mat = new G4Material(name="TML_mat", density = 2.24*g/cm3, ncomponents = 11);
-        TML_mat->AddElement(Na,  3.056480);
-        TML_mat->AddElement(O,  45.822666);
-        TML_mat->AddElement(Mg,  0.777924);
-        TML_mat->AddElement(Al,  9.891892);
-        TML_mat->AddElement(Si, 26.704659);
-        TML_mat->AddElement(P,   0.011367);
-        TML_mat->AddElement(K,   2.855717);
-        TML_mat->AddElement(Ca,  4.624082);
-        TML_mat->AddElement(Ti,  0.827101);
-        TML_mat->AddElement(Mn,  0.030978);
-        TML_mat->AddElement(Fe,  4.757132);
+  G4Material* TML_mat = new G4Material(name="TML_mat", density = 1.95*g/cm3, ncomponents = 6);
+        TML_mat->AddElement(K,1);
+        TML_mat->AddElement(Na,2);
+        TML_mat->AddElement(Ca,2);
+        TML_mat->AddElement(Al,7);
+        TML_mat->AddElement(Si,13);
+        TML_mat->AddElement(O,40);
 
 // Set visibility properties for the components of the sample
 G4VisAttributes* sample_vis_white = new G4VisAttributes(white);

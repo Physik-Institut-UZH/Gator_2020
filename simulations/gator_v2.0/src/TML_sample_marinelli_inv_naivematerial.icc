@@ -1,4 +1,4 @@
-// TML (table mountain latite) in Marinelli beaker at lateral detector position
+// TML (table mountain latite) in inverted Marinelli beaker
 
 // TML material definition 
 
@@ -26,31 +26,24 @@ O  8+8+8+8+8 = 40
 Sample mass: 
   114.8g - 17.0g = 97.8g
 Sample volume: 
-  assume 2.5mm effective height
-  tubs_cylinder_inner_Ro = tubs_cylinder_inner_Ri + thickness_wall = 105.5*mm/2 + 2.7*mm = 5.545 cm
-  tubs_cylinder_outer_Ri = tubs_cylinder_outer_Ro - thickness_wall = 200*mm/2 - 2.7*mm = 9.73 cm
-  -> V = pi * ((9.73 cm)^2 - (5.545 cm)^2) * 0.25cm ~ 200.83 cm^2 * 0.25 cm ~ 50.21 cm^3
+  assume 5mm effective height
+  tubs_cylinder_inner_Ri = 105.5*mm/2
+  -> V = pi * (10.55cm/2)^2 * 0.5cm ~ 43.7 cm^3
 Effective density: 
-  rho_eff = 97.8g/(50.21cm^3) ~ 1.95 g/cm^3
+  rho_eff = 97.8g/(43.7cm^3) ~ 2.24 g/cm^3
 */
 
   G4Material* Polypropylene = new G4Material(name="Polypropylene", density = 0.87*g/cm3, ncomponents = 2);
         Polypropylene->AddElement(C,3);
         Polypropylene->AddElement(H,6);
 
-  // composition by fraction of mass derived from tml.csv
-  G4Material* TML_mat = new G4Material(name="TML_mat", density = 2.24*g/cm3, ncomponents = 11);
-        TML_mat->AddElement(Na,  3.056480);
-        TML_mat->AddElement(O,  45.822666);
-        TML_mat->AddElement(Mg,  0.777924);
-        TML_mat->AddElement(Al,  9.891892);
-        TML_mat->AddElement(Si, 26.704659);
-        TML_mat->AddElement(P,   0.011367);
-        TML_mat->AddElement(K,   2.855717);
-        TML_mat->AddElement(Ca,  4.624082);
-        TML_mat->AddElement(Ti,  0.827101);
-        TML_mat->AddElement(Mn,  0.030978);
-        TML_mat->AddElement(Fe,  4.757132);
+  G4Material* TML_mat = new G4Material(name="TML_mat", density = 2.24*g/cm3, ncomponents = 6);
+        TML_mat->AddElement(K,1);
+        TML_mat->AddElement(Na,2);
+        TML_mat->AddElement(Ca,2);
+        TML_mat->AddElement(Al,7);
+        TML_mat->AddElement(Si,13);
+        TML_mat->AddElement(O,40);
 
 // Set visibility properties for the components of the sample
 G4VisAttributes* sample_vis_white = new G4VisAttributes(white);
@@ -85,13 +78,13 @@ sample_vis_red -> SetForceSolid(false);
  G4Tubs* tubs_disk_inner= new G4Tubs("tubs_disk_inner", tubs_disk_inner_Ri, tubs_disk_inner_Ro, 0.5*tubs_disk_inner_z, 0.*deg, 360.*deg);
  G4Tubs* tubs_disk_outer= new G4Tubs("tubs_disk_outer", tubs_disk_outer_Ri, tubs_disk_outer_Ro, 0.5*tubs_disk_outer_z, 0.*deg, 360.*deg);
  
- G4UnionSolid* marinelli_beaker = new G4UnionSolid("marinelli_beaker", tubs_disk_inner, tubs_cylinder_inner, 0, G4ThreeVector(0*mm, 0*mm, (tubs_disk_inner_z/2 - tubs_cylinder_inner_z/2)));
- marinelli_beaker = new G4UnionSolid("marinelli_beaker", marinelli_beaker, tubs_disk_outer, 0, G4ThreeVector(0*mm, 0*mm, (tubs_disk_inner_z/2 - tubs_cylinder_inner_z + tubs_disk_outer_z/2)));
- marinelli_beaker = new G4UnionSolid("marinelli_beaker", marinelli_beaker, tubs_cylinder_outer, 0, G4ThreeVector(0*mm, 0*mm, (tubs_disk_inner_z/2 - tubs_cylinder_inner_z + tubs_cylinder_outer_z/2)));
+ G4UnionSolid* marinelli_beaker = new G4UnionSolid("marinelli_beaker", tubs_disk_inner, tubs_cylinder_inner, 0, G4ThreeVector(0*mm, 0*mm, -(tubs_disk_inner_z/2 - tubs_cylinder_inner_z/2)));
+ marinelli_beaker = new G4UnionSolid("marinelli_beaker", marinelli_beaker, tubs_disk_outer, 0, G4ThreeVector(0*mm, 0*mm, -(tubs_disk_inner_z/2 - tubs_cylinder_inner_z + tubs_disk_outer_z/2)));
+ marinelli_beaker = new G4UnionSolid("marinelli_beaker", marinelli_beaker, tubs_cylinder_outer, 0, G4ThreeVector(0*mm, 0*mm, -(tubs_disk_inner_z/2 - tubs_cylinder_inner_z + tubs_cylinder_outer_z/2)));
  
- G4double tubs_tml_Ri = tubs_cylinder_inner_Ro;
- G4double tubs_tml_Ro = tubs_cylinder_outer_Ri;
- G4double tubs_tml_z  = 2.5*mm;
+ G4double tubs_tml_Ri = 0*mm;
+ G4double tubs_tml_Ro = tubs_cylinder_inner_Ri;
+ G4double tubs_tml_z  = 5*mm;
  
  G4Tubs* tubs_tml= new G4Tubs("tubs_tml", tubs_tml_Ri, tubs_tml_Ro, 0.5*tubs_tml_z, 0.*deg, 360.*deg);
  
@@ -111,7 +104,7 @@ G4ThreeVector marinelli_beaker_Pos(marinelli_beaker_Pos_x, marinelli_beaker_Pos_
 
 G4double tml_Pos_x = 0*mm;
 G4double tml_Pos_y = 0*mm;
-G4double tml_Pos_z = marinelli_beaker_Pos_z + (tubs_disk_inner_z/2 - tubs_cylinder_inner_z + tubs_disk_outer_z/2) + 0.5*tubs_disk_outer_z + 0.5*tubs_tml_z;
+G4double tml_Pos_z = marinelli_beaker_Pos_z + 0.5*tubs_disk_inner_z + 0.5*tubs_tml_z;
 G4ThreeVector tml_Pos(tml_Pos_x, tml_Pos_y, tml_Pos_z);
 
 // Define the physical volumes
