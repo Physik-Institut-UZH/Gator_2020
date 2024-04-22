@@ -1,0 +1,477 @@
+/*
+Simulation geometry for 2 Hamamatsu R12699-406-M4 PMTs 
+Comments: 
+- neglect rounded corners (sub-dominant effect compared to other geometry uncertainties)
+- total mass in plastic bag: 207.6 g
+- distance window - first dynode approx. 2.6 mm
+*/
+
+
+/********************* Colors for visualization properties *********************/
+//G4Colour red (1.0, 0.0, 0.0);
+//G4Colour blue (0.0, 0.0, 1.0);
+//G4Colour yellow (1.0, 1.0, 0.0);
+//G4Colour orange (0.75, 0.55, 0.0);
+//G4Colour lblue (0.0, 0.0, 0.55);
+//G4Colour white (1.0, 1.0, 1.0);
+
+
+/********************* Definition of elements and materials *********************/
+//G4Element* Fe = new G4Element(name="Iron"  ,symbol="Fe",z=26.,a=55.85*g/mole);
+//G4Element* Ni = new G4Element(name="Nickel", symbol="Ni", z=28., a=58.6934*g/mole);
+//G4Element* C  = new G4Element(name="Carbon",symbol="C" ,z=6., a=12.011*g/mole);
+//G4Element* Cr = new G4Element(name="Chromium", symbol="Cr", z=24., a=51.9961*g/mole);
+//G4Element* Ni = new G4Element(name="Nickel", symbol="Ni", z=28., a=58.6934*g/mole);
+//G4Element* Mn = new G4Element(name="Manganese", symbol="Mn", z=25., a=54.93805*g/mole);
+//G4Element* Si = new G4Element(name="Silicon", symbol="Si", z=14., a=28.0855*g/mole);
+//G4Element* P  = new G4Element(name="Phosphorus", symbol="P", z=15., a=30.973762*g/mole);
+//G4Element* S  = new G4Element(name="Sulfur", symbol="S", z=16., a=32.066*g/mole);
+//G4Element* O  = new G4Element(name="Oxygen" ,symbol="O" , z=8., a=16.0*g/mole);
+//G4Element *N  = new G4Element("Nitrogen",  "N",  7.,  14.007*g/mole);
+
+// No info given on what material the PMT is made of
+G4Material* R12699_Steel_304 = new G4Material(name="R12699_Steel_304" , density=8.03*g/cm3, ncomponents=8);
+	R12699_Steel_304->AddElement(Fe, fractionmass=0.6944);
+	R12699_Steel_304->AddElement(C,  fractionmass=0.005);   
+	R12699_Steel_304->AddElement(Cr, fractionmass=0.185);
+	R12699_Steel_304->AddElement(Ni, fractionmass=0.10);
+	R12699_Steel_304->AddElement(Mn, fractionmass=0.01);
+	R12699_Steel_304->AddElement(Si, fractionmass=0.005);
+	R12699_Steel_304->AddElement(P,  fractionmass=0.0004);
+	R12699_Steel_304->AddElement(S,  fractionmass=0.0002);
+
+// Quartz as in XENON1T simulations, 
+// not like in other Gator PMTs (seems to be the one for the stem)
+G4Material* R12699_Quartz = new G4Material("R12699_Quartz", 2.201 * g / cm3, 2, kStateSolid);
+	R12699_Quartz->AddElement(Si, 1);
+	R12699_Quartz->AddElement(O, 2);
+
+// Define effective dynode volume material with density of ~ 1.763 g/cm 
+// to match total measured PMT mass, 
+// yielding a density reduction factor wrt 'R12699_Steel_304' of ~ 0.22
+G4Material* R12699_Dynode_Effective_Material = new G4Material(name="R12699_Dynode_Effective_Material" , density=1.763*g/cm3, ncomponents=8);
+	R12699_Dynode_Effective_Material->AddElement(Fe, fractionmass=0.6944);
+	R12699_Dynode_Effective_Material->AddElement(C,  fractionmass=0.005);   
+	R12699_Dynode_Effective_Material->AddElement(Cr, fractionmass=0.185);
+	R12699_Dynode_Effective_Material->AddElement(Ni, fractionmass=0.10);
+	R12699_Dynode_Effective_Material->AddElement(Mn, fractionmass=0.01);
+	R12699_Dynode_Effective_Material->AddElement(Si, fractionmass=0.005);
+	R12699_Dynode_Effective_Material->AddElement(P,  fractionmass=0.0004);
+	R12699_Dynode_Effective_Material->AddElement(S,  fractionmass=0.0002);
+
+// Vacuum inside the PMT
+G4Material* R12699_vacuum = new G4Material("R12699_vacuum", 1.e-20 * g / cm3, 2, kStateGas);
+	R12699_vacuum->AddElement(N, 0.755);
+	R12699_vacuum->AddElement(O, 0.245);
+	
+// Material for glass spots at back of PMTs
+// (Hamamatsu estimates that the material having the highest radioactivity 
+// in R12699-406-M4 is the glasses around the pins at the bottom)
+G4Material* R12699_Ceramic = new G4Material("R12699_Ceramic", 2.648 * g / cm3, 2, kStateSolid);
+	R12699_Ceramic->AddElement(Si, 1);
+	R12699_Ceramic->AddElement(O, 2);
+
+
+
+/********************* Definition of dimensions (from data sheet and measurements) *********************/
+
+G4double R12699_full_height               = 14.8*mm;
+G4double R12699_silica_window_height      =  2.5*mm;
+G4double R12699_metal_ring_height         =  3.7*mm - R12699_silica_window_height;
+G4double R12699_metal_body_height         = R12699_full_height - R12699_silica_window_height- R12699_metal_ring_height;
+
+G4double R12699_silica_window_outer_width = 54.6*mm;
+G4double R12699_metal_ring_outer_width    = 56.0*mm;
+G4double R12699_metal_ring_inner_width    = 48.5*mm;
+G4double R12699_metal_body_outer_width    = 51.1*mm;
+
+G4double R12699_metal_pins_length         =  6.0*mm;
+G4double R12699_metal_pins_outer_diameter =  0.45*mm;
+
+G4double R12699_wall_thickness            = R12699_metal_ring_height; //educated guess
+
+G4double R12699_metal_dynodes_width       = R12699_metal_body_outer_width - 2 * (R12699_wall_thickness + 0.1*mm);
+G4double R12699_distance_window_dynodes   = 2.6*mm;
+G4double R12699_metal_dynodes_height      = R12699_full_height - R12699_silica_window_height - R12699_wall_thickness - R12699_distance_window_dynodes - 0.1*mm;
+
+
+G4double R12699_metal_pins_gap            = 2.54*mm;
+
+G4double R12699_metal_pins_1_y            = 23.85*mm;
+G4double R12699_metal_pins_2_y            = R12699_metal_pins_1_y;
+G4double R12699_metal_pins_3_y            = -R12699_metal_pins_1_y;
+G4double R12699_metal_pins_4_y            = -R12699_metal_pins_1_y;
+
+G4double R12699_metal_pins_5_y            = 20.0*mm;
+G4double R12699_metal_pins_6_y            = R12699_metal_pins_5_y;
+G4double R12699_metal_pins_7_y            = -R12699_metal_pins_5_y;
+G4double R12699_metal_pins_8_y            = -R12699_metal_pins_5_y;
+
+G4double R12699_metal_pins_1_1_x          = (0 + 0.5) * R12699_metal_pins_gap;
+G4double R12699_metal_pins_1_2_x          = (1 + 0.5) * R12699_metal_pins_gap;
+G4double R12699_metal_pins_1_3_x          = (2 + 0.5) * R12699_metal_pins_gap;
+G4double R12699_metal_pins_1_4_x          = (3 + 0.5) * R12699_metal_pins_gap;
+G4double R12699_metal_pins_1_5_x          = (4 + 0.5) * R12699_metal_pins_gap;
+G4double R12699_metal_pins_1_6_x          = (5 + 0.5) * R12699_metal_pins_gap;
+
+G4double R12699_metal_pins_2_1_x          = -(2 + 0.5) * R12699_metal_pins_gap;
+G4double R12699_metal_pins_2_2_x          = -(3 + 0.5) * R12699_metal_pins_gap;
+G4double R12699_metal_pins_2_3_x          = -(4 + 0.5) * R12699_metal_pins_gap;
+G4double R12699_metal_pins_2_4_x          = -(5 + 0.5) * R12699_metal_pins_gap;
+G4double R12699_metal_pins_2_5_x          = -(6 + 0.5) * R12699_metal_pins_gap;
+
+G4double R12699_metal_pins_3_1_x          = (0 + 0.5) * R12699_metal_pins_gap;
+G4double R12699_metal_pins_3_2_x          = (1 + 0.5) * R12699_metal_pins_gap;
+G4double R12699_metal_pins_3_3_x          = (2 + 0.5) * R12699_metal_pins_gap;
+G4double R12699_metal_pins_3_4_x          = (3 + 0.5) * R12699_metal_pins_gap;
+G4double R12699_metal_pins_3_5_x          = (4 + 0.5) * R12699_metal_pins_gap;
+G4double R12699_metal_pins_3_6_x          = (5 + 0.5) * R12699_metal_pins_gap;
+G4double R12699_metal_pins_3_7_x          = (6 + 0.5) * R12699_metal_pins_gap;
+
+G4double R12699_metal_pins_4_1_x          = R12699_metal_pins_2_1_x;
+G4double R12699_metal_pins_4_2_x          = R12699_metal_pins_2_2_x;
+G4double R12699_metal_pins_4_3_x          = R12699_metal_pins_2_3_x;
+G4double R12699_metal_pins_4_4_x          = R12699_metal_pins_2_4_x;
+G4double R12699_metal_pins_4_5_x          = R12699_metal_pins_2_5_x;
+
+G4double R12699_metal_pins_5_x            = 21.0*mm;
+G4double R12699_metal_pins_6_x            = -R12699_metal_pins_5_x;
+G4double R12699_metal_pins_7_x            = R12699_metal_pins_5_x;
+G4double R12699_metal_pins_8_x            = -R12699_metal_pins_5_x;
+
+
+G4double R12699_ceramic_spot_length       = R12699_wall_thickness;
+G4double R12699_ceramic_spot_outer_diam   = R12699_metal_pins_gap/2;
+G4double R12699_ceramic_spot_inner_diam   = R12699_metal_pins_outer_diameter;
+G4double R12699_ceramic_spot_z_pos = R12699_full_height/2 - R12699_ceramic_spot_length/2;
+
+G4double R12699_ceramic_spot_a_x          = 42.0*mm/2;
+G4double R12699_ceramic_spot_b_x          =  6.0*mm/2;
+G4double R12699_ceramic_spot_c_x          = - 6.0*mm/2;
+G4double R12699_ceramic_spot_d_x          = - 42.0*mm/2;
+
+G4double R12699_ceramic_spot_a_y          = 40.0*mm/2;
+G4double R12699_ceramic_spot_b_y          =  8.5*mm/2;
+G4double R12699_ceramic_spot_c_y          = - 8.5*mm/2;
+G4double R12699_ceramic_spot_d_y          = - 40.0*mm/2;
+
+
+
+/********************* Definition of solids *********************/
+
+/*********** Definition of the envelope ***********/
+
+// Bulk
+G4Box* R12699_metal_envel_p0 = new G4Box("R12699_metal_envel_p0", R12699_metal_body_outer_width/2, R12699_metal_body_outer_width/2, R12699_full_height/2);
+G4Box* R12699_metal_envel_window = new G4Box("R12699_metal_envel_window", R12699_silica_window_outer_width/2, R12699_silica_window_outer_width/2, R12699_silica_window_height/2);
+G4Box* R12699_metal_envel_ring = new G4Box("R12699_metal_envel_ring", R12699_metal_ring_outer_width/2, R12699_metal_ring_outer_width/2, R12699_metal_ring_height/2);
+
+G4UnionSolid* R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel_p0, R12699_metal_envel_window, 0, G4ThreeVector(0., 0., R12699_silica_window_height/2 - R12699_full_height/2));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_envel_ring, 0, G4ThreeVector(0., 0., R12699_silica_window_height + R12699_metal_ring_height/2 - R12699_full_height/2));
+
+// Pins
+G4Tubs* R12699_metal_pin = new G4Tubs("R12699_metal_pin", 0., R12699_metal_pins_outer_diameter/2, R12699_metal_pins_length/2, 0.*deg, 360.*deg);
+
+G4double R12699_metal_pins_z_pos = R12699_full_height/2 + R12699_metal_pins_length/2;
+
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_1_1_x, R12699_metal_pins_1_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_1_2_x, R12699_metal_pins_1_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_1_3_x, R12699_metal_pins_1_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_1_4_x, R12699_metal_pins_1_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_1_5_x, R12699_metal_pins_1_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_1_6_x, R12699_metal_pins_1_y, R12699_metal_pins_z_pos));
+
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_2_1_x, R12699_metal_pins_2_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_2_2_x, R12699_metal_pins_2_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_2_3_x, R12699_metal_pins_2_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_2_4_x, R12699_metal_pins_2_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_2_5_x, R12699_metal_pins_2_y, R12699_metal_pins_z_pos));
+
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_3_1_x, R12699_metal_pins_3_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_3_2_x, R12699_metal_pins_3_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_3_3_x, R12699_metal_pins_3_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_3_4_x, R12699_metal_pins_3_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_3_5_x, R12699_metal_pins_3_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_3_6_x, R12699_metal_pins_3_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_3_7_x, R12699_metal_pins_3_y, R12699_metal_pins_z_pos));
+
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_4_1_x, R12699_metal_pins_4_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_4_2_x, R12699_metal_pins_4_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_4_3_x, R12699_metal_pins_4_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_4_4_x, R12699_metal_pins_4_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_4_5_x, R12699_metal_pins_4_y, R12699_metal_pins_z_pos));
+
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_5_x, R12699_metal_pins_5_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_6_x, R12699_metal_pins_6_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_7_x, R12699_metal_pins_7_y, R12699_metal_pins_z_pos));
+R12699_metal_envel = new G4UnionSolid("R12699_metal_envel", R12699_metal_envel, R12699_metal_pin, 0, G4ThreeVector(R12699_metal_pins_8_x, R12699_metal_pins_8_y, R12699_metal_pins_z_pos));
+
+
+/*********** Definition of other components ***********/
+
+// Window
+G4Box* R12699_silica_window = new G4Box("R12699_silica_window", R12699_silica_window_outer_width/2, R12699_silica_window_outer_width/2, R12699_silica_window_height/2);
+
+// Dynodes
+G4Box* R12699_metal_dynodes = new G4Box("R12699_metal_dynodes", R12699_metal_dynodes_width/2, R12699_metal_dynodes_width/2, R12699_metal_dynodes_height/2);
+
+// Vacuum
+G4double R12699_vacuum_vol_p0_height = (R12699_metal_body_height - R12699_wall_thickness);
+G4Box* R12699_vacuum_vol_p0 = new G4Box("R12699_vacuum_vol_p0", (R12699_metal_body_outer_width-2*R12699_wall_thickness)/2, (R12699_metal_body_outer_width-2*R12699_wall_thickness)/2, R12699_vacuum_vol_p0_height/2);
+G4Box* R12699_vacuum_vol_inring = new G4Box("R12699_vacuum_vol_inring", R12699_metal_ring_inner_width/2, R12699_metal_ring_inner_width/2, R12699_metal_ring_height/2);
+
+G4UnionSolid* R12699_vacuum_vol = new G4UnionSolid("R12699_vacuum_vol", R12699_vacuum_vol_p0, R12699_vacuum_vol_inring, 0, G4ThreeVector(0., 0., -R12699_vacuum_vol_p0_height/2 - R12699_metal_ring_height/2));
+
+// Glass spots
+G4Tubs* R12699_ceramic_spot = new G4Tubs("R12699_ceramic_spot", R12699_ceramic_spot_inner_diam/2, R12699_ceramic_spot_outer_diam/2, R12699_ceramic_spot_length/2, 0.*deg, 360.*deg);
+
+
+/********************* Logical Volumes *********************/
+
+R12699_metal_envel_log = new G4LogicalVolume(R12699_metal_envel, R12699_Steel_304, "R12699_metal_envel_log");
+
+G4VisAttributes* R12699_metal_envel_vis = new G4VisAttributes(red);
+R12699_metal_envel_vis -> SetVisibility(true);
+R12699_metal_envel_vis -> SetForceSolid(false);
+R12699_metal_envel_log -> SetVisAttributes(R12699_metal_envel_vis);
+
+// Vacuum Logical Volume
+R12699_vacuum_vol_log = new G4LogicalVolume(R12699_vacuum_vol, R12699_vacuum, "R12699_vacuum_vol_log");
+
+// Window Logical Volume
+R12699_silica_window_log = new G4LogicalVolume(R12699_silica_window, R12699_Quartz, "R12699_silica_window_log");
+
+G4VisAttributes* R12699_silica_window_vis = new G4VisAttributes(white);
+R12699_silica_window_vis -> SetVisibility(true);
+R12699_silica_window_vis -> SetForceSolid(false);
+R12699_silica_window_log -> SetVisAttributes(R12699_silica_window_vis);
+
+// Dynodes Logical Volume
+R12699_metal_dynodes_log = new G4LogicalVolume(R12699_metal_dynodes, R12699_Dynode_Effective_Material, "R12699_metal_dynodes_log");
+
+G4VisAttributes* R12699_metal_dynodes_vis = new G4VisAttributes(orange);
+R12699_metal_dynodes_vis -> SetVisibility(true);
+R12699_metal_dynodes_vis -> SetForceSolid(false);
+R12699_metal_dynodes_log -> SetVisAttributes(R12699_metal_dynodes_vis);
+
+// Glass spots Logical Volume
+R12699_ceramic_spot_log = new G4LogicalVolume(R12699_ceramic_spot, R12699_Ceramic, "R12699_ceramic_spot_log");
+
+G4VisAttributes* R12699_ceramic_spot_vis = new G4VisAttributes(white);
+R12699_ceramic_spot_vis -> SetVisibility(true);
+R12699_ceramic_spot_vis -> SetForceSolid(false);
+R12699_ceramic_spot_log -> SetVisAttributes(R12699_ceramic_spot_vis);
+
+
+/********************* Physical Volumes and Placement *********************/
+
+// Constant relative positions
+	// ... inside envelope
+G4ThreeVector R12699_silica_window_pos(0., 0., (R12699_silica_window_height - R12699_full_height)/2);
+G4ThreeVector R12699_vacuum_vol_pos(0., 0., R12699_full_height/2 - R12699_vacuum_vol_p0_height/2 - R12699_wall_thickness);
+
+	// ... inside vacuum
+G4ThreeVector R12699_metal_dynodes_pos(0., 0., - R12699_vacuum_vol_p0_height/2 - R12699_metal_ring_height + R12699_distance_window_dynodes + R12699_metal_dynodes_height/2);
+
+// Place window in envelope
+R12699_silica_window_phys = new G4PVPlacement(0, R12699_silica_window_pos, R12699_silica_window_log, "R12699_silica_window_phys", R12699_metal_envel_log, false, 0, true);
+
+
+// Place vacuum in envelope
+R12699_vacuum_vol_phys = new G4PVPlacement(0, R12699_vacuum_vol_pos, R12699_vacuum_vol_log, "R12699_vacuum_vol_phys", R12699_metal_envel_log, false, 0, true);
+
+
+// Place dynodes in vacuum
+R12699_metal_dynodes_phys = new G4PVPlacement(0, R12699_metal_dynodes_pos, R12699_metal_dynodes_log, "R12699_metal_dynodes_phys", R12699_vacuum_vol_log, false, 0, true);
+
+// Place glass spots in envelope
+G4int R12699_ceramic_spot_num_side = 9; // glass spots per quadrant of PMT in line
+
+std::stringstream spot_name_1;
+std::stringstream spot_name_2;
+std::stringstream spot_name_3;
+std::stringstream spot_name_4;
+std::stringstream spot_name_inner;
+
+for (G4int i_spot=0; i_spot < R12699_ceramic_spot_num_side; i_spot++){
+	spot_name_1.str("");
+	spot_name_1 << "R12699_ceramic_spot_1_" << i_spot << "_phys";
+	spot_name_2.str("");
+	spot_name_2 << "R12699_ceramic_spot_2_" << i_spot << "_phys";
+	spot_name_3.str("");
+	spot_name_3 << "R12699_ceramic_spot_3_" << i_spot << "_phys";
+	spot_name_4.str("");
+	spot_name_4 << "R12699_ceramic_spot_4_" << i_spot << "_phys";
+	
+	R12699_ceramic_spot_1_phys = new G4PVPlacement(0, 
+		G4ThreeVector(
+			(0.5 + i_spot) * R12699_metal_pins_gap, 
+			R12699_metal_pins_1_y, 
+			R12699_ceramic_spot_z_pos), 
+		R12699_ceramic_spot_log, spot_name_1.str(), 
+		R12699_metal_envel_log, false, 0, true);
+		
+	R12699_ceramic_spot_2_phys = new G4PVPlacement(0, 
+		G4ThreeVector(
+			- (0.5 + i_spot) * R12699_metal_pins_gap, 
+			R12699_metal_pins_2_y, 
+			R12699_ceramic_spot_z_pos), 
+		R12699_ceramic_spot_log, spot_name_2.str(), 
+		R12699_metal_envel_log, false, 0, true);
+		
+	R12699_ceramic_spot_3_phys = new G4PVPlacement(0, 
+		G4ThreeVector(
+			(0.5 + i_spot) * R12699_metal_pins_gap, 
+			R12699_metal_pins_3_y, 
+			R12699_ceramic_spot_z_pos), 
+		R12699_ceramic_spot_log, spot_name_3.str(), 
+		R12699_metal_envel_log, false, 0, true);
+		
+	R12699_ceramic_spot_4_phys = new G4PVPlacement(0, 
+		G4ThreeVector(
+			- (0.5 + i_spot) * R12699_metal_pins_gap, 
+			R12699_metal_pins_4_y, 
+			R12699_ceramic_spot_z_pos), 
+		R12699_ceramic_spot_log, spot_name_4.str(), 
+		R12699_metal_envel_log, false, 0, true);
+}
+
+R12699_ceramic_spot_inner_phys = new G4PVPlacement(0, 
+		G4ThreeVector(R12699_ceramic_spot_a_x, R12699_ceramic_spot_a_y, 
+			R12699_ceramic_spot_z_pos), R12699_ceramic_spot_log, 
+		"R12699_ceramic_spot_inner_a_a_phys", R12699_metal_envel_log, false, 0, true);
+R12699_ceramic_spot_inner_phys = new G4PVPlacement(0, 
+		G4ThreeVector(R12699_ceramic_spot_a_x, R12699_ceramic_spot_b_y, 
+			R12699_ceramic_spot_z_pos), R12699_ceramic_spot_log, 
+		"R12699_ceramic_spot_inner_a_b_phys", R12699_metal_envel_log, false, 0, true);
+R12699_ceramic_spot_inner_phys = new G4PVPlacement(0, 
+		G4ThreeVector(R12699_ceramic_spot_a_x, R12699_ceramic_spot_c_y, 
+			R12699_ceramic_spot_z_pos), R12699_ceramic_spot_log, 
+		"R12699_ceramic_spot_inner_a_c_phys", R12699_metal_envel_log, false, 0, true);
+R12699_ceramic_spot_inner_phys = new G4PVPlacement(0, 
+		G4ThreeVector(R12699_ceramic_spot_a_x, R12699_ceramic_spot_d_y, 
+			R12699_ceramic_spot_z_pos), R12699_ceramic_spot_log, 
+		"R12699_ceramic_spot_inner_a_d_phys", R12699_metal_envel_log, false, 0, true);
+		
+R12699_ceramic_spot_inner_phys = new G4PVPlacement(0, 
+		G4ThreeVector(R12699_ceramic_spot_b_x, R12699_ceramic_spot_a_y, 
+			R12699_ceramic_spot_z_pos), R12699_ceramic_spot_log, 
+		"R12699_ceramic_spot_inner_b_a_phys", R12699_metal_envel_log, false, 0, true);
+R12699_ceramic_spot_inner_phys = new G4PVPlacement(0, 
+		G4ThreeVector(R12699_ceramic_spot_b_x, R12699_ceramic_spot_b_y, 
+			R12699_ceramic_spot_z_pos), R12699_ceramic_spot_log, 
+		"R12699_ceramic_spot_inner_b_b_phys", R12699_metal_envel_log, false, 0, true);
+R12699_ceramic_spot_inner_phys = new G4PVPlacement(0, 
+		G4ThreeVector(R12699_ceramic_spot_b_x, R12699_ceramic_spot_c_y, 
+			R12699_ceramic_spot_z_pos), R12699_ceramic_spot_log, 
+		"R12699_ceramic_spot_inner_b_c_phys", R12699_metal_envel_log, false, 0, true);
+R12699_ceramic_spot_inner_phys = new G4PVPlacement(0, 
+		G4ThreeVector(R12699_ceramic_spot_b_x, R12699_ceramic_spot_d_y, 
+			R12699_ceramic_spot_z_pos), R12699_ceramic_spot_log, 
+		"R12699_ceramic_spot_inner_b_d_phys", R12699_metal_envel_log, false, 0, true);
+		
+R12699_ceramic_spot_inner_phys = new G4PVPlacement(0, 
+		G4ThreeVector(R12699_ceramic_spot_c_x, R12699_ceramic_spot_a_y, 
+			R12699_ceramic_spot_z_pos), R12699_ceramic_spot_log, 
+		"R12699_ceramic_spot_inner_c_a_phys", R12699_metal_envel_log, false, 0, true);
+R12699_ceramic_spot_inner_phys = new G4PVPlacement(0, 
+		G4ThreeVector(R12699_ceramic_spot_c_x, R12699_ceramic_spot_b_y, 
+			R12699_ceramic_spot_z_pos), R12699_ceramic_spot_log, 
+		"R12699_ceramic_spot_inner_c_b_phys", R12699_metal_envel_log, false, 0, true);
+R12699_ceramic_spot_inner_phys = new G4PVPlacement(0, 
+		G4ThreeVector(R12699_ceramic_spot_c_x, R12699_ceramic_spot_c_y, 
+			R12699_ceramic_spot_z_pos), R12699_ceramic_spot_log, 
+		"R12699_ceramic_spot_inner_c_c_phys", R12699_metal_envel_log, false, 0, true);
+R12699_ceramic_spot_inner_phys = new G4PVPlacement(0, 
+		G4ThreeVector(R12699_ceramic_spot_c_x, R12699_ceramic_spot_d_y, 
+			R12699_ceramic_spot_z_pos), R12699_ceramic_spot_log, 
+		"R12699_ceramic_spot_inner_c_d_phys", R12699_metal_envel_log, false, 0, true);
+		
+R12699_ceramic_spot_inner_phys = new G4PVPlacement(0, 
+		G4ThreeVector(R12699_ceramic_spot_d_x, R12699_ceramic_spot_a_y, 
+			R12699_ceramic_spot_z_pos), R12699_ceramic_spot_log, 
+		"R12699_ceramic_spot_inner_d_a_phys", R12699_metal_envel_log, false, 0, true);
+R12699_ceramic_spot_inner_phys = new G4PVPlacement(0, 
+		G4ThreeVector(R12699_ceramic_spot_d_x, R12699_ceramic_spot_b_y, 
+			R12699_ceramic_spot_z_pos), R12699_ceramic_spot_log, 
+		"R12699_ceramic_spot_inner_d_b_phys", R12699_metal_envel_log, false, 0, true);
+R12699_ceramic_spot_inner_phys = new G4PVPlacement(0, 
+		G4ThreeVector(R12699_ceramic_spot_d_x, R12699_ceramic_spot_c_y, 
+			R12699_ceramic_spot_z_pos), R12699_ceramic_spot_log, 
+		"R12699_ceramic_spot_inner_d_c_phys", R12699_metal_envel_log, false, 0, true);
+R12699_ceramic_spot_inner_phys = new G4PVPlacement(0, 
+		G4ThreeVector(R12699_ceramic_spot_d_x, R12699_ceramic_spot_d_y, 
+			R12699_ceramic_spot_z_pos), R12699_ceramic_spot_log, 
+		"R12699_ceramic_spot_inner_d_d_phys", R12699_metal_envel_log, false, 0, true);
+
+
+// Marinelli beaker
+
+// Set visibility properties for the components of the sample
+G4VisAttributes* sample_vis_orange = new G4VisAttributes(orange);
+sample_vis_orange -> SetVisibility(true);
+sample_vis_orange -> SetForceSolid(false);
+
+//Dimensions of the sample components and definition of the geometry
+ G4double thickness_wall = 2.7*mm;
+ 
+ G4double tubs_cylinder_inner_Ri = 105.5*mm/2;
+ G4double tubs_cylinder_inner_Ro = tubs_cylinder_inner_Ri + thickness_wall;
+ G4double tubs_cylinder_inner_z  = 100*mm + thickness_wall;
+ 
+ G4double tubs_disk_inner_Ro = tubs_cylinder_inner_Ro;
+ G4double tubs_disk_inner_Ri = 0.0*mm/2;
+ G4double tubs_disk_inner_z  = thickness_wall;
+ 
+ G4double tubs_cylinder_outer_Ro = 200*mm/2;
+ G4double tubs_cylinder_outer_Ri = tubs_cylinder_outer_Ro - thickness_wall;
+ G4double tubs_cylinder_outer_z  = 175*mm;
+ 
+ G4double tubs_disk_outer_Ro = tubs_cylinder_outer_Ro;
+ G4double tubs_disk_outer_Ri = tubs_cylinder_inner_Ri;
+ G4double tubs_disk_outer_z  = thickness_wall;
+
+ G4Tubs* tubs_cylinder_inner= new G4Tubs("tubs_cylinder_inner", tubs_cylinder_inner_Ri, tubs_cylinder_inner_Ro, 0.5*tubs_cylinder_inner_z, 0.*deg, 360.*deg);
+ G4Tubs* tubs_cylinder_outer= new G4Tubs("tubs_cylinder_outer", tubs_cylinder_outer_Ri, tubs_cylinder_outer_Ro, 0.5*tubs_cylinder_outer_z, 0.*deg, 360.*deg);
+ G4Tubs* tubs_disk_inner= new G4Tubs("tubs_disk_inner", tubs_disk_inner_Ri, tubs_disk_inner_Ro, 0.5*tubs_disk_inner_z, 0.*deg, 360.*deg);
+ G4Tubs* tubs_disk_outer= new G4Tubs("tubs_disk_outer", tubs_disk_outer_Ri, tubs_disk_outer_Ro, 0.5*tubs_disk_outer_z, 0.*deg, 360.*deg);
+ 
+ G4UnionSolid* marinelli_beaker = new G4UnionSolid("marinelli_beaker", tubs_disk_inner, tubs_cylinder_inner, 0, G4ThreeVector(0*mm, 0*mm, tubs_disk_inner_z/2 - tubs_cylinder_inner_z/2));
+ marinelli_beaker = new G4UnionSolid("marinelli_beaker", marinelli_beaker, tubs_disk_outer, 0, G4ThreeVector(0*mm, 0*mm, tubs_disk_inner_z/2 - tubs_cylinder_inner_z + tubs_disk_outer_z/2));
+ marinelli_beaker = new G4UnionSolid("marinelli_beaker", marinelli_beaker, tubs_cylinder_outer, 0, G4ThreeVector(0*mm, 0*mm, tubs_disk_inner_z/2 - tubs_cylinder_inner_z + tubs_cylinder_outer_z/2));
+ 
+//Construct the logical volume
+  G4Material* Polypropylene = new G4Material(name="Polypropylene", density = 0.87*g/cm3, ncomponents = 2);
+        Polypropylene->AddElement(C,3);
+        Polypropylene->AddElement(H,6);
+
+ marinelli_beaker_log = new G4LogicalVolume(marinelli_beaker, Polypropylene, "marinelli_beaker_log");
+ 
+// Set visibility for the sample components
+marinelli_beaker_log -> SetVisAttributes(sample_vis_orange);
+
+// Set coordinates for the position of the sample at the top of the detector
+G4double marinelli_beaker_Pos_x = 0*mm;
+G4double marinelli_beaker_Pos_y = 0*mm;
+G4double marinelli_beaker_Pos_z = endcapPos_z + 0.5*endcapHeight1 + 0.01*mm + 0.5*tubs_disk_inner_z;
+G4ThreeVector marinelli_beaker_Pos(marinelli_beaker_Pos_x, marinelli_beaker_Pos_y, marinelli_beaker_Pos_z);
+
+// Define the physical volumes
+marinelli_beaker_phys = new G4PVPlacement(0, marinelli_beaker_Pos, marinelli_beaker_log, "marinelli_beaker_phys", cavity1_log, false, 0, true);
+
+
+// Place envelopes of both PMTs on detector (second one flipped and rotated)
+G4RotationMatrix* R12699_metal_envel_rot_top = new G4RotationMatrix();
+R12699_metal_envel_rot_top->rotateZ(90.*deg);
+R12699_metal_envel_rot_top->rotateY(180.*deg);
+
+G4ThreeVector R12699_metal_envel_pos_bot(0., 0., endcapPos_z + endcapHeight1/2 + tubs_disk_inner_z + R12699_full_height/2 + 1*0.01*mm);
+G4ThreeVector R12699_metal_envel_pos_top(0., 0., endcapPos_z + endcapHeight1/2 + tubs_disk_inner_z + R12699_full_height/2 + R12699_full_height + R12699_metal_pins_length + 2*0.01*mm);
+G4ThreeVector R12699_metal_envel_pos_top2(0., 0., endcapPos_z + endcapHeight1/2 + tubs_disk_inner_z + R12699_full_height/2 + R12699_full_height + R12699_metal_pins_length + R12699_full_height + 3*0.01*mm);
+
+R12699_metal_envel_phys_bot = new G4PVPlacement(0, R12699_metal_envel_pos_bot, R12699_metal_envel_log, "R12699_metal_envel_phys_bot", cavity1_log, false, 0, true);
+R12699_metal_envel_phys_top = new G4PVPlacement(R12699_metal_envel_rot_top, R12699_metal_envel_pos_top, R12699_metal_envel_log, "R12699_metal_envel_phys_top", cavity1_log, false, 0, true);
+R12699_metal_envel_phys_top2 = new G4PVPlacement(0, R12699_metal_envel_pos_top2, R12699_metal_envel_log, "R12699_metal_envel_phys_top2", cavity1_log, false, 0, true);
+
+
+/* End of the file */
