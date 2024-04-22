@@ -10,24 +10,24 @@ void make_calib_files()
 {
 
 //#### vary parameters here ! #####
-//current values set for 2021.06.15 calibration folder
+//current values set for 2023.11 calibration folder
 
 // calib_fcn_fw: f = a * x + b
-double a_fw= 0.16478808855135418;
-double b_fw = 0.5581696107866677;
+double a_fw= 0.16389984701772356;
+double b_fw = 0.46454797148251575;
 
 //calib_fcn_bw: f = a * x + b
-double a_bw = 6.068399778108733;
-double b_bw = -3.3871963422448523;
+double a_bw = 6.101286963933917;
+double b_bw = -2.8343404825282184;
 
 int max_x_fw = 3000;//TODO: Check whether these values make sense
 int max_x_bw=1;
 int max_x_resol=20000;
 
 //resol_ADC_func: Sqrt([0]*x*x+[1]*x+[2]) -> f = sqrt(a(E**2) + bE + c)
-double a_res=1.7629403715106498e-08;
-double b_res=0.0024530841005881354;
-double c_res=7.17929349975191;
+double a_res=1.449476177496252e-08;
+double b_res=0.0025300992006176116;
+double c_res=6.168664607090315;
 //###################################
 
 
