@@ -26,8 +26,8 @@ int max_x_resol=20000;
 
 //resol_ADC_func: Sqrt([0]*x*x+[1]*x+[2]) -> f = sqrt(a(E**2) + bE + c)
 double a_res=7.220690814845775e-28;
-double b_res=0.00044153166853607486;
-double c_res=0.1640793763268678;
+double b_res=0.0026930756068243764;
+double c_res=6.104180567886545;
 //###################################
 
 
