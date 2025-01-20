@@ -1,0 +1,22 @@
+
+// ---------- volume PEP_Pb_cylinder ---------- //
+
+//---------------   logical and physical volumes definitions 
+G4LogicalVolume* PEP_Pb_cylinder_log;
+G4LogicalVolume* PEP_Pb_cylinder_current_log;
+G4LogicalVolume* PEP_Cu_ring_upper_log;
+G4LogicalVolume* PEP_Cu_ring_lower_log;
+G4LogicalVolume* PEP_PTFE_rod_log;
+G4LogicalVolume* PEP_PTFE_disk_log;
+G4LogicalVolume* PEP_Cu_pedestal_log;
+ 
+G4VPhysicalVolume* PEP_Pb_cylinder_phys;
+G4VPhysicalVolume* PEP_Pb_cylinder_current_phys;
+G4VPhysicalVolume* PEP_Cu_ring_upper_phys;
+G4VPhysicalVolume* PEP_Cu_ring_lower_phys;
+G4VPhysicalVolume* PEP_PTFE_rod_phys1;
+G4VPhysicalVolume* PEP_PTFE_rod_phys2;
+G4VPhysicalVolume* PEP_PTFE_rod_phys3;
+G4VPhysicalVolume* PEP_PTFE_disk_phys;
+G4VPhysicalVolume* PEP_Cu_pedestal_phys;
+
