@@ -1,0 +1,24 @@
+#gammas of fixed energy of PEP forbidden Pb K_beta2
+
+#/xe/generateCE  0
+#/tracking/verbose 0
+#/run/verbose 0
+#/control/verbose 0
+#/xe/gun/verbose 0
+
+/Xe/saveHits 1
+/Xe/printModulo 10000
+
+
+/xe/gun/particle gamma
+/xe/gun/energy 86.418 keV
+
+/xe/gun/type Volume
+/xe/gun/shape Cylinder
+/xe/gun/radius 10 mm
+/xe/gun/halfz 72 mm
+/xe/gun/center 62 0 102 mm
+
+#/xe/gun/confine PEP_Pb_cylinder_phys PEP_Pb_cylinder_current_phys
+#/run/beamOn 100000
+
