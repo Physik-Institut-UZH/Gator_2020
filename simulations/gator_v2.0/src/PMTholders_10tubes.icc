@@ -1,0 +1,79 @@
+//////////////////////////////////////////////////////////////////////////////////////
+// Configuration for 10 PMTs, distributed across Holder1, Holder2, and Holder3 only
+//////////////////////////////////////////////////////////////////////////////////////
+
+G4double PMTsZoffset=43*mm; // Vertical Offset of the lowest PMT
+G4double PMTsSpacing=80*mm; // Distance between the PMTs central axis
+G4double PMTlenght = 114*mm;
+
+G4double HolderWidth=100*mm;
+G4double HolderLenght=97*mm;
+G4double HolderHeight_short=246*mm, HolderHeight_long=326*mm;
+
+G4LogicalVolume* HolderLong_log = ConstructPMTholder_long();
+G4LogicalVolume* HolderShort_log = ConstructPMTholder_short();
+G4LogicalVolume* PMTR11410_log = ConstructPmtR11410();
+
+std::vector<G4VPhysicalVolume*>* PMTs_vec = new std::vector<G4VPhysicalVolume*>();
+
+G4ThreeVector PMT1stCol_offset((114.5)*mm, (67.5)*mm, PMTsZoffset - cavity1_z / 2.);
+G4ThreeVector PMT2ndCol_offset((67.5)*mm, -(114.5)*mm, PMTsZoffset - cavity1_z / 2.);
+G4ThreeVector PMT3rdCol_offset(-(114.5)*mm, -(67.5)*mm, PMTsZoffset - cavity1_z / 2.);
+
+G4ThreeVector PMT_VertStep(0.*mm, 0.*mm, PMTsSpacing);
+
+G4RotationMatrix PMT1stCol_rot, PMT2ndCol_rot, PMT3rdCol_rot;
+PMT1stCol_rot.rotateY(-90.*deg);
+PMT1stCol_rot.rotateZ(-15.*deg);
+PMT2ndCol_rot.rotateX(-90.*deg);
+PMT2ndCol_rot.rotateZ(-15.*deg);
+PMT3rdCol_rot.rotateY(90.*deg);
+PMT3rdCol_rot.rotateZ(-15.*deg);
+
+G4ThreeVector PMTpos;
+std::stringstream PMTVolName;
+
+//
+// 10 PMTs, 3 in each of Holder1 and Holder3 (lowest slot empty), 4 in Holder2
+for(G4int i=1; i<=10; i++){
+    PMTVolName.str("");
+    PMTVolName << "PMT" << i << "_phys";
+    G4cout << PMTVolName.str() << G4endl;
+
+    if(i <= 3) { // PMTs in Holder1
+        PMTpos = PMT1stCol_offset + ((i - 1 + 1) % 4) * PMT_VertStep;
+        if(true) PMTs_vec->push_back(new G4PVPlacement(G4Transform3D(PMT1stCol_rot, PMTpos), PMTR11410_log, PMTVolName.str(), cavity1_log, false, 0));
+    } else if(i <= 6){ // PMTs in Holder3
+        PMTpos = PMT3rdCol_offset + ((i - 4 + 1) % 4) * PMT_VertStep;
+        if(true) PMTs_vec->push_back(new G4PVPlacement(G4Transform3D(PMT3rdCol_rot, PMTpos), PMTR11410_log, PMTVolName.str(), cavity1_log, false, 0));
+    }else { // PMTs in Holder2
+        PMTpos = PMT2ndCol_offset + ((i - 7) % 4) * PMT_VertStep;
+        if(true) PMTs_vec->push_back(new G4PVPlacement(G4Transform3D(PMT2ndCol_rot, PMTpos), PMTR11410_log, PMTVolName.str(), cavity1_log, false, 0));
+    }
+}
+
+// Positioning and rotating the holders
+G4double HolderHrzOffset = HolderLenght - PMTlenght;
+G4double cos15 = TMath::Cos(15 * TMath::Pi() / 180);
+G4double sin15 = TMath::Sin(15 * TMath::Pi() / 180);
+
+G4RotationMatrix Holder1_rot;
+Holder1_rot.rotateZ(75.*deg);
+G4ThreeVector Holder1pos(114.5*mm + HolderHrzOffset * cos15, 67.5*mm - HolderHrzOffset * sin15, (HolderHeight_long - cavity1_z) / 2.);
+
+// Construct Holder1
+G4VPhysicalVolume* Holder1_phys = new G4PVPlacement(G4Transform3D(Holder1_rot, Holder1pos), HolderLong_log, "Holder1_phys", cavity1_log, false, 0);
+
+G4RotationMatrix Holder3_rot;
+Holder3_rot.rotateZ(-105.*deg);
+G4ThreeVector Holder3pos(-114.5*mm - HolderHrzOffset * cos15, -67.5*mm + HolderHrzOffset * sin15, (HolderHeight_long - cavity1_z) / 2.);
+
+// Construct Holder3
+G4VPhysicalVolume* Holder3_phys = new G4PVPlacement(G4Transform3D(Holder3_rot, Holder3pos), HolderLong_log, "Holder3_phys", cavity1_log, false, 0);
+
+G4RotationMatrix Holder2_rot;
+Holder2_rot.rotateZ(-15.*deg);
+G4ThreeVector Holder2pos(67.5*mm - HolderHrzOffset * sin15, -114.5*mm - HolderHrzOffset * cos15, (HolderHeight_long - cavity1_z) / 2.);
+
+// Construct Holder2
+G4VPhysicalVolume* Holder2_phys = new G4PVPlacement(G4Transform3D(Holder2_rot, Holder2pos), HolderLong_log, "Holder2_phys", cavity1_log, false, 0);

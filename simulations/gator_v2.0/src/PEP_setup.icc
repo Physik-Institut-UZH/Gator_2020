@@ -1,0 +1,175 @@
+//---------- PEP_setup ---------- 
+
+//Dimensions of the samples
+G4double PEP_Pb_cylinder_ID     = 122.0*mm;
+G4double PEP_Pb_cylinder_OD     = PEP_Pb_cylinder_ID + 2*1.0*mm; // 1mm thickness
+G4double PEP_Pb_cylinder_Height = 120.0*mm;
+
+G4double PEP_Cu_ring_ID     = 115.0*mm;
+G4double PEP_Cu_ring_OD     = 144.0*mm;
+G4double PEP_Cu_ring_Height = 9.0*mm;
+G4double PEP_Cu_ring_groove_ID     = PEP_Pb_cylinder_ID;
+G4double PEP_Cu_ring_groove_OD     = PEP_Pb_cylinder_OD; //131.0*mm;
+G4double PEP_Cu_ring_groove_Height = 6.0*mm;
+
+G4double PEP_Pb_cylinder_current_ID     = PEP_Pb_cylinder_ID;
+G4double PEP_Pb_cylinder_current_OD     = PEP_Pb_cylinder_OD;
+G4double PEP_Pb_cylinder_current_Height = PEP_Pb_cylinder_Height - 2*PEP_Cu_ring_groove_Height;
+
+G4double PEP_Cu_rod_upper_ID     = 0.0*mm;
+G4double PEP_Cu_rod_upper_OD     = 5.0*mm;
+G4double PEP_Cu_rod_upper_Height = 77.0*mm - 2.0*mm;
+
+G4double PEP_Cu_rod_lower_ID     = PEP_Cu_rod_upper_ID;
+G4double PEP_Cu_rod_lower_OD     = PEP_Cu_rod_upper_OD;
+G4double PEP_Cu_rod_lower_Height = 40.0*mm;
+
+G4double PEP_Cu_rod_Pos_radial   = 68.75*mm;
+
+G4double PEP_PTFE_rod_ID          = 5.0*mm;
+G4double PEP_PTFE_rod_OD          = 10.0*mm;
+G4double PEP_PTFE_rod_Height      = 30.0*mm;
+G4double PEP_PTFE_rod_core_Height = PEP_PTFE_rod_Height - 10*mm - 10*mm;
+
+G4double PEP_PTFE_disk_main_ID      = 109.0*mm;
+G4double PEP_PTFE_disk_main_OD      = 149.0*mm;
+G4double PEP_PTFE_disk_main_Height  = 3.5*mm;
+G4double PEP_PTFE_disk_inner_ID     = PEP_PTFE_disk_main_ID;
+G4double PEP_PTFE_disk_inner_OD     = 115.0*mm;
+G4double PEP_PTFE_disk_inner_Height = 3.0*mm;
+G4double PEP_PTFE_disk_outer_ID     = 127.0*mm;
+G4double PEP_PTFE_disk_outer_OD     = 131.0*mm;
+G4double PEP_PTFE_disk_outer_Height = 8.5*mm - PEP_PTFE_disk_main_Height - PEP_PTFE_disk_inner_Height;
+
+G4double PEP_Cu_pedestal_ring_lower_ID     = 65.5*mm*2;
+G4double PEP_Cu_pedestal_ring_lower_OD     = 80.0*mm*2;
+G4double PEP_Cu_pedestal_ring_lower_Height = 2.5*mm;
+
+G4double PEP_Cu_pedestal_ring_upper_ID     = PEP_Cu_pedestal_ring_lower_ID;
+G4double PEP_Cu_pedestal_ring_upper_OD     = 72.5*mm*2;
+G4double PEP_Cu_pedestal_ring_upper_Height = 2.0*mm;
+
+G4double PEP_Cu_pedestal_ring_cutout_Width  = 58.0*mm;
+G4double PEP_Cu_pedestal_ring_cutout_Height = 3.0*mm; // larger than both pedestal rings
+
+G4double PEP_Cu_pedestal_pillar_ID     = 0.0*mm;
+G4double PEP_Cu_pedestal_pillar_OD     = 6.0*mm;
+G4double PEP_Cu_pedestal_pillar_Height = 52.0*mm + PEP_Cu_pedestal_ring_lower_Height + PEP_Cu_pedestal_ring_upper_Height;
+
+G4double PEP_Cu_pedestal_pillar_Pos_radial = 138.0*mm/2;
+
+
+// Definition of the geometries
+G4Tubs* PEP_Pb_cylinder = new G4Tubs("PEP_Pb_cylinder", 0.5*PEP_Pb_cylinder_ID, 0.5*PEP_Pb_cylinder_OD, 0.5*PEP_Pb_cylinder_Height, 0.0*deg, 360.0*deg);
+
+G4Tubs* PEP_Pb_cylinder_current = new G4Tubs("PEP_Pb_cylinder_current", 0.5*PEP_Pb_cylinder_current_ID, 0.5*PEP_Pb_cylinder_current_OD, 0.5*PEP_Pb_cylinder_current_Height, 0.0*deg, 360.0*deg);
+
+G4Tubs* PEP_Cu_rod_upper = new G4Tubs("PEP_Cu_rod_upper", 0.5*PEP_Cu_rod_upper_ID, 0.5*PEP_Cu_rod_upper_OD, 0.5*PEP_Cu_rod_upper_Height, 0.0*deg, 360.0*deg);
+G4Tubs* PEP_Cu_rod_lower = new G4Tubs("PEP_Cu_rod_lower", 0.5*PEP_Cu_rod_lower_ID, 0.5*PEP_Cu_rod_lower_OD, 0.5*PEP_Cu_rod_lower_Height, 0.0*deg, 360.0*deg);
+
+G4Tubs* PEP_Cu_ring = new G4Tubs("PEP_Cu_ring", 0.5*PEP_Cu_ring_ID, 0.5*PEP_Cu_ring_OD, 0.5*PEP_Cu_ring_Height, 0.0*deg, 360.0*deg);
+G4Tubs* PEP_Cu_ring_groove = new G4Tubs("PEP_Cu_ring_groove", 0.5*(PEP_Cu_ring_groove_ID-0.01*mm), 0.5*(PEP_Cu_ring_groove_OD+0.01*mm), 0.5*(PEP_Cu_ring_groove_Height+0.01*mm), 0.0*deg, 360.0*deg);
+
+G4SubtractionSolid* PEP_Cu_ring_upper_simple = new G4SubtractionSolid("PEP_Cu_ring_upper_simple", PEP_Cu_ring, PEP_Cu_ring_groove, 0, G4ThreeVector(0*mm, 0*mm, (PEP_Cu_ring_groove_Height + 0.01*mm)/2 -PEP_Cu_ring_Height/2));
+G4UnionSolid* PEP_Cu_ring_upper = new G4UnionSolid("PEP_Cu_ring_upper", PEP_Cu_ring_upper_simple, PEP_Cu_rod_upper, 0, G4ThreeVector(-PEP_Cu_rod_Pos_radial * cos(0.*deg), -PEP_Cu_rod_Pos_radial * sin(0.*deg), PEP_Cu_ring_Height/2 - PEP_Cu_rod_upper_Height/2));
+PEP_Cu_ring_upper = new G4UnionSolid("PEP_Cu_ring_upper", PEP_Cu_ring_upper, PEP_Cu_rod_upper, 0, G4ThreeVector(-PEP_Cu_rod_Pos_radial * cos(120.*deg), -PEP_Cu_rod_Pos_radial * sin(120.*deg), PEP_Cu_ring_Height/2 - PEP_Cu_rod_upper_Height/2));
+PEP_Cu_ring_upper = new G4UnionSolid("PEP_Cu_ring_upper", PEP_Cu_ring_upper, PEP_Cu_rod_upper, 0, G4ThreeVector(-PEP_Cu_rod_Pos_radial * cos(-120.*deg), -PEP_Cu_rod_Pos_radial * sin(-120.*deg), PEP_Cu_ring_Height/2 - PEP_Cu_rod_upper_Height/2));
+
+G4SubtractionSolid* PEP_Cu_ring_lower_simple = new G4SubtractionSolid("PEP_Cu_ring_lower_simple", PEP_Cu_ring, PEP_Cu_ring_groove, 0, G4ThreeVector(0*mm, 0*mm, PEP_Cu_ring_Height/2 - (PEP_Cu_ring_groove_Height + 0.01*mm)/2));
+G4UnionSolid* PEP_Cu_ring_lower = new G4UnionSolid("PEP_Cu_ring_lower", PEP_Cu_ring_lower_simple, PEP_Cu_rod_lower, 0, G4ThreeVector(-PEP_Cu_rod_Pos_radial * cos(0.*deg), -PEP_Cu_rod_Pos_radial * sin(0.*deg), - PEP_Cu_ring_Height/2 + PEP_Cu_rod_lower_Height/2));
+PEP_Cu_ring_lower = new G4UnionSolid("PEP_Cu_ring_lower", PEP_Cu_ring_lower, PEP_Cu_rod_lower, 0, G4ThreeVector(-PEP_Cu_rod_Pos_radial * cos(120.*deg), -PEP_Cu_rod_Pos_radial * sin(120.*deg), - PEP_Cu_ring_Height/2 + PEP_Cu_rod_lower_Height/2));
+PEP_Cu_ring_lower = new G4UnionSolid("PEP_Cu_ring_lower", PEP_Cu_ring_lower, PEP_Cu_rod_lower, 0, G4ThreeVector(-PEP_Cu_rod_Pos_radial * cos(-120.*deg), -PEP_Cu_rod_Pos_radial * sin(-120.*deg), - PEP_Cu_ring_Height/2 + PEP_Cu_rod_lower_Height/2));
+
+G4Tubs* PEP_PTFE_rod_shell = new G4Tubs("PEP_PTFE_rod_shell", 0.5*(PEP_PTFE_rod_ID+0.01*mm), 0.5*PEP_PTFE_rod_OD, 0.5*PEP_PTFE_rod_Height, 0.0*deg, 360.0*deg);
+G4Tubs* PEP_PTFE_rod_core = new G4Tubs("PEP_PTFE_rod_core", 0.0*mm, 0.5*PEP_PTFE_rod_OD, 0.5*(PEP_PTFE_rod_core_Height-0.01*mm), 0.0*deg, 360.0*deg);
+G4UnionSolid* PEP_PTFE_rod = new G4UnionSolid("PEP_PTFE_rod", PEP_PTFE_rod_shell, PEP_PTFE_rod_core, 0, G4ThreeVector(0,0,0));
+
+G4Tubs* PEP_PTFE_disk_main = new G4Tubs("PEP_PTFE_disk_main", 0.5*PEP_PTFE_disk_main_ID, 0.5*PEP_PTFE_disk_main_OD, 0.5*PEP_PTFE_disk_main_Height, 0.0*deg, 360.0*deg);
+G4Tubs* PEP_PTFE_disk_inner = new G4Tubs("PEP_PTFE_disk_inner", 0.5*PEP_PTFE_disk_inner_ID, 0.5*PEP_PTFE_disk_inner_OD, 0.5*PEP_PTFE_disk_inner_Height + 0.5*PEP_PTFE_disk_main_Height, 0.0*deg, 360.0*deg);
+G4Tubs* PEP_PTFE_disk_outer = new G4Tubs("PEP_PTFE_disk_outer", 0.5*PEP_PTFE_disk_outer_ID, 0.5*PEP_PTFE_disk_outer_OD, 0.5*PEP_PTFE_disk_outer_Height + 0.5*PEP_PTFE_disk_main_Height, 0.0*deg, 360.0*deg);
+G4UnionSolid* PEP_PTFE_disk = new G4UnionSolid("PEP_PTFE_disk", PEP_PTFE_disk_main, PEP_PTFE_disk_inner, 0, G4ThreeVector(0*mm, 0*mm, -PEP_PTFE_disk_main_Height/2 + (0.5*PEP_PTFE_disk_inner_Height + 0.5*PEP_PTFE_disk_main_Height, 0.0*deg, 360.0*deg)));
+PEP_PTFE_disk = new G4UnionSolid("PEP_PTFE_disk", PEP_PTFE_disk, PEP_PTFE_disk_outer, 0, G4ThreeVector(0*mm, 0*mm, +PEP_PTFE_disk_main_Height/2 - (0.5*PEP_PTFE_disk_outer_Height + 0.5*PEP_PTFE_disk_main_Height, 0.0*deg, 360.0*deg)));
+
+G4Box* PEP_Cu_pedestal_ring_cutout = new G4Box("PEP_Cu_pedestal_ring_cutout", PEP_Cu_pedestal_ring_cutout_Width/2, PEP_Cu_pedestal_ring_cutout_Width/2, PEP_Cu_pedestal_ring_cutout_Height/2);
+
+G4Tubs* PEP_Cu_pedestal_ring_lower_main = new G4Tubs("PEP_Cu_pedestal_ring_lower_main", 0.5*PEP_Cu_pedestal_ring_lower_ID, 0.5*PEP_Cu_pedestal_ring_lower_OD, 0.5*PEP_Cu_pedestal_ring_lower_Height, 0.0*deg, 360.0*deg);
+G4SubtractionSolid* PEP_Cu_pedestal_ring_lower = new G4SubtractionSolid("PEP_Cu_pedestal_ring_lower", PEP_Cu_pedestal_ring_lower_main, PEP_Cu_pedestal_ring_cutout, 0, G4ThreeVector(- PEP_Cu_pedestal_pillar_Pos_radial, 0*mm, 0*mm));
+
+G4Tubs* PEP_Cu_pedestal_ring_upper_main = new G4Tubs("PEP_Cu_pedestal_ring_upper_main", 0.5*PEP_Cu_pedestal_ring_upper_ID, 0.5*PEP_Cu_pedestal_ring_upper_OD, 0.5*PEP_Cu_pedestal_ring_upper_Height, 0.0*deg, 360.0*deg);
+G4SubtractionSolid* PEP_Cu_pedestal_ring_upper = new G4SubtractionSolid("PEP_Cu_pedestal_ring_upper", PEP_Cu_pedestal_ring_upper_main, PEP_Cu_pedestal_ring_cutout, 0, G4ThreeVector(- PEP_Cu_pedestal_pillar_Pos_radial, 0*mm, 0*mm));
+
+G4Tubs* PEP_Cu_pedestal_pillar = new G4Tubs("PEP_Cu_pedestal_pillar", 0.5*PEP_Cu_pedestal_pillar_ID, 0.5*PEP_Cu_pedestal_pillar_OD, 0.5*PEP_Cu_pedestal_pillar_Height, 0.0*deg, 360.0*deg);
+
+G4UnionSolid* PEP_Cu_pedestal = new G4UnionSolid("PEP_Cu_pedestal", PEP_Cu_pedestal_ring_lower, PEP_Cu_pedestal_pillar, 0, G4ThreeVector(PEP_Cu_pedestal_pillar_Pos_radial * cos(0.*deg), PEP_Cu_pedestal_pillar_Pos_radial * sin(0.*deg), -PEP_Cu_pedestal_ring_lower_Height/2 + PEP_Cu_pedestal_pillar_Height/2));
+PEP_Cu_pedestal = new G4UnionSolid("PEP_Cu_pedestal", PEP_Cu_pedestal, PEP_Cu_pedestal_ring_upper, 0, G4ThreeVector(0*mm, 0*mm, -PEP_Cu_pedestal_ring_lower_Height/2 + PEP_Cu_pedestal_pillar_Height - PEP_Cu_pedestal_ring_upper_Height/2));
+PEP_Cu_pedestal = new G4UnionSolid("PEP_Cu_pedestal", PEP_Cu_pedestal, PEP_Cu_pedestal_pillar, 0, G4ThreeVector(PEP_Cu_pedestal_pillar_Pos_radial * cos(1*72.*deg), PEP_Cu_pedestal_pillar_Pos_radial * sin(1*72.*deg), -PEP_Cu_pedestal_ring_lower_Height/2 + PEP_Cu_pedestal_pillar_Height/2));
+PEP_Cu_pedestal = new G4UnionSolid("PEP_Cu_pedestal", PEP_Cu_pedestal, PEP_Cu_pedestal_pillar, 0, G4ThreeVector(PEP_Cu_pedestal_pillar_Pos_radial * cos(2*72.*deg), PEP_Cu_pedestal_pillar_Pos_radial * sin(2*72.*deg), -PEP_Cu_pedestal_ring_lower_Height/2 + PEP_Cu_pedestal_pillar_Height/2));
+PEP_Cu_pedestal = new G4UnionSolid("PEP_Cu_pedestal", PEP_Cu_pedestal, PEP_Cu_pedestal_pillar, 0, G4ThreeVector(PEP_Cu_pedestal_pillar_Pos_radial * cos(-1*72.*deg), PEP_Cu_pedestal_pillar_Pos_radial * sin(-1*72.*deg), -PEP_Cu_pedestal_ring_lower_Height/2 + PEP_Cu_pedestal_pillar_Height/2));
+PEP_Cu_pedestal = new G4UnionSolid("PEP_Cu_pedestal", PEP_Cu_pedestal, PEP_Cu_pedestal_pillar, 0, G4ThreeVector(PEP_Cu_pedestal_pillar_Pos_radial * cos(-2*72.*deg), PEP_Cu_pedestal_pillar_Pos_radial * sin(-2*72.*deg), -PEP_Cu_pedestal_ring_lower_Height/2 + PEP_Cu_pedestal_pillar_Height/2));
+
+
+//Construct the logical volumes 
+PEP_Pb_cylinder_log = new G4LogicalVolume(PEP_Pb_cylinder, Pb, "PEP_Pb_cylinder_log");
+PEP_Pb_cylinder_current_log = new G4LogicalVolume(PEP_Pb_cylinder_current, Pb, "PEP_Pb_cylinder_current_log");
+PEP_Cu_ring_upper_log = new G4LogicalVolume(PEP_Cu_ring_upper, Cu, "PEP_Cu_ring_upper_log");
+PEP_Cu_ring_lower_log = new G4LogicalVolume(PEP_Cu_ring_lower, Cu, "PEP_Cu_ring_lower_log");
+PEP_PTFE_rod_log = new G4LogicalVolume(PEP_PTFE_rod, Teflon, "PEP_PTFE_rod_log");
+PEP_PTFE_disk_log = new G4LogicalVolume(PEP_PTFE_disk, Teflon, "PEP_PTFE_disk_log");
+PEP_Cu_pedestal_log = new G4LogicalVolume(PEP_Cu_pedestal, Cu, "PEP_Cu_pedestal_log");
+
+
+// Set visibility for the samples
+G4VisAttributes* PEP_Pb_cylinder_vis = new G4VisAttributes(yellow);
+PEP_Pb_cylinder_vis -> SetVisibility(true); 
+PEP_Pb_cylinder_vis -> SetForceSolid(false);
+PEP_Pb_cylinder_log -> SetVisAttributes(PEP_Pb_cylinder_vis);
+
+G4VisAttributes* PEP_Cu_vis = new G4VisAttributes(red);
+PEP_Cu_vis -> SetVisibility(true); 
+PEP_Cu_vis -> SetForceSolid(false);
+PEP_Cu_ring_lower_log -> SetVisAttributes(PEP_Cu_vis);
+PEP_Cu_ring_upper_log -> SetVisAttributes(PEP_Cu_vis);
+PEP_Cu_pedestal_log -> SetVisAttributes(PEP_Cu_vis);
+
+G4VisAttributes* PEP_PTFE_vis = new G4VisAttributes(white);
+PEP_PTFE_vis -> SetVisibility(true); 
+PEP_PTFE_vis -> SetForceSolid(false);
+PEP_PTFE_rod_log -> SetVisAttributes(PEP_PTFE_vis);
+PEP_PTFE_disk_log -> SetVisAttributes(PEP_PTFE_vis);
+
+
+// Set coordinates for the position of the sample and the position vector
+G4double PEP_Pb_cylinder_Pos_z= endcapPos_z + endcapHeight1/2 - PEP_Pb_cylinder_Height/2 + 6.6*mm;
+G4ThreeVector PEP_Pb_cylinder_Pos(0*mm, 0*mm, PEP_Pb_cylinder_Pos_z); 
+
+G4ThreeVector PEP_Pb_cylinder_current_Pos(0*mm, 0*mm, 0*mm); 
+
+G4double PEP_Cu_ring_upper_Pos_z= endcapPos_z + endcapHeight1/2 + 6.6*mm + PEP_Cu_ring_Height/2 - PEP_Cu_ring_groove_Height;
+G4ThreeVector PEP_Cu_ring_upper_Pos(0*mm, 0*mm, PEP_Cu_ring_upper_Pos_z); 
+
+G4double PEP_Cu_ring_lower_Pos_z= endcapPos_z + endcapHeight1/2 + 6.6*mm - PEP_Pb_cylinder_Height - PEP_Cu_ring_Height/2 + PEP_Cu_ring_groove_Height;
+G4ThreeVector PEP_Cu_ring_lower_Pos(0*mm, 0*mm, PEP_Cu_ring_lower_Pos_z); 
+
+G4double PEP_PTFE_rod_Pos_z = PEP_Cu_ring_lower_Pos_z + PEP_Cu_ring_Height/2 + (PEP_Cu_rod_lower_Height - PEP_Cu_ring_Height) + PEP_PTFE_rod_core_Height/2 + 0.01*mm;
+G4ThreeVector PEP_PTFE_rod_Pos_1(-PEP_Cu_rod_Pos_radial * cos(0.*deg), -PEP_Cu_rod_Pos_radial * sin(0.*deg), PEP_PTFE_rod_Pos_z);
+G4ThreeVector PEP_PTFE_rod_Pos_2(-PEP_Cu_rod_Pos_radial * cos(120.*deg), -PEP_Cu_rod_Pos_radial * sin(120.*deg), PEP_PTFE_rod_Pos_z);
+G4ThreeVector PEP_PTFE_rod_Pos_3(-PEP_Cu_rod_Pos_radial * cos(-120.*deg), -PEP_Cu_rod_Pos_radial * sin(-120.*deg), PEP_PTFE_rod_Pos_z);
+
+G4double PEP_PTFE_disk_Pos_z = PEP_Cu_ring_lower_Pos_z - PEP_Cu_ring_Height/2 - PEP_PTFE_disk_main_Height/2;
+G4ThreeVector PEP_PTFE_disk_Pos(0*mm, 0*mm, PEP_PTFE_disk_Pos_z); 
+
+G4double PEP_Cu_pedestal_Pos_z = PEP_PTFE_disk_Pos_z - PEP_PTFE_disk_main_Height/2 - PEP_Cu_pedestal_pillar_Height + PEP_Cu_pedestal_ring_lower_Height/2;
+G4ThreeVector PEP_Cu_pedestal_Pos(0*mm, 0*mm, PEP_Cu_pedestal_Pos_z); 
+
+
+// Define the physical volumes
+PEP_Pb_cylinder_phys = new G4PVPlacement(0, PEP_Pb_cylinder_Pos, PEP_Pb_cylinder_log, "PEP_Pb_cylinder_phys", cavity1_log, false,0,true);
+PEP_Pb_cylinder_current_phys = new G4PVPlacement(0, PEP_Pb_cylinder_current_Pos, PEP_Pb_cylinder_current_log, "PEP_Pb_cylinder_current_phys", PEP_Pb_cylinder_log, false,0,true);
+PEP_Cu_ring_upper_phys = new G4PVPlacement(0, PEP_Cu_ring_upper_Pos, PEP_Cu_ring_upper_log, "PEP_Cu_ring_upper_phys", cavity1_log, false,0,true);
+PEP_Cu_ring_lower_phys = new G4PVPlacement(0, PEP_Cu_ring_lower_Pos, PEP_Cu_ring_lower_log, "PEP_Cu_ring_lower_phys", cavity1_log, false,0,true);
+PEP_PTFE_rod_phys1 = new G4PVPlacement(0, PEP_PTFE_rod_Pos_1, PEP_PTFE_rod_log, "PEP_PTFE_rod_phys1", cavity1_log, false,0,true);
+PEP_PTFE_rod_phys2 = new G4PVPlacement(0, PEP_PTFE_rod_Pos_2, PEP_PTFE_rod_log, "PEP_PTFE_rod_phys2", cavity1_log, false,0,true);
+PEP_PTFE_rod_phys3 = new G4PVPlacement(0, PEP_PTFE_rod_Pos_3, PEP_PTFE_rod_log, "PEP_PTFE_rod_phys3", cavity1_log, false,0,true);
+PEP_PTFE_disk_phys = new G4PVPlacement(0, PEP_PTFE_disk_Pos, PEP_PTFE_disk_log, "PEP_PTFE_disk_phys", cavity1_log, false,0,true);
+PEP_Cu_pedestal_phys = new G4PVPlacement(0, PEP_Cu_pedestal_Pos, PEP_Cu_pedestal_log, "PEP_Cu_pedestal_phys", cavity1_log, false,0,true);
+
