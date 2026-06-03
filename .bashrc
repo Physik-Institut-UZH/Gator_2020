@@ -1,6 +1,6 @@
 echo "########## GATOR .bashrc ##########"
 
-source /app/cern/root_v5.34.38/bin/thisroot.sh ###required for Gator analysis on farm-ui as of Feb 2019 
+source /app/cern/root_v6.36.10/bin/thisroot.sh ###required for Gator analysis on farm-ui1 as of June 2026
 source /app/cern/geant_4.9.3.2/env.sh 
 #####################################
 
