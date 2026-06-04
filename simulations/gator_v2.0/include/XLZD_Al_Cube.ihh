@@ -1,0 +1,6 @@
+
+// ---------- volume XLZD_Al_Cube ---------- //
+
+//---------------   logical and physical volumes definitions 
+ G4LogicalVolume* XLZD_Al_Cube_log;
+ G4VPhysicalVolume* XLZD_Al_Cube_phys;

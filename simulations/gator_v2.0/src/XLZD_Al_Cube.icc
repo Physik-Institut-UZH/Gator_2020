@@ -1,0 +1,34 @@
+// Set visibility properties for all the samples 
+G4VisAttributes* sample_vis = new G4VisAttributes(red);
+sample_vis -> SetVisibility(true); 
+sample_vis -> SetForceSolid(false);
+
+//---------- volume XLZD_Al_Cube ---------- 
+
+//Dimensions of the sample in box and definition of the geometry
+ G4double box_XLZD_Al_Cube_x= 39.01*mm;
+ G4double box_XLZD_Al_Cube_y= 39.01*mm;
+ G4double box_XLZD_Al_Cube_z= 36*mm;
+ G4Box* XLZD_Al_Cube= new G4Box("XLZD_Al_Cube",0.5*box_XLZD_Al_Cube_x,0.5*box_XLZD_Al_Cube_y,0.5*box_XLZD_Al_Cube_z);
+
+// Define the material
+density = 2.700*g/cm3;
+a = 26.98*g/mole;
+G4Material* aluminum = new G4Material(name="Aluminum", z=13., a, density);
+
+//Construct the logical volume 
+ G4LogicalVolume* XLZD_Al_Cube_log = new G4LogicalVolume(XLZD_Al_Cube,aluminum,"XLZD_Al_Cube_log");
+
+// Set visibility for the sample (all are set to the same color, change it if necessary) 
+XLZD_Al_Cube_log -> SetVisAttributes(sample_vis);
+
+// Set coordinates for the position of the sample at the top of the detector
+G4double XLZD_Al_Cube_Pos_x =0*mm;
+G4double XLZD_Al_Cube_Pos_y =0*mm;
+G4double XLZD_Al_Cube_Pos_z= endcapPos_z+0.5*endcapHeight1+0.5*box_XLZD_Al_Cube_z+0.01*mm;
+
+// Define the position vector 
+G4ThreeVector XLZD_Al_Cube_Pos(XLZD_Al_Cube_Pos_x,XLZD_Al_Cube_Pos_y,XLZD_Al_Cube_Pos_z); 
+
+// Define the physical volume 
+G4VPhysicalVolume* XLZD_Al_Cube_phys = new  G4PVPlacement(0,XLZD_Al_Cube_Pos,XLZD_Al_Cube_log,"XLZD_Al_Cube_phys",cavity1_log,false,0,true);
